@@ -1,73 +1,159 @@
-# GameHub
+# 🎮 GameHub
 
-A Symfony-based gaming platform for managing and reserving games, events, and user interactions. This project is built for educational purposes and self-training.
+> A modern Symfony-based gaming platform for managing, reserving, and discovering games with community events and social features.
 
-## Features
+![Symfony](https://img.shields.io/badge/Symfony-6.x-000000?style=flat-square&logo=symfony)
+![PHP](https://img.shields.io/badge/PHP-8.1+-777BB4?style=flat-square&logo=php)
+![Doctrine](https://img.shields.io/badge/Doctrine-ORM-FC6D26?style=flat-square)
+![Twig](https://img.shields.io/badge/Twig-Template-90C53F?style=flat-square&logo=twig)
+![License](https://img.shields.io/badge/License-Educational-green?style=flat-square)
 
-- **User Management**: Registration, authentication, and user profiles
-- **Game Catalog**: Browse and manage games with cover images and details
-- **Game Reservations**: Book games for specific dates
-- **Event Management**: Create and manage gaming events
-- **Admin Dashboard**: Comprehensive admin panel for managing games, events, reservations, and users
-- **Purchase System**: Track game purchases
-- **Review System**: Users can leave reviews on games
-- **User Library**: Personal library of purchased/reserved games
+> **Educational Project** | Self-training initiative to master Symfony and modern web development practices
 
-## Tech Stack
+---
 
-- **Framework**: Symfony
-- **Database**: Doctrine ORM
-- **Templating**: Twig
-- **Frontend**: HTML/CSS with JavaScript (Stimulus.js)
-- **Authentication**: Symfony Security
+## ✨ Features
 
-## Installation
+| Feature | Description |
+|---------|-------------|
+| 👤 **User Management** | Registration, authentication, and personalized user profiles |
+| 🎮 **Game Catalog** | Browse, filter, and manage games with cover images and metadata |
+| 📅 **Game Reservations** | Book games for specific dates with availability tracking |
+| 🎭 **Event Management** | Create, manage, and participate in gaming events |
+| 🏆 **Admin Dashboard** | Comprehensive control panel for managing all platform resources |
+| 🛒 **Purchase System** | Track and manage game purchases and transactions |
+| ⭐ **Review System** | Community reviews and ratings for games |
+| 📚 **User Library** | Personal collection of owned and reserved games |
 
-1. Clone the repository:
+---
+
+## 🛠️ Tech Stack
+
+<table>
+<tr>
+<td width="50%">
+
+**Backend**
+- 🟢 **Symfony 6.x** - Web framework
+- 🗄️ **Doctrine ORM** - Database mapping
+- 🔐 **Symfony Security** - Authentication
+
+</td>
+<td width="50%">
+
+**Frontend**
+- 🎨 **HTML/CSS** - Markup & styling
+- ⚡ **Stimulus.js** - JavaScript framework
+- 🎯 **Responsive Design** - Mobile-friendly UI
+
+</td>
+</tr>
+</table>
+
+**Database**: PostgreSQL/MySQL with Doctrine ORM  
+**Templating**: Twig  
+**Version Control**: Git
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- PHP 8.1+
+- Composer
+- Symfony CLI (optional but recommended)
+- PostgreSQL/MySQL
+
+### Installation Steps
+
+**1️⃣ Clone the Repository**
 ```bash
 git clone https://github.com/WadiiZouaghi/GameHub.git
 cd GameHub
 ```
 
-2. Install dependencies:
+**2️⃣ Install Dependencies**
 ```bash
 composer install
 ```
 
-3. Set up environment variables:
+**3️⃣ Configure Environment**
 ```bash
 cp .env .env.local
+# Edit .env.local with your database credentials
 ```
 
-4. Create the database and run migrations:
+**4️⃣ Setup Database**
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-5. Load sample data (optional):
+**5️⃣ Load Sample Data** (Optional)
 ```bash
 php bin/console doctrine:fixtures:load
 ```
 
-6. Start the development server:
+**6️⃣ Start Development Server**
 ```bash
 symfony server:start
+# or
+php -S localhost:8000 -t public
 ```
 
-Visit `http://localhost:8000` to access the application.
+🌐 Open your browser and navigate to `http://localhost:8000`
 
-## Project Structure
+---
 
-- `src/Controller/` - Application controllers
-- `src/Entity/` - Doctrine entities
-- `src/Form/` - Symfony form types
-- `src/Repository/` - Database repositories
-- `templates/` - Twig templates
-- `migrations/` - Database migrations
-- `config/` - Configuration files
-- `public/uploads/` - User-uploaded files (avatars, game covers)
+## 📁 Project Structure
 
-## License
+```
+GameHub/
+├── src/
+│   ├── Controller/       # 🎛️  Application controllers
+│   ├── Entity/           # 📊 Doctrine entities
+│   ├── Form/             # 📝 Symfony form types
+│   ├── Repository/       # 🗂️  Database queries
+│   ├── Security/         # 🔒 Security handlers
+│   └── DataFixtures/     # 🌱 Sample data
+├── templates/            # 🎨 Twig templates
+├── migrations/           # 📚 Database migrations
+├── config/               # ⚙️  Configuration files
+├── public/
+│   └── uploads/          # 📦 User uploads (avatars, covers)
+├── assets/               # 🎭 CSS & JavaScript
+└── tests/                # ✅ Test files
+```
 
-This project is for educational purposes.
+---
+
+## 📖 Key Entities
+
+- **User** - Player accounts and profiles
+- **Game** - Game catalog entries
+- **Reservation** - Game booking records
+- **Event** - Community gaming events
+- **Purchase** - Purchase history
+- **Review** - Game ratings and feedback
+
+---
+
+## 🤝 Contributing
+
+This is an educational project. Feel free to fork, explore, and learn!
+
+---
+
+## 📝 License
+
+Educational project for learning purposes.
+
+---
+
+<div align="center">
+
+**Made with ❤️ for learning**
+
+[⭐ Star this repository](https://github.com/WadiiZouaghi/GameHub) if you find it helpful!
+
+</div>
