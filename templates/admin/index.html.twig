@@ -1,0 +1,34 @@
+{% extends 'admin/dashboard.html.twig' %}
+{% block title %}Admin Dashboard - GameHub{% endblock %}
+{% block body %}
+<div class="admin-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="admin-sidebar-nav">
+        <div class="admin-sidebar-header">
+            <h2>GameHub Admin</h2>
+        </div>
+        <nav class="admin-sidebar-menu">
+            <a href="{{ path('admin_dashboard') }}" class="admin-menu-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                <i class="fas fa-gamepad"></i>
+                Games
+            </a>
+            <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                <i class="fas fa-users"></i>
+                Users
+            </a>
+            <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                <i class="fas fa-ticket-alt"></i>
+                Reservations
+            </a>
+            <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                <i class="fas fa-star"></i>
+                Reviews
+            </a>

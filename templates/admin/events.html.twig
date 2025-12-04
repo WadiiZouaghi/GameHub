@@ -1,0 +1,187 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Events Management - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item active">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Events Management Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-calendar-alt"></i>
+                            Events Management
+                        </h2>
+                        <div class="section-actions">
+                            <a href="{{ path('admin_events_new') }}" class="btn btn-primary btn-small">
+                                <i class="fas fa-plus"></i>
+                                Create Event
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Calendar View -->
+                    <div class="events-calendar" style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem;">
+                        <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 style="color: hsl(var(--foreground)); margin: 0;">December 2024</h3>
+                            <div class="calendar-nav" style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary btn-small">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-secondary btn-small">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: hsl(var(--border)); border-radius: 8px; overflow: hidden;">
+                            <!-- Day Headers -->
+                            {% set days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] %}
+                            {% for day in days %}
+                                <div class="calendar-day-header" style="background: hsl(var(--muted)); padding: 1rem; text-align: center; color: hsl(var(--foreground)); font-weight: 600; font-size: 0.9rem;">
+                                    {{ day }}
+                                </div>
+                            {% endfor %}
+
+                            <!-- Calendar Days -->
+                            {% for day in 1..31 %}
+                                <div class="calendar-day" style="background: hsl(var(--card)); min-height: 120px; padding: 0.5rem; position: relative;">
+                                    <div class="day-number" style="color: hsl(var(--foreground)); font-weight: 600; margin-bottom: 0.5rem;">{{ day }}</div>
+                                    {% if day == 15 %}
+                                        <div class="event-indicator" style="background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; margin-bottom: 0.25rem;">
+                                            <i class="fas fa-trophy"></i> Tournament
+                                        </div>
+                                    {% endif %}
+                                    {% if day == 22 %}
+                                        <div class="event-indicator" style="background: hsl(var(--muted-foreground)); color: hsl(var(--foreground)); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem;">
+                                            <i class="fas fa-users"></i> Meetup
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Events List -->
+                    <div class="events-list">
+                        <h3 style="color: hsl(var(--foreground)); margin-bottom: 1rem;">Upcoming Events</h3>
+                        <div class="events-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem;">
+                            {% for event in events %}
+                                <div class="event-card" style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 1.5rem; transition: all 0.3s ease;">
+                                    <div class="event-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                                        <div>
+                                            <h4 style="color: hsl(var(--foreground)); margin: 0 0 0.5rem 0; font-size: 1.1rem;">{{ event.title }}</h4>
+                                            <span class="event-game" style="color: hsl(var(--primary)); font-size: 0.9rem;">{{ event.game.title }}</span>
+                                        </div>
+                                        <span class="event-status badge badge-success">Active</span>
+                                    </div>
+
+                                    <div class="event-details" style="margin-bottom: 1rem;">
+                                        <div class="event-meta" style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                                            <span style="color: hsl(var(--muted-foreground)); font-size: 0.8rem;"><i class="fas fa-calendar"></i> {{ event.date|date('M j, Y g:i A') }}</span>
+                                            <span style="color: hsl(var(--muted-foreground)); font-size: 0.8rem;"><i class="fas fa-users"></i> {{ event.attendees|length }}/{{ event.maxPlayers }}</span>
+                                        </div>
+                                        <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem; margin: 0;">{{ event.description|default('No description available.')|slice(0, 100) ~ '...' }}</p>
+                                    </div>
+
+                                    <div class="event-actions" style="display: flex; gap: 0.5rem;">
+                                        <a href="{{ path('admin_events_edit', {id: event.id}) }}" class="btn btn-secondary btn-small" style="flex: 1;">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <form method="POST" action="{{ path('admin_events_delete', {id: event.id}) }}" class="delete-form" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this event?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    {% if events is empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>No Events Found</h3>
+                            <p>Create your first gaming event to get started!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,345 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Admin Dashboard - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Statistics Cards -->
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalUsers }}</h3>
+                            <p>Total Users</p>
+                            <span class="stat-change">+12% this month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalGames }}</h3>
+                            <p>Games Available</p>
+                            <span class="stat-change">+5 this week</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalReservations }}</h3>
+                            <p>Total Reservations</p>
+                            <span class="stat-change">{{ stats.pendingReservations }} pending</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalEvents }}</h3>
+                            <p>Events Created</p>
+                            <span class="stat-change">Active events</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-chart-line"></i>
+                            Analytics Overview
+                        </h2>
+                        <div class="stats-filters">
+                            <select id="stats-period" class="admin-select">
+                                <option value="7">Last 7 days</option>
+                                <option value="30" selected>Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <h3>Reservations Trend</h3>
+                            <canvas id="reservationsChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="chart-wrapper">
+                            <h3>User Registrations</h3>
+                            <canvas id="usersChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="detailed-stats">
+                        <div class="stat-detail">
+                            <h4>Reservation Status Breakdown</h4>
+                            <div class="status-breakdown">
+                                <div class="status-item">
+                                    <span class="status-label">Confirmed</span>
+                                    <span class="status-value">{{ stats.confirmedReservations }}</span>
+                                    <div class="status-bar">
+                                        <div class="status-fill confirmed" style="width: {% if stats.totalReservations > 0 %}{{ (stats.confirmedReservations / stats.totalReservations * 100)|round }}{% else %}0{% endif %}%"></div>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Pending</span>
+                                    <span class="status-value">{{ stats.pendingReservations }}</span>
+                                    <div class="status-bar">
+                                        <div class="status-fill pending" style="width: {% if stats.totalReservations > 0 %}{{ (stats.pendingReservations / stats.totalReservations * 100)|round }}{% else %}0{% endif %}%"></div>
+                                    </div>
+                                </div>
+                                <div class="status-item">
+                                    <span class="status-label">Cancelled</span>
+                                    <span class="status-value">{{ stats.totalReservations - stats.confirmedReservations - stats.pendingReservations }}</span>
+                                    <div class="status-bar">
+                                        <div class="status-fill cancelled" style="width: {% if stats.totalReservations > 0 %}{{ ((stats.totalReservations - stats.confirmedReservations - stats.pendingReservations) / stats.totalReservations * 100)|round }}{% else %}0{% endif %}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Table -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-clock"></i>
+                            Recent Activity
+                        </h2>
+                    </div>
+
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Game/Event</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in recentReservations %}
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar small">
+                                                    {% if reservation.user.avatar %}
+                                                        <img src="{{ asset('uploads/avatars/' ~ reservation.user.avatar) }}" alt="{{ reservation.user.username }}">
+                                                    {% else %}
+                                                        <div class="avatar-placeholder small">
+                                                            {{ reservation.user.username|slice(0, 1)|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <span>{{ reservation.user.username }}</span>
+                                            </div>
+                                        </td>
+                                        <td>Reservation</td>
+                                        <td>{{ reservation.game.title }}</td>
+                                        <td>{{ reservation.createdAt|date('M j, Y') }}</td>
+                                        <td>
+                                            <span class="badge {% if reservation.status == 'confirmed' %}badge-success{% elseif reservation.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                                                {{ reservation.status|title }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Admin dashboard interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Charts
+        const reservationsCtx = document.getElementById('reservationsChart').getContext('2d');
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+
+        // Sample data - replace with real data from backend
+        const reservationsData = {
+            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+            datasets: [{
+                label: 'Reservations',
+                data: [12, 19, 3, 5, 2, 3, 9],
+                borderColor: '#000000',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        };
+
+        const usersData = {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'New Users',
+                data: [15, 22, 8, 12],
+                borderColor: '#888888',
+                backgroundColor: 'rgba(136, 136, 136, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        };
+
+        new Chart(reservationsCtx, {
+            type: 'line',
+            data: reservationsData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#333333'
+                        },
+                        ticks: {
+                            color: '#AAAAAA'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#333333'
+                        },
+                        ticks: {
+                            color: '#AAAAAA'
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(usersCtx, {
+            type: 'line',
+            data: usersData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#333333'
+                        },
+                        ticks: {
+                            color: '#AAAAAA'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: '#333333'
+                        },
+                        ticks: {
+                            color: '#AAAAAA'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Stats period filter
+        document.getElementById('stats-period').addEventListener('change', function() {
+            const period = this.value;
+            // TODO: Update charts based on selected period
+            console.log('Period changed to:', period);
+        });
+    });
+    </script>
+{% endblock %}
+
+

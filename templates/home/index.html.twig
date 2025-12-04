@@ -1,0 +1,362 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GameHub - Your Gaming Community{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient">
+    <!-- Grid Pattern Overlay -->
+    <div class="absolute inset-0 grid-pattern opacity-50"></div>
+    
+    <!-- Animated Gradient Orbs -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
+    
+    <!-- Content -->
+    <div class="container mx-auto px-4 pt-20 lg:pt-0 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8 animate-fade-in">
+                <i class="fas fa-sparkles text-primary w-4 h-4"></i>
+                <span class="text-sm font-medium text-primary">Hello Gamer!</span>
+            </div>
+            
+            <!-- Main Heading -->
+            <h1 class="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style="animation-delay: 0.1s;">
+                <span class="text-foreground">Your Gateway to</span>
+                <br />
+                <span class="text-gradient">Epic Gaming</span>
+            </h1>
+            
+            <!-- Subtitle -->
+            <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in" style="animation-delay: 0.2s;">
+                Discover thousands of DRM-free games, join epic gaming events, and connect with a passionate community of gamers worldwide.
+            </p>
+            
+            <!-- CTAs -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style="animation-delay: 0.3s;">
+                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group">
+                    Explore Games
+                    <i class="fas fa-chevron-right w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <a href="https://youtu.be/dQw4w9WgXcQ?si=czrFcRRwpZzo-Ubw" target="_blank" rel="noopener noreferrer">
+                <button class="btn-hero-outline flex items-center gap-2">
+                    <i class="fas fa-play w-5 h-5"></i>
+                    Watch Trailer
+                </button>
+                </a>
+            </div>
+            
+            <!-- Stats Preview -->
+            <div class="grid grid-cols-3 gap-8 mt-16 max-w-xl mx-auto animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="text-center">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">{{ totalGames }}</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Games</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">{{ totalEvents }}</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Events</div>
+                </div>
+                <div class="text-center">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">∞</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Freedom</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom Gradient Fade -->
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+</section>
+
+<!-- Featured Games Section -->
+<section class="py-20 lg:py-32 bg-background relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-3">
+                    <span class="text-gradient">Featured</span>
+                    <span class="text-foreground">Games</span>
+                </h2>
+                <p class="text-muted-foreground max-w-md">
+                    Handpicked titles that define the gaming experience. Updated weekly with the best releases.
+                </p>
+            </div>
+            <a href="{{ path('game_index') }}" class="btn-gaming group">
+                View All Games
+                <i class="fas fa-chevron-right w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <!-- Games Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for game in featuredGames %}
+                <a href="{{ path('game_show', {id: game.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                    <div class="card-gaming overflow-hidden h-full">
+                        <!-- Image -->
+                        <div class="relative aspect-[3/4] overflow-hidden">
+                            {% if game.coverImage %}
+                                <img src="{{ asset(game.coverImage) }}" alt="{{ game.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            {% else %}
+                                <div class="w-full h-full bg-muted flex items-center justify-center">
+                                    <i class="fas fa-gamepad text-muted-foreground w-12 h-12"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent"></div>
+                            
+                            <!-- Price -->
+                            <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-background/80 backdrop-blur-sm">
+                                <span class="text-sm font-bold {% if game.price == 0 %}text-primary{% else %}text-foreground{% endif %}">
+                                    {% if game.price == 0 %}Free{% else %}${{ game.price }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-4">
+                            <div class="text-xs text-primary uppercase tracking-wider mb-1">
+                                {{ game.category }}
+                            </div>
+                            <h3 class="font-orbitron text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+                                {{ game.title }}
+                            </h3>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-star text-yellow-500 fill-yellow-500"></i>
+                                <span class="text-sm text-foreground">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Upcoming Events Section -->
+<section class="py-20 lg:py-32 bg-card relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+                <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-3">
+                    <span class="text-foreground">Upcoming</span>
+                    <span class="text-gradient">Events</span>
+                </h2>
+                <p class="text-muted-foreground max-w-md">
+                    Compete, collaborate, and celebrate gaming with our community events.
+                </p>
+            </div>
+            <a href="{{ path('event_index') }}" class="btn-gaming group">
+                View All Events
+                <i class="fas fa-chevron-right w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <!-- Events Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {% for event in featuredEvents %}
+                <div class="card-gaming overflow-hidden group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                    <!-- Image -->
+                    <div class="relative h-48 overflow-hidden">
+                        {% if event.image %}
+                            <img src="{{ event.image }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        {% else %}
+                            <div class="w-full h-full bg-muted flex items-center justify-center">
+                                <i class="fas fa-calendar text-muted-foreground w-12 h-12"></i>
+                            </div>
+                        {% endif %}
+                        <div class="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent"></div>
+                        
+                        <!-- Prize -->
+                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-primary/90 backdrop-blur-sm">
+                            <span class="text-sm font-bold text-primary-foreground">
+                                $10,000
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <div class="text-xs text-primary uppercase tracking-wider mb-2">
+                            {{ event.game.title }}
+                        </div>
+                        <h3 class="font-orbitron text-xl font-semibold text-foreground group-hover:text-primary transition-colors mb-4">
+                            {{ event.title }}
+                        </h3>
+                        
+                        <!-- Event Details -->
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-calendar w-4 h-4 text-primary"></i>
+                                <span>{{ event.date|date('M j, Y') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-clock w-4 h-4 text-primary"></i>
+                                <span>{{ event.date|date('g:i A') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-users w-4 h-4 text-primary"></i>
+                                <span>{{ event.maxPlayers }} Players</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{{ path('event_show', {id: event.id}) }}" class="btn-gaming w-full text-center">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 lg:py-32 bg-background relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <!-- Header -->
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
+                <span class="text-foreground">Why Choose</span>
+                <span class="text-gradient">GameHub?</span>
+            </h2>
+            <p class="text-muted-foreground text-lg">
+                Built by gamers, for gamers. Experience the difference with features designed around what matters most.
+            </p>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-shield w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    DRM-Free Gaming
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    Own your games forever. No online checks, no restrictions. Play anywhere, anytime.
+                </p>
+            </div>
+            
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-users w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    Vibrant Community
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    Connect with millions of gamers. Share experiences, strategies, and make lasting friendships.
+                </p>
+            </div>
+            
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-calendar w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    Epic Events
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    From tournaments to community nights, there's always something exciting happening.
+                </p>
+            </div>
+            
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-download w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    Instant Access
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    Download and play immediately. No waiting, no queues, just pure gaming.
+                </p>
+            </div>
+            
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-bolt w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    Lightning Fast
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    Optimized downloads and seamless updates. Get into the action faster than ever.
+                </p>
+            </div>
+            
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.5s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                    <i class="fas fa-trophy w-7 h-7 text-primary"></i>
+                </div>
+                <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    Achievements
+                </h3>
+                <p class="text-muted-foreground leading-relaxed">
+                    Track your progress, unlock achievements, and showcase your gaming prowess.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="py-20 lg:py-32 relative overflow-hidden hero-gradient">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="max-w-3xl mx-auto text-center">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8">
+                <i class="fas fa-sparkles w-4 h-4 text-primary"></i>
+                <span class="text-sm font-medium text-primary">Stay Updated</span>
+            </div>
+            
+            <!-- Heading -->
+            <h2 class="font-orbitron text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+                <span class="text-foreground">Never Miss a</span>
+                <br />
+                <span class="text-gradient">Gaming Moment</span>
+            </h2>
+            
+            <!-- Description -->
+            <p class="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
+                Subscribe to our newsletter for exclusive deals, game releases, tournament updates, and community highlights.
+            </p>
+            
+            <!-- Form -->
+            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <div class="relative flex-1">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"></i>
+                    <input type="email" placeholder="Enter your email" class="w-full pl-12 h-12 bg-background/50 border border-border backdrop-blur-sm rounded-lg focus:outline-none focus:border-primary text-foreground placeholder-muted-foreground transition-colors" required />
+                </div>
+                <button type="submit" class="btn-hero">
+                    Subscribe
+                </button>
+            </form>
+            
+            <!-- Trust -->
+            <p class="text-sm text-muted-foreground mt-6">
+                Join 50,000+ gamers. No spam, unsubscribe anytime.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}

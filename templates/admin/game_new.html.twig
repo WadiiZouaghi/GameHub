@@ -1,0 +1,325 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Create Game - GameHub Admin{% endblock %}
+
+{% block body %}
+<div class="admin-main-wrapper">
+    <aside class="admin-sidebar-nav">
+        <div class="admin-sidebar-header">
+            <h2>GameHub Admin</h2>
+        </div>
+        <nav class="admin-sidebar-menu">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">MAIN</div>
+                <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="{{ path('admin_games') }}" class="admin-menu-item active">
+                    <i class="fas fa-gamepad"></i>
+                    Games
+                </a>
+                <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                    <i class="fas fa-users"></i>
+                    Users
+                </a>
+                <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                    <i class="fas fa-ticket-alt"></i>
+                    Reservations
+                </a>
+                <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    Events
+                </a>
+                <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                    <i class="fas fa-star"></i>
+                    Reviews
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-main-content">
+            <div class="admin-header">
+                <div class="admin-welcome">
+                    <div class="admin-avatar">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <div class="welcome-content">
+                        <h1>Create New Game</h1>
+                        <p>Add a new game to the system</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <div class="section-header">
+                    <h2>
+                        <i class="fas fa-plus"></i>
+                        Game Details
+                    </h2>
+                    <a href="{{ path('admin_games') }}" class="btn btn-secondary btn-small">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Games
+                    </a>
+                </div>
+
+                {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form_label(form.title) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.title) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.category) }}
+                            {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.category) }}
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.capacity) }}
+                            {{ form_widget(form.capacity, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.capacity) }}
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            {{ form_label(form.coverImage) }}
+                            <div class="file-upload-container">
+                                <div class="file-upload-area">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="upload-text">
+                                        <strong>Drop image here or click to browse</strong>
+                                        <p>PNG, JPG, GIF up to 10MB</p>
+                                    </div>
+                                    {{ form_widget(form.coverImage, {'attr': {'class': 'file-input'}}) }}
+                                </div>
+                                <div class="upload-preview" id="image-preview" style="display: none;">
+                                    <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                                </div>
+                            </div>
+                            {{ form_errors(form.coverImage) }}
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Create Game
+                        </button>
+                        <a href="{{ path('admin_games') }}" class="btn btn-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+.admin-form {
+    max-width: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    width: 100%;
+    background: var(--dark-gray);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--neon-accent);
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+}
+
+.form-control[rows] {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.file-upload-container {
+    position: relative;
+}
+
+.file-upload-area {
+    border: 2px dashed var(--gray-300);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    background: var(--dark-gray);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-area:hover {
+    border-color: var(--neon-accent);
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+}
+
+.upload-text strong {
+    display: block;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.upload-text p {
+    color: var(--gray-400);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.file-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-preview {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gray-100);
+}
+
+.btn-admin {
+    background: var(--neon-accent);
+    color: var(--black);
+    border: 1px solid var(--neon-accent);
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-admin:hover {
+    background: var(--white);
+    color: var(--black);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.querySelector('.file-input');
+    const uploadArea = document.querySelector('.file-upload-area');
+    const preview = document.getElementById('image-preview');
+    const previewImg = document.getElementById('preview-img');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--neon-accent)';
+            uploadArea.style.background = 'rgba(0, 212, 255, 0.1)';
+        });
+
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--gray-300)';
+            uploadArea.style.background = 'var(--dark-gray)';
+        });
+
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--gray-300)';
+            uploadArea.style.background = 'var(--dark-gray)';
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

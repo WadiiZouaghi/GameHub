@@ -1,0 +1,188 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Games Management - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item active">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Games Management Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-gamepad"></i>
+                            Games Management
+                        </h2>
+                        <a href="{{ path('admin_games_new') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Add New Game
+                        </a>
+                    </div>
+
+                    <!-- Filters and Search -->
+                    <div class="filters-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+                        <div class="admin-search" style="margin: 0;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search games..." style="width: 300px;">
+                        </div>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Genres</option>
+                            <option value="action">Action</option>
+                            <option value="adventure">Adventure</option>
+                            <option value="rpg">RPG</option>
+                            <option value="strategy">Strategy</option>
+                        </select>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+
+                    <!-- Games Grid View -->
+                    <div class="games-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem;">
+                        {% for game in games %}
+                            <div class="game-card" style="background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); overflow: hidden; transition: all 0.3s ease;">
+                                <div class="game-cover" style="height: 200px; background: hsl(var(--muted)); position: relative;">
+                                    {% if game.coverImage %}
+                                        <img src="{{ asset(game.coverImage) }}" alt="{{ game.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% else %}
+                                        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: hsl(var(--muted) / 0.8); color: hsl(var(--foreground));">
+                                            <i class="fas fa-gamepad" style="font-size: 3rem;"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="game-status" style="position: absolute; top: 1rem; right: 1rem;">
+                                        <span class="badge badge-published">
+                                            Published
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="game-info" style="padding: 1.5rem;">
+                                    <h3 style="margin: 0 0 0.5rem 0; color: hsl(var(--foreground)); font-size: 1.2rem; font-weight: 600;">{{ game.title }}</h3>
+                                    <p style="margin: 0 0 1rem 0; color: hsl(var(--muted-foreground)); font-size: 0.9rem;">by {{ game.developer }}</p>
+                                    <div class="game-meta" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <span class="game-category" style="color: hsl(var(--primary)); font-size: 0.8rem; font-weight: 500;">{{ game.category }}</span>
+                                        <span class="game-price" style="color: hsl(var(--foreground)); font-weight: 600;">${{ game.price }}</span>
+                                    </div>
+                                    <div class="game-stats" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                        <span style="color: hsl(var(--muted-foreground)); font-size: 0.8rem;"><i class="fas fa-ticket-alt"></i> {{ game.reservations|length }} reservations</span>
+                                        <span style="color: hsl(var(--muted-foreground)); font-size: 0.8rem;"><i class="fas fa-star"></i> {{ game.rating|default(0) }}/5</span>
+                                    </div>
+                                    <div class="game-actions" style="display: flex; gap: 0.5rem;">
+                                        <a href="{{ path('admin_games_edit', {id: game.id}) }}" class="btn btn-secondary btn-small" style="flex: 1;">
+                                            <i class="fas fa-edit"></i>
+                                            Edit
+                                        </a>
+                                        <form method="POST" action="{{ path('admin_games_delete', {id: game.id}) }}" class="delete-form" style="display: inline;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ game.id) }}">
+                                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this game?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Empty State -->
+                    {% if games is empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-gamepad"></i>
+                            <h3>No Games Found</h3>
+                            <p>Get started by adding your first game to the platform.</p>
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Add New Game
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Pagination -->
+                    {% if games is not empty %}
+                        <div style="display: flex; justify-content: center; margin-top: 3rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary btn-small">Previous</button>
+                                <button class="btn btn-primary btn-small">1</button>
+                                <button class="btn btn-secondary btn-small">2</button>
+                                <button class="btn btn-secondary btn-small">3</button>
+                                <button class="btn btn-secondary btn-small">Next</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

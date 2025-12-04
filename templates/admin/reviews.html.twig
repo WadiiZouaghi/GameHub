@@ -1,0 +1,194 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Manage Reviews - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item active">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Reviews Management Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-star"></i>
+                            Reviews Management
+                        </h2>
+                        <div class="section-actions">
+                            <div class="admin-search" style="margin: 0;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search reviews..." style="width: 300px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Table -->
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Game</th>
+                                    <th>Rating</th>
+                                    <th>Review</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for review in reviews %}
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-small">
+                                                    {% if review.user.avatar %}
+                                                        <img src="{{ asset('uploads/avatars/' ~ review.user.avatar) }}" alt="{{ review.user.username }}">
+                                                    {% else %}
+                                                        <div class="avatar-placeholder-small">
+                                                            {{ review.user.username|slice(0, 1)|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="user-name">{{ review.user.username }}</span>
+                                                    <span class="user-email">{{ review.user.email }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="game-cell">
+                                                <span class="game-title">{{ review.game.title }}</span>
+                                                <span class="game-price">${{ review.game.price }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="rating-cell">
+                                                <span class="stars">
+                                                    {% for i in 1..review.rating %}
+                                                        <i class="fas fa-star"></i>
+                                                    {% endfor %}
+                                                    {% for i in review.rating + 1..5 %}
+                                                        <i class="far fa-star"></i>
+                                                    {% endfor %}
+                                                </span>
+                                                <span class="rating-value">{{ review.rating }}/5</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="review-text-cell">
+                                                <p class="review-text">{{ review.comment|slice(0, 100) }}{% if review.comment|length > 100 %}...{% endif %}</p>
+                                            </div>
+                                        </td>
+                                        <td>{{ review.createdAt|date('M j, Y') }}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <form method="POST" action="{{ path('admin_reviews_delete', {id: review.id}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ review.id) }}">
+                                                    <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this review?')">
+                                                        <i class="fas fa-trash"></i>
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    {% if reviews is empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-star"></i>
+                            <h3>No Reviews Found</h3>
+                            <p>No reviews have been submitted yet. Reviews will appear here once users start reviewing games!</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Pagination -->
+                    {% if reviews is not empty %}
+                        <div style="display: flex; justify-content: center; margin-top: 3rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary btn-small">Previous</button>
+                                <button class="btn btn-primary btn-small">1</button>
+                                <button class="btn btn-secondary btn-small">2</button>
+                                <button class="btn btn-secondary btn-small">3</button>
+                                <button class="btn btn-secondary btn-small">Next</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

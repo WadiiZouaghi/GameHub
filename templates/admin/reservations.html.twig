@@ -1,0 +1,211 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Reservations Management - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item active">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Reservations Management Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-ticket-alt"></i>
+                            Reservations Management
+                        </h2>
+                        <div class="section-actions">
+                            <a href="{{ path('admin_reservations_new') }}" class="btn btn-primary btn-small">
+                                <i class="fas fa-plus"></i>
+                                New Reservation
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Filters and Search -->
+                    <div class="filters-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+                        <div class="admin-search" style="margin: 0;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search reservations..." style="width: 300px;">
+                        </div>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Games</option>
+                            <option value="game1">Game 1</option>
+                            <option value="game2">Game 2</option>
+                        </select>
+                    </div>
+
+                    <!-- Reservations Table -->
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Game</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reservation in reservations %}
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-small">
+                                                    {% if reservation.user.avatar %}
+                                                        <img src="{{ asset('uploads/avatars/' ~ reservation.user.avatar) }}" alt="{{ reservation.user.username }}">
+                                                    {% else %}
+                                                        <div class="avatar-placeholder-small">
+                                                            {{ reservation.user.username|slice(0, 1)|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="user-name">{{ reservation.user.username }}</span>
+                                                    <span class="user-email">{{ reservation.user.email }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="game-cell">
+                                                <span class="game-title">{{ reservation.game.title }}</span>
+                                                <span class="game-price">${{ reservation.game.price }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="reservation-price">${{ reservation.game.price }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge {% if reservation.status == 'confirmed' %}badge-success{% elseif reservation.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                                                {{ reservation.status|title }}
+                                            </span>
+                                        </td>
+                                        <td>{{ reservation.createdAt|date('M j, Y') }}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                {% if reservation.status == 'pending' %}
+                                                    <a href="#" class="btn btn-secondary btn-small">
+                                                        <i class="fas fa-check"></i>
+                                                        Approve
+                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-small">
+                                                        <i class="fas fa-times"></i>
+                                                        Reject
+                                                    </a>
+                                                {% else %}
+                                                    <a href="#" class="btn btn-secondary btn-small">
+                                                        <i class="fas fa-eye"></i>
+                                                        View
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    {% if reservations is empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-ticket-alt"></i>
+                            <h3>No Reservations Found</h3>
+                            <p>No reservations have been made yet. Users can start reserving games once they're available.</p>
+                        </div>
+                    {% endif %}
+
+                    <!-- Pagination -->
+                    {% if reservations is not empty %}
+                        <div style="display: flex; justify-content: center; margin-top: 3rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary btn-small">Previous</button>
+                                <button class="btn btn-primary btn-small">1</button>
+                                <button class="btn btn-secondary btn-small">2</button>
+                                <button class="btn btn-secondary btn-small">3</button>
+                                <button class="btn btn-secondary btn-small">Next</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}

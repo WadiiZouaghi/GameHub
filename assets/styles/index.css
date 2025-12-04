@@ -1,0 +1,122 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 228 60% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 228 50% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 228 50% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 195 100% 45%;
+    --primary-foreground: 228 60% 6%;
+
+    --secondary: 282 68% 38%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 228 40% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 282 68% 38%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 228 30% 20%;
+    --input: 228 30% 20%;
+    --ring: 195 100% 45%;
+
+    --radius: 0.75rem;
+
+    /* Custom Gaming Colors */
+    --neon-cyan: 195 100% 45%;
+    --neon-purple: 282 68% 38%;
+    --neon-pink: 330 80% 55%;
+    --dark-navy: 228 60% 6%;
+    --dark-card: 228 50% 10%;
+    --dark-elevated: 228 45% 14%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply bg-background text-foreground font-rajdhani;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-orbitron;
+  }
+}
+
+@layer components {
+  .neon-glow {
+    @apply shadow-[0_0_20px_hsl(195_100%_45%/0.4),0_0_40px_hsl(195_100%_45%/0.2)];
+  }
+
+  .neon-glow-purple {
+    @apply shadow-[0_0_20px_hsl(282_68%_38%/0.4),0_0_40px_hsl(282_68%_38%/0.2)];
+  }
+
+  .card-gaming {
+    @apply bg-card border border-border rounded-xl transition-all duration-300;
+    background: linear-gradient(145deg, hsl(228 50% 12%) 0%, hsl(228 50% 8%) 100%);
+  }
+
+  .card-gaming:hover {
+    @apply border-primary/50;
+    box-shadow: 0 0 30px hsl(195 100% 45% / 0.15);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(90deg, hsl(195 100% 45%) 0%, hsl(282 68% 38%) 100%);
+  }
+
+  .btn-neon {
+    @apply relative overflow-hidden;
+  }
+
+  .btn-neon::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(90deg, hsl(195 100% 45% / 0.2) 0%, hsl(282 68% 38% / 0.2) 100%);
+  }
+
+  .btn-neon:hover::before {
+    @apply opacity-100;
+  }
+
+  .hero-gradient {
+    background: linear-gradient(135deg, hsl(228 60% 6%) 0%, hsl(228 50% 12%) 50%, hsl(282 40% 15%) 100%);
+  }
+
+  .grid-pattern {
+    background-image: 
+      linear-gradient(hsl(195 100% 45% / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(195 100% 45% / 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Button Styles */
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-orbitron font-semibold px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/50;
+  }
+
+  .btn-hero-outline {
+    @apply border-2 border-primary text-primary font-orbitron font-semibold px-6 py-3 rounded-lg transition-all duration-300 hover:bg-primary/10;
+  }
+
+  .btn-gaming {
+    @apply bg-card border border-border text-foreground font-orbitron font-semibold px-4 py-2 rounded-lg transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20;
+  }
+}

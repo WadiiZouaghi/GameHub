@@ -1,0 +1,175 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Games - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <!-- Page Header -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div>
+            <h1 class="font-orbitron text-4xl md:text-5xl font-bold mb-3">
+                <span class="text-foreground">Game</span>
+                <span class="text-gradient">Catalogue</span>
+            </h1>
+            <p class="text-muted-foreground max-w-md">
+                Discover and explore our amazing collection of DRM-free games
+            </p>
+        </div>
+
+        {% if app.user %}
+            <a href="{{ path('game_new') }}" class="btn-hero flex items-center gap-2 group w-fit">
+                <i class="fas fa-plus"></i>
+                Add New Game
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Filters -->
+    <div class="card-gaming p-6 mb-12 animate-fade-in">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label for="category-filter" class="block text-sm font-orbitron font-semibold text-foreground mb-2">
+                    <i class="fas fa-filter text-primary mr-2"></i>Filter by Category
+                </label>
+                <select id="category-filter" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani focus:outline-none focus:border-primary">
+                    <option value="">All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="search-input" class="block text-sm font-orbitron font-semibold text-foreground mb-2">
+                    <i class="fas fa-search text-primary mr-2"></i>Search Games
+                </label>
+                <input type="text" id="search-input" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani placeholder-muted-foreground focus:outline-none focus:border-primary" placeholder="Search by title...">
+            </div>
+
+            <div>
+                <label for="sort-select" class="block text-sm font-orbitron font-semibold text-foreground mb-2">
+                    <i class="fas fa-sort text-primary mr-2"></i>Sort By
+                </label>
+                <select id="sort-select" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani focus:outline-none focus:border-primary">
+                    <option value="title_asc">Title (A-Z)</option>
+                    <option value="title_desc">Title (Z-A)</option>
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="genre">Genre</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Games Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for game in games %}
+            <a href="{{ path('game_show', {id: game.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
+                <div class="card-gaming overflow-hidden h-full flex flex-col">
+                    <!-- Image -->
+                    <div class="relative aspect-[3/4] overflow-hidden">
+                        {% if game.coverImage %}
+                            <img src="{{ asset(game.coverImage) }}" alt="{{ game.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        {% else %}
+                            <div class="w-full h-full bg-muted flex flex-col items-center justify-center">
+                                <i class="fas fa-gamepad text-muted-foreground w-12 h-12 mb-2"></i>
+                                <span class="text-xs text-muted-foreground">{{ game.title|slice(0, 1)|upper }}</span>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent"></div>
+                        
+                        <!-- Genre Badge -->
+                        <div class="absolute top-4 right-4 px-3 py-1 rounded-lg bg-background/80 backdrop-blur-sm">
+                            <span class="text-xs font-bold text-primary uppercase">{{ game.category }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-4 flex-1 flex flex-col">
+                        <h3 class="font-orbitron text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+                            {{ game.title }}
+                        </h3>
+                        
+                        <p class="text-sm text-muted-foreground mb-4 flex-1">
+                            {{ game.description|slice(0, 80) }}{% if game.description|length > 80 %}...{% endif %}
+                        </p>
+                        
+                        <div class="flex items-center gap-3 text-xs text-muted-foreground mb-4">
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-users"></i>
+                                <span>{{ game.reservations|length }} players</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-star text-yellow-500"></i>
+                                <span>{{ game.reviews|length }} reviews</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button class="btn-gaming flex-1 text-center text-sm reserve-btn" data-game-id="{{ game.id }}">
+                                <i class="fas fa-ticket-alt"></i> Reserve
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% else %}
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                <i class="fas fa-gamepad text-5xl text-muted-foreground mb-4 opacity-50"></i>
+                <h2 class="font-orbitron text-2xl font-bold text-foreground mb-2">No Games Available</h2>
+                <p class="text-muted-foreground mb-6">There are no games in our catalogue yet. Check back later!</p>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_games_new') }}" class="btn-hero flex items-center gap-2">
+                        <i class="fas fa-plus"></i>
+                        Add First Game
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Load More Button (if many games) -->
+    {% if games|length > 12 %}
+        <div class="text-center mt-4">
+            <button id="load-more" class="btn btn-secondary">
+                <i class="fas fa-plus"></i>
+                Load More Games
+            </button>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Filter and sort UI triggers full page reload to backend filtering with query parameters
+    document.addEventListener('DOMContentLoaded', () => {
+        const categoryFilter = document.getElementById('category-filter');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+
+        function submitFilters() {
+            const category = categoryFilter.value;
+            const search = searchInput.value.trim();
+            const sort = sortSelect.value;
+            let url = new URL(window.location.href);
+            url.searchParams.set('category', category);
+            url.searchParams.set('search', search);
+            url.searchParams.set('sort', sort);
+            url.searchParams.set('page', 1);
+            window.location.href = url.toString();
+        }
+
+        categoryFilter.addEventListener('change', submitFilters);
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitFilters();
+            }
+        });
+        sortSelect.addEventListener('change', submitFilters);
+    });
+</script>
+{% endblock %}

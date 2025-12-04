@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add New Game - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <div class="max-w-2xl mx-auto">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="font-orbitron text-4xl font-bold text-foreground mb-4">
+                <span class="text-gradient">Create</span> New Game
+            </h1>
+            <p class="text-muted-foreground">Add a new game to the GameHub catalogue</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card-gaming p-8">
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+
+                <!-- Title -->
+                <div>
+                    {{ form_label(form.title, 'Game Title', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                    {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Enter game title'}}) }}
+                    {% if form.title.vars.errors %}
+                        <div class="mt-1 text-destructive text-sm">
+                            {{ form_errors(form.title) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Genre -->
+                <div>
+                    {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                    {{ form_widget(form.category, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'e.g., Action, RPG, Strategy'}}) }}
+                    {% if form.category.vars.errors %}
+                        <div class="mt-1 text-destructive text-sm">
+                            {{ form_errors(form.category) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                    {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'rows': 5, 'placeholder': 'Describe the game...'}}) }}
+                    {% if form.description.vars.errors %}
+                        <div class="mt-1 text-destructive text-sm">
+                            {{ form_errors(form.description) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Grid: Developer, Price, Capacity -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Developer -->
+                    <div>
+                        {{ form_label(form.developer, 'Developer', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                        {{ form_widget(form.developer, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Developer name'}}) }}
+                        {% if form.developer.vars.errors %}
+                            <div class="mt-1 text-destructive text-sm">
+                                {{ form_errors(form.developer) }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Price -->
+                    <div>
+                        {{ form_label(form.price, 'Price ($)', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                        {{ form_widget(form.price, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': '0.00', 'step': '0.01', 'min': '0'}}) }}
+                        {% if form.price.vars.errors %}
+                            <div class="mt-1 text-destructive text-sm">
+                                {{ form_errors(form.price) }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Capacity -->
+                    <div>
+                        {{ form_label(form.capacity, 'Max Players', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                        {{ form_widget(form.capacity, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Optional', 'min': '1'}}) }}
+                        {% if form.capacity.vars.errors %}
+                            <div class="mt-1 text-destructive text-sm">
+                                {{ form_errors(form.capacity) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Cover Image -->
+                <div>
+                    {{ form_label(form.coverImage, 'Cover Image', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
+                    {{ form_widget(form.coverImage, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Image URL or path (optional)'}}) }}
+                    {% if form.coverImage.vars.errors %}
+                        <div class="mt-1 text-destructive text-sm">
+                            {{ form_errors(form.coverImage) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex gap-4 pt-6 border-t border-border">
+                    <button class="flex-1 btn-hero flex items-center justify-center gap-2" type="submit">
+                        <i class="fas fa-plus"></i>
+                        Create Game
+                    </button>
+                    <a href="{{ path('game_index') }}" class="flex-1 btn-gaming flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        Cancel
+                    </a>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

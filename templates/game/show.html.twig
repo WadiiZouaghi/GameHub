@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ game.title }} - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <!-- Game Header -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <!-- Cover Image -->
+        <div class="md:col-span-1">
+            {% if game.coverImage %}
+                <img src="{{ asset(game.coverImage) }}" alt="{{ game.title }}" class="w-full rounded-xl shadow-lg neon-glow" />
+            {% else %}
+                <div class="w-full aspect-[3/4] bg-muted rounded-xl flex items-center justify-center text-5xl">🎮</div>
+            {% endif %}
+        </div>
+
+        <!-- Game Info -->
+        <div class="md:col-span-2">
+            <div class="mb-6">
+                <h1 class="font-orbitron text-4xl md:text-5xl font-bold text-foreground mb-4">{{ game.title }}</h1>
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <span class="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-orbitron font-semibold uppercase text-sm">
+                        {{ game.category }}
+                    </span>
+                    {% if averageRating > 0 %}
+                        <div class="flex items-center gap-2">
+                            <div class="flex gap-1">
+                                {% for i in 1..5 %}
+                                    {% if i <= averageRating %}
+                                        <i class="fas fa-star text-yellow-500"></i>
+                                    {% elseif i - 0.5 <= averageRating %}
+                                        <i class="fas fa-star-half-alt text-yellow-500"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-yellow-500"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-muted-foreground text-sm">{{ averageRating|round(1) }} ({{ game.reviews|length }} reviews)</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <p class="text-foreground text-lg mb-8 leading-relaxed">{{ game.description }}</p>
+
+            <!-- Purchase Section -->
+            <div class="card-gaming p-8 mb-8">
+                {% if hasPurchased %}
+                    <div class="flex items-center gap-3 bg-green-500/20 border border-green-500/50 rounded-lg p-4 text-green-400">
+                        <i class="fas fa-check-circle text-xl"></i>
+                        <span class="font-rajdhani font-semibold">You own this game</span>
+                    </div>
+                {% else %}
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                        <div>
+                            <div class="text-sm text-muted-foreground mb-2">Price</div>
+                            <div class="text-4xl font-orbitron font-bold text-primary">
+                                {% if game.price == 0 %}Free{% else %}${{ game.price|number_format(2) }}{% endif %}
+                            </div>
+                        </div>
+                        <a href="{{ path('game_purchase', {'id': game.id}) }}" class="btn-hero flex items-center gap-2">
+                            {% if game.price == 0 %}
+                                <i class="fas fa-download"></i>
+                                Get Game
+                            {% else %}
+                                <i class="fas fa-shopping-cart"></i>
+                                Purchase Game
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Game Details -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="card-gaming p-4">
+                    <div class="text-xs text-primary uppercase tracking-wider mb-2">Developer</div>
+                    <div class="text-foreground font-semibold">{{ game.developer ?: 'Unknown' }}</div>
+                </div>
+                <div class="card-gaming p-4">
+                    <div class="text-xs text-primary uppercase tracking-wider mb-2">Release Date</div>
+                    <div class="text-foreground font-semibold">{{ game.createdAt|date('M j, Y') }}</div>
+                </div>
+                {% if game.capacity %}
+                    <div class="card-gaming p-4">
+                        <div class="text-xs text-primary uppercase tracking-wider mb-2">Max Players</div>
+                        <div class="text-foreground font-semibold">{{ game.capacity }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div id="review-section" class="mb-16">
+        <h2 class="font-orbitron text-3xl font-bold mb-8">
+            <span class="text-gradient">Reviews</span>
+            <span class="text-foreground">&amp; Ratings</span>
+        </h2>
+
+        {% if hasPurchased %}
+            {% if userReview %}
+                <div class="mb-12">
+                    <h3 class="font-orbitron text-xl font-bold text-foreground mb-4">Your Review</h3>
+                    <div class="card-gaming p-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+                            <div class="flex gap-1">
+                                {% for i in 1..5 %}
+                                    {% if i <= userReview.rating %}
+                                        <i class="fas fa-star text-yellow-500"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-yellow-500"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="text-sm text-muted-foreground">{{ userReview.createdAt|date('M j, Y') }}</div>
+                        </div>
+                        <p class="text-foreground">{{ userReview.comment }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card-gaming p-8 mb-12">
+                    <h3 class="font-orbitron text-xl font-bold text-foreground mb-6">Write a Review</h3>
+                    {{ form_start(reviewForm) }}
+                        <div class="mb-6">
+                            {{ form_label(reviewForm.rating, 'Rating', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3'}}) }}
+                            <div class="rating-input flex gap-2">
+                                {{ form_widget(reviewForm.rating) }}
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            {{ form_label(reviewForm.comment, 'Your Review', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3'}}) }}
+                            {{ form_widget(reviewForm.comment, {'attr': {'class': 'w-full bg-muted border border-border rounded-lg px-4 py-3 text-foreground font-rajdhani focus:outline-none focus:border-primary min-h-24'}}) }}
+                        </div>
+                        <button type="submit" class="btn-hero flex items-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Review
+                        </button>
+                    {{ form_end(reviewForm) }}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card-gaming p-6 mb-12 bg-yellow-500/10 border border-yellow-500/30">
+                <div class="flex items-center gap-3 text-yellow-400">
+                    <i class="fas fa-lock text-xl"></i>
+                    <span class="font-rajdhani font-semibold">You must own this game to leave a review</span>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- All Reviews -->
+        <div>
+            <h3 class="font-orbitron text-xl font-bold text-foreground mb-6">All Reviews ({{ game.reviews|length }})</h3>
+            {% if game.reviews|length > 0 %}
+                <div class="space-y-4">
+                    {% for review in game.reviews %}
+                        <div class="card-gaming p-6">
+                            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
+                                <div>
+                                    <div class="text-primary font-orbitron font-semibold mb-2">{{ review.user.email }}</div>
+                                    <div class="flex gap-1">
+                                        {% for i in 1..5 %}
+                                            {% if i <= review.rating %}
+                                                <i class="fas fa-star text-yellow-500"></i>
+                                            {% else %}
+                                                <i class="far fa-star text-yellow-500"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="text-sm text-muted-foreground">{{ review.createdAt|date('M j, Y') }}</div>
+                            </div>
+                            <p class="text-foreground">{{ review.comment }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card-gaming p-12 text-center">
+                    <i class="fas fa-comments text-4xl text-muted-foreground mb-4 opacity-50"></i>
+                    <p class="text-muted-foreground">No reviews yet. Be the first to review this game!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

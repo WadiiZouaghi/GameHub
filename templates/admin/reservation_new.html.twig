@@ -1,0 +1,158 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Create Reservation - GameHub Admin{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+    <aside class="admin-sidebar-nav">
+        <div class="admin-sidebar-header">
+            <h2>GameHub Admin</h2>
+        </div>
+        <nav class="admin-sidebar-menu">
+            <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                <i class="fas fa-tachometer-alt"></i>
+                Dashboard
+            </a>
+            <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                <i class="fas fa-gamepad"></i>
+                Games
+            </a>
+            <a href="{{ path('admin_users') }}" class="admin-menu-item">
+                <i class="fas fa-users"></i>
+                Users
+            </a>
+            <a href="{{ path('admin_reservations') }}" class="admin-menu-item active">
+                <i class="fas fa-ticket-alt"></i>
+                Reservations
+            </a>
+            <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                <i class="fas fa-calendar-alt"></i>
+                Events
+            </a>
+            <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                <i class="fas fa-star"></i>
+                Reviews
+            </a>
+        </nav>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-main-content">
+            <div class="admin-header">
+                <div class="admin-welcome">
+                    <div class="admin-avatar">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                    <div class="welcome-content">
+                        <h1>Create Reservation</h1>
+                        <p>Add a new game reservation</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <a href="{{ path('admin_reservations') }}" class="btn btn-outline" style="margin-bottom: 1rem;">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Reservations
+                </a>
+
+                {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+                    <div class="form-group">
+                        {{ form_label(form.user) }}
+                        {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.user) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.game) }}
+                        {{ form_widget(form.game, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.game) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.reservationDate) }}
+                        {{ form_widget(form.reservationDate, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.reservationDate) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.status) }}
+                        {{ form_widget(form.status, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.status) }}
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-admin">
+                            <i class="fas fa-plus"></i>
+                            Create Reservation
+                        </button>
+                        <a href="{{ path('admin_reservations') }}" class="btn btn-outline">
+                            Cancel
+                        </a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+.admin-form {
+    max-width: 600px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--accent-purple);
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    background: var(--tertiary-dark);
+    border: 1px solid var(--accent-purple);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--accent-purple);
+    color: var(--accent-purple);
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-outline:hover {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+</style>
+{% endblock %}

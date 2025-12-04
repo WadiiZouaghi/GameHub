@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <!-- Page Header -->
+    <div class="mb-12">
+        <h1 class="font-orbitron text-4xl md:text-5xl font-bold mb-3">
+            <span class="text-foreground">Upcoming</span>
+            <span class="text-gradient">Events</span>
+        </h1>
+        <p class="text-muted-foreground max-w-md">
+            Discover and join exciting gaming events and tournaments
+        </p>
+    </div>
+
+    <!-- Events Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {% for event in events %}
+            <a href="{{ path('event_show', {id: event.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                <div class="card-gaming overflow-hidden group">
+                    <!-- Image -->
+                    <div class="relative h-48 overflow-hidden">
+                        {% if event.image %}
+                            <img src="{{ event.image }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        {% else %}
+                            <div class="w-full h-full bg-muted flex items-center justify-center">
+                                <i class="fas fa-calendar text-muted-foreground w-12 h-12"></i>
+                            </div>
+                        {% endif %}
+                        <div class="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent"></div>
+                        
+                        <!-- Prize Badge -->
+                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-primary/90 backdrop-blur-sm">
+                            <span class="text-sm font-bold text-primary-foreground">
+                                ${{ (loop.index * 1000)|number_format(0) }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-6">
+                        <div class="text-xs text-primary uppercase tracking-wider mb-2">
+                            {{ event.game.title }}
+                        </div>
+                        <h3 class="font-orbitron text-xl font-semibold text-foreground group-hover:text-primary transition-colors mb-4">
+                            {{ event.title }}
+                        </h3>
+                        
+                        <!-- Event Details -->
+                        <div class="space-y-2 mb-6">
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-calendar w-4 h-4 text-primary"></i>
+                                <span>{{ event.date|date('M j, Y') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-clock w-4 h-4 text-primary"></i>
+                                <span>{{ event.date|date('g:i A') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm text-muted-foreground">
+                                <i class="fas fa-users w-4 h-4 text-primary"></i>
+                                <span>Max {{ event.maxPlayers }} players</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-gaming w-full text-center">
+                            Learn More
+                        </button>
+                    </div>
+                </div>
+            </a>
+        {% else %}
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                <i class="fas fa-calendar-times text-5xl text-muted-foreground mb-4 opacity-50"></i>
+                <h3 class="font-orbitron text-2xl font-bold text-foreground mb-2">No Events Available</h3>
+                <p class="text-muted-foreground">Check back later for exciting gaming events!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

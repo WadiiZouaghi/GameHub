@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - GameHub</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎮</text></svg>">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="login-page">
+    <canvas id="canvas"></canvas>
+    <div class="login-container">
+        <h1 class="login-title">
+            <i class="fas fa-sign-in-alt"></i>
+            Welcome Back
+        </h1>
+
+        {% if error %}
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ error.messageKey|trans(error.messageData, 'security') }}</span>
+            </div>
+        {% endif %}
+
+        <form method="post" class="login-form">
+            <div class="form-group">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="inputPassword" class="form-label">Password</label>
+                <input type="password" name="_password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="remember_me" name="_remember_me">
+                <label for="remember_me">Remember me</label>
+            </div>
+
+            <button class="btn" type="submit">
+                <i class="fas fa-sign-in-alt"></i>
+                Sign In
+            </button>
+        </form>
+
+        <div class="login-links">
+            <a href="{{ path('app_register') }}">Don't have an account? Sign up here</a>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/particles.js') }}"></script>
+</body>
+</html>

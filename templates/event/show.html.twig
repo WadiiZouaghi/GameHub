@@ -1,0 +1,171 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ event.title }} - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <!-- Event Hero Header -->
+    <div class="relative mb-16 rounded-2xl overflow-hidden hero-gradient p-8 md:p-12">
+        <div class="grid-pattern absolute inset-0 opacity-30"></div>
+        
+        <div class="relative z-10">
+            <div class="mb-6">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/20 border border-primary/30 mb-4">
+                    <i class="fas fa-gamepad text-primary w-4 h-4"></i>
+                    <span class="text-xs font-medium text-primary uppercase">{{ event.game.title }}</span>
+                </div>
+                <h1 class="font-orbitron text-4xl md:text-5xl font-bold text-foreground mb-4">{{ event.title }}</h1>
+            </div>
+
+            <!-- Event Meta Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-calendar text-primary text-xl"></i>
+                    <div>
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider">Date</div>
+                        <div class="text-foreground font-semibold">{{ event.date|date('M j, Y') }}</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-clock text-primary text-xl"></i>
+                    <div>
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider">Time</div>
+                        <div class="text-foreground font-semibold">{{ event.date|date('g:i A') }}</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-users text-primary text-xl"></i>
+                    <div>
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider">Players</div>
+                        <div class="text-foreground font-semibold">{{ event.attendees|length }} / {{ event.maxPlayers }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Actions -->
+            <div class="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
+                {% set isAttending = app.user and event.attendees.contains(app.user) %}
+                {% set isFull = event.attendees|length >= event.maxPlayers %}
+
+                {% if isFull %}
+                    <span class="px-4 py-2 rounded-lg bg-red-500/20 border border-red-500/50 text-red-400 text-sm font-semibold uppercase">
+                        Event Full
+                    </span>
+                {% elseif event.date < date('now') %}
+                    <span class="px-4 py-2 rounded-lg bg-gray-500/20 border border-gray-500/50 text-gray-400 text-sm font-semibold uppercase">
+                        Event Ended
+                    </span>
+                {% else %}
+                    <span class="px-4 py-2 rounded-lg bg-green-500/20 border border-green-500/50 text-green-400 text-sm font-semibold uppercase">
+                        Available
+                    </span>
+                {% endif %}
+
+                {% if app.user %}
+                    {% if isAttending %}
+                        <form method="post" action="{{ path('event_leave', {id: event.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('event_leave' ~ event.id) }}">
+                            <button type="submit" class="btn-gaming flex items-center gap-2">
+                                <i class="fas fa-minus"></i>
+                                Leave Event
+                            </button>
+                        </form>
+                    {% elseif not isFull and event.date > date('now') %}
+                        <form method="post" action="{{ path('event_join', {id: event.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('event_join' ~ event.id) }}">
+                            <button type="submit" class="btn-hero flex items-center gap-2">
+                                <i class="fas fa-check"></i>
+                                Join Event
+                            </button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn-hero flex items-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Join
+                    </a>
+                {% endif %}
+
+                <a href="{{ path('event_index') }}" class="btn-gaming flex items-center gap-2">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <!-- Description & Attendees -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- Description -->
+            <div class="card-gaming p-8">
+                <h3 class="font-orbitron text-2xl font-bold text-foreground mb-4">About Event</h3>
+                <p class="text-foreground leading-relaxed">{{ event.description ?: 'No description available for this event.' }}</p>
+            </div>
+
+            <!-- Attendees -->
+            <div class="card-gaming p-8">
+                <h3 class="font-orbitron text-2xl font-bold text-foreground mb-6">Attendees ({{ event.attendees|length }})</h3>
+                
+                <!-- Capacity Bar -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm text-muted-foreground mb-2">
+                        <span>Capacity</span>
+                        <span>{{ event.attendees|length }} / {{ event.maxPlayers }}</span>
+                    </div>
+                    <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-300" style="width: {{ (event.attendees|length / event.maxPlayers * 100)|round }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Attendees List -->
+                {% if event.attendees|length > 0 %}
+                    <div class="space-y-3 max-h-80 overflow-y-auto">
+                        {% for attendee in event.attendees %}
+                            <div class="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-sm">
+                                    {{ attendee.username|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="text-foreground font-semibold text-sm">{{ attendee.username }}</div>
+                                    <div class="text-xs text-muted-foreground">{{ attendee.email }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8 text-muted-foreground">
+                        <i class="fas fa-users text-3xl opacity-50 mb-2"></i>
+                        <p>No attendees yet</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Sidebar: Game Info -->
+        <div class="card-gaming p-8 h-fit sticky top-24">
+            <h3 class="font-orbitron text-xl font-bold text-foreground mb-6">Game Info</h3>
+            
+            <!-- Game Cover -->
+            <div class="mb-6 text-center">
+                {% if event.game.coverImage %}
+                    <img src="{{ asset(event.game.coverImage) }}" alt="{{ event.game.title }}" class="w-full h-48 object-cover rounded-lg mb-4" />
+                {% else %}
+                    <div class="w-full h-48 bg-muted rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-gamepad text-4xl text-muted-foreground"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Game Title -->
+            <h4 class="font-orbitron text-lg font-semibold text-primary mb-2">{{ event.game.title }}</h4>
+            <p class="text-sm text-muted-foreground mb-4">{{ event.game.category }}</p>
+
+            <!-- Game Link -->
+            <a href="{{ path('game_show', {id: event.game.id}) }}" class="btn-gaming w-full text-center">
+                <i class="fas fa-eye"></i> View Game Details
+            </a>
+        </div>
+    </div>
+{% endblock %}

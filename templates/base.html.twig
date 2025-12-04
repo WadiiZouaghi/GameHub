@@ -1,17 +1,586 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GameHub{% endblock %} - Gaming Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎮</text></svg>">
+    
+    {% block stylesheets %}
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+            
+            :root {
+                --background: 228 60% 6%;
+                --foreground: 210 40% 98%;
+                --card: 228 50% 10%;
+                --card-foreground: 210 40% 98%;
+                --popover: 228 50% 10%;
+                --popover-foreground: 210 40% 98%;
+                --primary: 195 100% 45%;
+                --primary-foreground: 228 60% 6%;
+                --secondary: 282 68% 38%;
+                --secondary-foreground: 210 40% 98%;
+                --muted: 228 40% 15%;
+                --muted-foreground: 215 20% 65%;
+                --accent: 282 68% 38%;
+                --accent-foreground: 210 40% 98%;
+                --destructive: 0 84% 60%;
+                --destructive-foreground: 210 40% 98%;
+                --border: 228 30% 20%;
+                --input: 228 30% 20%;
+                --ring: 195 100% 45%;
+                --radius: 0.75rem;
+                --neon-cyan: 195 100% 45%;
+                --neon-purple: 282 68% 38%;
+                --neon-pink: 330 80% 55%;
+                --dark-navy: 228 60% 6%;
+                --dark-card: 228 50% 10%;
+                --dark-elevated: 228 45% 14%;
+            }
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
+            * {
+                border-color: hsl(var(--border));
+            }
+
+            html, body {
+                background-color: hsl(var(--background));
+                color: hsl(var(--foreground));
+                font-family: "Rajdhani", sans-serif;
+            }
+
+            h1, h2, h3, h4, h5, h6 {
+                font-family: "Orbitron", sans-serif;
+            }
+
+            .neon-glow {
+                box-shadow: 0 0 20px hsl(195 100% 45% / 0.4), 0 0 40px hsl(195 100% 45% / 0.2);
+            }
+
+            .neon-glow-purple {
+                box-shadow: 0 0 20px hsl(282 68% 38% / 0.4), 0 0 40px hsl(282 68% 38% / 0.2);
+            }
+
+            .card-gaming {
+                background: linear-gradient(145deg, hsl(228 50% 12%) 0%, hsl(228 50% 8%) 100%);
+                border: 1px solid hsl(var(--border));
+                border-radius: 0.75rem;
+                transition: all 0.3s;
+            }
+
+            .card-gaming:hover {
+                border-color: hsl(var(--primary) / 0.5);
+                box-shadow: 0 0 30px hsl(195 100% 45% / 0.15);
+            }
+
+            .text-gradient {
+                background: linear-gradient(90deg, hsl(195 100% 45%) 0%, hsl(282 68% 38%) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .btn-neon::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, hsl(195 100% 45% / 0.2) 0%, hsl(282 68% 38% / 0.2) 100%);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .btn-neon:hover::before {
+                opacity: 1;
+            }
+
+            .hero-gradient {
+                background: linear-gradient(135deg, hsl(228 60% 6%) 0%, hsl(228 50% 12%) 50%, hsl(282 40% 15%) 100%);
+            }
+
+            .grid-pattern {
+                background-image: 
+                    linear-gradient(hsl(195 100% 45% / 0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, hsl(195 100% 45% / 0.03) 1px, transparent 1px);
+                background-size: 50px 50px;
+            }
+
+            .btn-hero {
+                background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.8));
+                color: hsl(var(--primary-foreground));
+                font-family: "Orbitron", sans-serif;
+                font-weight: 600;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                transition: all 0.3s;
+                box-shadow: 0 0 0 1px transparent;
+            }
+
+            .btn-hero:hover {
+                box-shadow: 0 10px 25px hsl(var(--primary) / 0.5);
+            }
+
+            .btn-hero-outline {
+                border: 2px solid hsl(var(--primary));
+                color: hsl(var(--primary));
+                font-family: "Orbitron", sans-serif;
+                font-weight: 600;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.5rem;
+                transition: all 0.3s;
+            }
+
+            .btn-hero-outline:hover {
+                background-color: hsl(var(--primary) / 0.1);
+            }
+
+            .btn-gaming {
+                background-color: hsl(var(--card));
+                border: 1px solid hsl(var(--border));
+                color: hsl(var(--foreground));
+                font-family: "Orbitron", sans-serif;
+                font-weight: 600;
+                padding: 0.5rem 1rem;
+                border-radius: 0.5rem;
+                transition: all 0.3s;
+            }
+
+            .btn-gaming:hover {
+                border-color: hsl(var(--primary) / 0.5);
+                box-shadow: 0 10px 25px hsl(var(--primary) / 0.2);
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fade-in-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes scale-in {
+                from {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes slide-in-right {
+                from {
+                    transform: translateX(100%);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+
+            @keyframes pulse-glow {
+                0%, 100% {
+                    box-shadow: 0 0 20px hsl(195 100% 45% / 0.4), 0 0 40px hsl(195 100% 45% / 0.2);
+                }
+                50% {
+                    box-shadow: 0 0 30px hsl(195 100% 45% / 0.6), 0 0 60px hsl(195 100% 45% / 0.3);
+                }
+            }
+
+            @keyframes gradient-shift {
+                0% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+                100% {
+                    background-position: 0% 50%;
+                }
+            }
+
+            @keyframes glow {
+                0%, 100% {
+                    box-shadow: 0 0 20px hsl(195 100% 45% / 0.4);
+                }
+                50% {
+                    box-shadow: 0 0 40px hsl(195 100% 45% / 0.6);
+                }
+            }
+
+            .animate-fade-in {
+                animation: fade-in 0.5s ease-out forwards;
+            }
+
+            .animate-fade-in-up {
+                animation: fade-in-up 0.6s ease-out forwards;
+            }
+
+            .animate-scale-in {
+                animation: scale-in 0.3s ease-out forwards;
+            }
+
+            .animate-slide-in-right {
+                animation: slide-in-right 0.3s ease-out;
+            }
+
+            .animate-float {
+                animation: float 6s ease-in-out infinite;
+            }
+
+            .animate-pulse-glow {
+                animation: pulse-glow 2s ease-in-out infinite;
+            }
+
+            .animate-gradient-shift {
+                animation: gradient-shift 8s ease infinite;
+            }
+
+            .animate-glow {
+                animation: glow 2s ease-in-out infinite;
+            }
+        </style>
+    {% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body id="body">
+    <!-- Main Header / Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="{{ path('app_home') }}" class="flex items-center gap-3 group">
+                    <div class="relative">
+                        <i class="fas fa-gamepad w-8 h-8 lg:w-10 lg:h-10 text-primary transition-all duration-300 group-hover:scale-110"></i>
+                        <div class="absolute inset-0 blur-lg bg-primary/30 group-hover:bg-primary/50 transition-all duration-300"></div>
+                    </div>
+                    <span class="font-orbitron text-xl lg:text-2xl font-bold text-gradient">
+                        GameHub
+                    </span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="{{ path('app_home') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'app_home' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
+                        Home
+                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'app_home' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                    </a>
+                    <a href="{{ path('game_index') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'game_index' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
+                        Games
+                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'game_index' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                    </a>
+                    <a href="{{ path('event_index') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'event_index' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
+                        Events
+                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'event_index' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                    </a>
+                </div>
+
+                <!-- Desktop Actions -->
+                <div class="hidden md:flex items-center gap-4">
+                    {% if app.user %}
+                        <div class="relative group">
+                            <button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors" id="userMenuBtn" aria-label="User menu" aria-expanded="false">
+                                <img src="{{ app.user.avatar ? asset(app.user.avatar) : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22%3E%3Crect width=%2236%22 height=%2236%22 fill=%22%237b1fa2%22/%3E%3Ctext x=%2218%22 y=%2224%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22%3EU%3C/text%3E%3C/svg%3E' }}" alt="Avatar" class="w-8 h-8 rounded-full">
+                                <span class="text-foreground font-rajdhani font-medium">{{ app.user.username }}</span>
+                                <i class="fas fa-chevron-down text-muted-foreground transition-transform group-hover:rotate-180"></i>
+                            </button>
+                            <div class="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" id="userDropdown">
+                                <div class="p-4 border-b border-border">
+                                    <div class="font-orbitron font-semibold text-foreground">{{ app.user.username }}</div>
+                                    <div class="text-sm text-muted-foreground">{{ app.user.email }}</div>
+                                </div>
+                                <a href="{{ path('user_dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>Dashboard</span>
+                                </a>
+                                <a href="{{ path('reservation_index') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+                                    <i class="fas fa-ticket-alt"></i>
+                                    <span>My Reservations</span>
+                                </a>
+                                <a href="{{ path('user_profile') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+                                    <i class="fas fa-user"></i>
+                                    <span>Profile Settings</span>
+                                </a>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <div class="border-t border-border"></div>
+                                    <a href="{{ path('admin_index') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Admin Panel</span>
+                                    </a>
+                                {% endif %}
+                                <div class="border-t border-border"></div>
+                                <a href="{{ path('app_logout') }}" class="flex items-center gap-2 px-4 py-2 text-destructive hover:bg-muted/50 transition-colors">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn-gaming">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                        <a href="{{ path('app_register') }}" class="btn-hero">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Sign Up</span>
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="md:hidden p-2 text-foreground">
+                    <i class="fas fa-bars w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div id="mobileMenu" class="hidden md:hidden py-4 border-t border-border animate-fade-in">
+                <div class="flex flex-col gap-4">
+                    <a href="{{ path('app_home') }}" class="font-rajdhani text-lg font-medium uppercase tracking-wider py-2 transition-colors {% if app.request.attributes.get('_route') == 'app_home' %}text-primary{% else %}text-muted-foreground{% endif %}">
+                        Home
+                    </a>
+                    <a href="{{ path('game_index') }}" class="font-rajdhani text-lg font-medium uppercase tracking-wider py-2 transition-colors {% if app.request.attributes.get('_route') == 'game_index' %}text-primary{% else %}text-muted-foreground{% endif %}">
+                        Games
+                    </a>
+                    <a href="{{ path('event_index') }}" class="font-rajdhani text-lg font-medium uppercase tracking-wider py-2 transition-colors {% if app.request.attributes.get('_route') == 'event_index' %}text-primary{% else %}text-muted-foreground{% endif %}">
+                        Events
+                    </a>
+                    <div class="pt-4 border-t border-border">
+                        {% if app.user %}
+                            <a href="{{ path('user_dashboard') }}" class="block btn-gaming w-full mb-2">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="block btn-gaming w-full text-destructive">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="block btn-gaming w-full mb-2">
+                                Login
+                            </a>
+                            <a href="{{ path('app_register') }}" class="block btn-hero w-full">
+                                Sign Up
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% for label, messages in app.flashes %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    <i class="fas fa-{{ label == 'success' ? 'check-circle' : label == 'error' ? 'exclamation-circle' : 'info-circle' }}"></i>
+                    <span>{{ message }}</span>
+                    <button class="alert-close">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    <!-- Main Content -->
+    <main class="pt-16 lg:pt-20">
         {% block body %}{% endblock %}
-    </body>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-card border-t border-border">
+        <div class="container mx-auto px-4 py-12 lg:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+                <!-- Brand -->
+                <div class="lg:col-span-2">
+                    <a href="{{ path('app_home') }}" class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-gamepad w-8 h-8 text-primary"></i>
+                        <span class="font-orbitron text-xl font-bold text-gradient">
+                            GameHub
+                        </span>
+                    </a>
+                    <p class="text-muted-foreground mb-6 max-w-sm">
+                        Your ultimate destination for DRM-free gaming. Discover, play, and connect with gamers worldwide.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" aria-label="Twitter" class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted/80 transition-all duration-300">
+                            <i class="fab fa-twitter w-5 h-5"></i>
+                        </a>
+                        <a href="#" aria-label="YouTube" class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted/80 transition-all duration-300">
+                            <i class="fab fa-youtube w-5 h-5"></i>
+                        </a>
+                        <a href="#" aria-label="Twitch" class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted/80 transition-all duration-300">
+                            <i class="fab fa-twitch w-5 h-5"></i>
+                        </a>
+                        <a href="#" aria-label="Discord" class="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted/80 transition-all duration-300">
+                            <i class="fab fa-discord w-5 h-5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Platform Links -->
+                <div>
+                    <h4 class="font-orbitron text-sm font-semibold uppercase tracking-wider mb-4">
+                        Platform
+                    </h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="{{ path('game_index') }}" class="text-muted-foreground hover:text-primary transition-colors">
+                                Games Library
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('event_index') }}" class="text-muted-foreground hover:text-primary transition-colors">
+                                Events
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Community
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Support
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Company Links -->
+                <div>
+                    <h4 class="font-orbitron text-sm font-semibold uppercase tracking-wider mb-4">
+                        Company
+                    </h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                About Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Careers
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Press Kit
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Contact
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Legal Links -->
+                <div>
+                    <h4 class="font-orbitron text-sm font-semibold uppercase tracking-wider mb-4">
+                        Legal
+                    </h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Privacy Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Terms of Service
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                Cookie Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-muted-foreground hover:text-primary transition-colors">
+                                DMCA
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-muted-foreground text-sm">
+                    © {{ "now"|date("Y") }} GameHub. All rights reserved.
+                </p>
+                <p class="text-muted-foreground text-sm">
+                    Made with <i class="fas fa-heart text-destructive"></i> for gamers everywhere
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // User Menu Dropdown Toggle
+        let userMenuBtn = document.getElementById('userMenuBtn');
+        let userDropdown = document.getElementById('userDropdown');
+
+        if (userMenuBtn && userDropdown) {
+            userMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isExpanded = userMenuBtn.getAttribute('aria-expanded') === 'true';
+                userMenuBtn.setAttribute('aria-expanded', !isExpanded);
+                userDropdown.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                    userMenuBtn.setAttribute('aria-expanded', 'false');
+                    userDropdown.classList.remove('active');
+                }
+            });
+        }
+
+        // Alert close buttons
+        document.querySelectorAll('.alert-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.style.display = 'none';
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.style.display = 'none', 300);
+            });
+        }, 5000);
+    </script>
+</body>
 </html>

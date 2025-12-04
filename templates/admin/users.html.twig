@@ -1,0 +1,219 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Users Management - GameHub Admin{% endblock %}
+
+{% block body %}
+    <!-- Top Header Bar -->
+    <header class="admin-topbar">
+        <div class="admin-topbar-left">
+            <h1>GameHub Admin</h1>
+        </div>
+        <div class="admin-topbar-right">
+            <div class="admin-search">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="admin-notifications">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="admin-user-info">
+                    <div class="admin-user-name">Admin</div>
+                    <div class="admin-user-role">Administrator</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Wrapper -->
+    <div class="admin-main-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar-nav">
+            <div class="admin-sidebar-header">
+                <h2>GameHub Admin</h2>
+            </div>
+            <nav class="admin-sidebar-menu">
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">MAIN</div>
+                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
+                        <i class="fas fa-gamepad"></i>
+                        Games
+                    </a>
+                    <a href="{{ path('admin_users') }}" class="admin-menu-item active">
+                        <i class="fas fa-users"></i>
+                        Users
+                    </a>
+                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
+                        <i class="fas fa-ticket-alt"></i>
+                        Reservations
+                    </a>
+                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        Events
+                    </a>
+                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
+                        <i class="fas fa-star"></i>
+                        Reviews
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-main-content">
+                <!-- Users Management Section -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fas fa-users"></i>
+                            Users Management
+                        </h2>
+                        <div class="section-actions">
+                            <a href="#" class="btn btn-primary btn-small">
+                                <i class="fas fa-plus"></i>
+                                Add User
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Filters and Search -->
+                    <div class="filters-bar" style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+                        <div class="admin-search" style="margin: 0;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search users..." style="width: 300px;">
+                        </div>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Roles</option>
+                            <option value="admin">Admin</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="user">User</option>
+                        </select>
+                        <select class="admin-select" style="margin: 0;">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="banned">Banned</option>
+                        </select>
+                    </div>
+
+                    <!-- Users Table -->
+                    <div class="admin-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Reservations</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="user-avatar-small">
+                                                    {% if user.avatar %}
+                                                        <img src="{{ asset('uploads/avatars/' ~ user.avatar) }}" alt="{{ user.username }}">
+                                                    {% else %}
+                                                        <div class="avatar-placeholder-small">
+                                                            {{ user.username|slice(0, 1)|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="user-info">
+                                                    <span class="user-name">{{ user.username }}</span>
+                                                    <span class="user-id">#{{ user.id }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            <div class="roles-badges">
+                                                {% for role in user.roles %}
+                                                    {% if role != 'ROLE_USER' %}
+                                                        <span class="role-badge role-{{ role|lower|replace({'role_': ''}) }}">
+                                                            {{ role|replace({'ROLE_': ''})|lower|capitalize }}
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="role-badge role-user">
+                                                            User
+                                                        </span>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="reservations-count">{{ user.reservations|length }}</span>
+                                        </td>
+                                        <td>{{ user.createdAt|date('M j, Y') }}</td>
+                                        <td>
+                                            <span class="badge badge-success">Active</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="{{ path('admin_users_edit', {id: user.id}) }}" class="btn btn-secondary btn-small">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form method="POST" action="{{ path('admin_users_delete', {id: user.id}) }}" class="delete-form" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                                    <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this user?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    {% if users is empty %}
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <h3>No Users Found</h3>
+                            <p>No users have registered yet. Be the first to invite someone!</p>
+                            <a href="#" class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Invite User
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Pagination -->
+                    {% if users is not empty %}
+                        <div style="display: flex; justify-content: center; margin-top: 3rem;">
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn btn-secondary btn-small">Previous</button>
+                                <button class="btn btn-primary btn-small">1</button>
+                                <button class="btn btn-secondary btn-small">2</button>
+                                <button class="btn btn-secondary btn-small">3</button>
+                                <button class="btn btn-secondary btn-small">Next</button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock %}
