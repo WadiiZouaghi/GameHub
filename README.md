@@ -44,7 +44,7 @@
 **Frontend**
 - 🎨 **HTML/CSS** - Markup & styling
 - ⚡ **Stimulus.js** - JavaScript framework
-- 🎯 **Responsive Design** - Mobile-friendly UI
+- 🎯 **Responsive Design** - Friendly UI
 
 </td>
 </tr>
