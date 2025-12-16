@@ -34,42 +34,14 @@ class UserController extends AbstractController
             5
         );
 
-        $userReservationGameIds = $entityManager->createQuery(
-            'SELECT IDENTITY(r.game) FROM App\Entity\Reservation r WHERE r.user = :user'
-        )->setParameter('user', $user)->getScalarResult();
-        $userReservationGameIds = array_column($userReservationGameIds, 'id');
-
-        $qb = $gameRepository->createQueryBuilder('g');
-        if (!empty($userReservationGameIds)) {
-            $qb->where($qb->expr()->notIn('g.id', $userReservationGameIds));
-        }
-
-        $qb->leftJoin('g.reservations', 'r')
-           ->addSelect('COUNT(r.id) AS reservationCount')
-           ->groupBy('g.id')
-           ->orderBy('reservationCount', 'DESC')
-           ->setMaxResults(6);
-
-        $recommendedGames = [];
-        foreach ($qb->getQuery()->getResult() as $row) {
-            $recommendedGames[] = $row[0];
-        }
+        $recommendedGames = $gameRepository->findBy(
+            [],
+            ['id' => 'DESC'],
+            6
+        );
 
         $recentActivity = [];
 
-        $reservations = $entityManager->createQuery(
-            'SELECT r FROM App\Entity\Reservation r WHERE r.user = :user ORDER BY r.reservationDate DESC'
-        )->setParameter('user', $user)->setMaxResults(10)->getResult();
-        foreach ($reservations as $reservation) {
-            $recentActivity[] = [
-                'type' => 'reservation',
-                'item' => $reservation,
-                'date' => $reservation->getReservationDate(),
-                'action' => 'Reserved',
-            ];
-        }
-
-        // Add recent reviews
         foreach ($user->getReviews() as $review) {
             $recentActivity[] = [
                 'type' => 'review',
@@ -79,7 +51,6 @@ class UserController extends AbstractController
             ];
         }
 
-        // Sort by date and limit to 10 most recent
         usort($recentActivity, function($a, $b) {
             return $b['date'] <=> $a['date'];
         });

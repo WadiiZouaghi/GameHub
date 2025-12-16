@@ -23,10 +23,6 @@
                     <i class="fas fa-users"></i>
                     Users
                 </a>
-                <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
-                    <i class="fas fa-ticket-alt"></i>
-                    Reservations
-                </a>
                 <a href="{{ path('admin_events') }}" class="admin-menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     Events
@@ -65,11 +61,15 @@
                     </a>
                 </div>
 
-                {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
+                {{ form_start(form, {'attr': {'class': 'admin-form', 'enctype': 'multipart/form-data'}}) }}
+                    <!-- Basic Info Section -->
+                    <div class="section-divider">
+                        <h3><i class="fas fa-info-circle"></i> Basic Information</h3>
+                    </div>
                     <div class="form-grid">
                         <div class="form-group">
                             {{ form_label(form.title) }}
-                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Game Title'}}) }}
                             {{ form_errors(form.title) }}
                         </div>
 
@@ -79,38 +79,150 @@
                             {{ form_errors(form.category) }}
                         </div>
 
-                        <div class="form-group form-group-full">
-                            {{ form_label(form.description) }}
-                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
-                            {{ form_errors(form.description) }}
+                        <div class="form-group">
+                            {{ form_label(form.developer) }}
+                            {{ form_widget(form.developer, {'attr': {'class': 'form-control', 'placeholder': 'Developer/Studio Name'}}) }}
+                            {{ form_errors(form.developer) }}
                         </div>
 
                         <div class="form-group">
-                            {{ form_label(form.capacity) }}
-                            {{ form_widget(form.capacity, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.capacity) }}
+                            {{ form_label(form.price) }}
+                            {{ form_widget(form.price, {'attr': {'class': 'form-control', 'placeholder': '19.99'}}) }}
+                            {{ form_errors(form.price) }}
                         </div>
 
                         <div class="form-group form-group-full">
-                            {{ form_label(form.coverImage) }}
-                            <div class="file-upload-container">
-                                <div class="file-upload-area">
-                                    <div class="upload-icon">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                    </div>
-                                    <div class="upload-text">
-                                        <strong>Drop image here or click to browse</strong>
-                                        <p>PNG, JPG, GIF up to 10MB</p>
-                                    </div>
-                                    {{ form_widget(form.coverImage, {'attr': {'class': 'file-input'}}) }}
-                                </div>
-                                <div class="upload-preview" id="image-preview" style="display: none;">
-                                    <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
-                                </div>
-                            </div>
-                            {{ form_errors(form.coverImage) }}
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Game description...'}}) }}
+                            {{ form_errors(form.description) }}
                         </div>
                     </div>
+
+                    <!-- Game Details Section -->
+                    <div class="section-divider">
+                        <h3><i class="fas fa-cog"></i> Game Details</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            {{ form_label(form.platform) }}
+                            {{ form_widget(form.platform, {'attr': {'class': 'form-control', 'placeholder': 'e.g., PC, PlayStation, Xbox, Nintendo'}}) }}
+                            {{ form_errors(form.platform) }}
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            {{ form_label(form.languages) }}
+                            {{ form_widget(form.languages, {'attr': {'class': 'form-control', 'rows': '3', 'placeholder': 'English, Spanish, French, German...'}}) }}
+                            {{ form_errors(form.languages) }}
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div class="section-divider">
+                        <h3><i class="fas fa-images"></i> Game Media</h3>
+                    </div>
+                    
+                    <!-- Cover Image -->
+                    <div class="form-group form-group-full">
+                        {{ form_label(form.coverImage) }}
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" id="cover-upload-area">
+                                <div class="upload-icon">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <strong>Drop cover image here or click to browse</strong>
+                                    <p>PNG, JPG, GIF up to 10MB</p>
+                                </div>
+                                {{ form_widget(form.coverImage, {'attr': {'class': 'file-input', 'id': 'cover-image-input'}}) }}
+                            </div>
+                            <div class="upload-preview" id="cover-preview" style="display: none;">
+                                <img id="cover-preview-img" src="" alt="Cover Preview" style="max-width: 150px; max-height: 200px; border-radius: 8px;">
+                            </div>
+                        </div>
+                        {{ form_errors(form.coverImage) }}
+                    </div>
+
+                    <!-- Gallery Images -->
+                    <div class="form-group form-group-full">
+                        {{ form_label(form.gallery) }}
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" id="gallery-upload-area">
+                                <div class="upload-icon">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <div class="upload-text">
+                                    <strong>Drop gallery images here or click to browse</strong>
+                                    <p>PNG, JPG, GIF up to 10MB each (select multiple)</p>
+                                </div>
+                                {{ form_widget(form.gallery, {'attr': {'class': 'file-input', 'id': 'gallery-images-input'}}) }}
+                            </div>
+                            <div class="gallery-preview" id="gallery-preview" style="display: none;">
+                                <div class="preview-grid" id="gallery-preview-grid"></div>
+                            </div>
+                        </div>
+                        {{ form_errors(form.gallery) }}
+                    </div>
+                    <!-- System Requirements Section -->
+<div class="section-divider">
+    <h3><i class="fas fa-microchip"></i> System Requirements</h3>
+</div>
+
+<div class="form-grid">
+    <h4 style="grid-column: 1 / -1; color: #00D4FF; font-weight: 600; margin-bottom: 0.5rem;">Minimum Requirements</h4>
+    <div class="form-group">
+        {{ form_label(form.minOs) }}
+        {{ form_widget(form.minOs, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.minOs) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.minProcessor) }}
+        {{ form_widget(form.minProcessor, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.minProcessor) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.minMemory) }}
+        {{ form_widget(form.minMemory, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.minMemory) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.minGraphics) }}
+        {{ form_widget(form.minGraphics, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.minGraphics) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.minStorage) }}
+        {{ form_widget(form.minStorage, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.minStorage) }}
+    </div>
+
+    <h4 style="grid-column: 1 / -1; color: #00D4FF; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem;">Recommended Requirements</h4>
+    <div class="form-group">
+        {{ form_label(form.recOs) }}
+        {{ form_widget(form.recOs, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.recOs) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.recProcessor) }}
+        {{ form_widget(form.recProcessor, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.recProcessor) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.recMemory) }}
+        {{ form_widget(form.recMemory, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.recMemory) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.recGraphics) }}
+        {{ form_widget(form.recGraphics, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.recGraphics) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.recStorage) }}
+        {{ form_widget(form.recStorage, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.recStorage) }}
+    </div>
+</div>
+
 
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">
@@ -118,6 +230,7 @@
                             Save Changes
                         </button>
                         <a href="{{ path('admin_games') }}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i>
                             Cancel
                         </a>
                     </div>
@@ -132,6 +245,26 @@
     max-width: none;
 }
 
+.section-divider {
+    margin: 2rem 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+}
+
+.section-divider h3 {
+    margin: 0;
+    color: var(--white);
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-divider i {
+    color: #00D4FF;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -143,29 +276,48 @@
     grid-column: 1 / -1;
 }
 
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--white);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+}
+
+.form-group label::after {
+    content: '';
+    color: #00D4FF;
 }
 
 .form-control {
     width: 100%;
-    background: var(--dark-gray);
-    border: 1px solid var(--gray-200);
+    background: rgba(50, 50, 50, 0.8);
+    border: 1px solid rgba(200, 200, 200, 0.2);
     border-radius: 8px;
     padding: 0.875rem 1rem;
     color: var(--white);
     font-family: 'Inter', sans-serif;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: rgba(200, 200, 200, 0.5);
+}
+
+.form-control:hover {
+    border-color: rgba(0, 212, 255, 0.5);
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--neon-accent);
+    border-color: #00D4FF;
+    background: rgba(50, 50, 50, 1);
     box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
 }
 
@@ -179,11 +331,11 @@
 }
 
 .file-upload-area {
-    border: 2px dashed var(--gray-300);
+    border: 2px dashed rgba(0, 212, 255, 0.4);
     border-radius: 12px;
-    padding: 2rem;
+    padding: 3rem 2rem;
     text-align: center;
-    background: var(--dark-gray);
+    background: rgba(50, 50, 50, 0.8);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -191,13 +343,19 @@
 }
 
 .file-upload-area:hover {
-    border-color: var(--neon-accent);
-    background: rgba(0, 212, 255, 0.05);
+    border-color: #00D4FF;
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.file-upload-area.dragover {
+    border-color: #00D4FF;
+    background: rgba(0, 212, 255, 0.15);
 }
 
 .upload-icon {
     font-size: 3rem;
-    color: var(--gray-400);
+    color: #00D4FF;
     margin-bottom: 1rem;
 }
 
@@ -209,7 +367,7 @@
 }
 
 .upload-text p {
-    color: var(--gray-400);
+    color: rgba(200, 200, 200, 0.6);
     margin: 0;
     font-size: 0.9rem;
 }
@@ -225,8 +383,57 @@
 }
 
 .upload-preview {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     text-align: center;
+}
+
+.upload-preview img {
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.gallery-preview {
+    margin-top: 1.5rem;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.preview-item .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.preview-item .remove-btn:hover {
+    background: rgba(255, 0, 0, 1);
 }
 
 .form-actions {
@@ -234,13 +441,10 @@
     gap: 1rem;
     justify-content: flex-end;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-100);
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
 }
 
-.btn-admin {
-    background: var(--neon-accent);
-    color: var(--black);
-    border: 1px solid var(--neon-accent);
+.btn {
     padding: 0.875rem 2rem;
     border-radius: 8px;
     font-weight: 600;
@@ -248,14 +452,32 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
 }
 
-.btn-admin:hover {
-    background: var(--white);
-    color: var(--black);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+.btn-primary {
+    background: #00D4FF;
+    color: #000;
+}
+
+.btn-primary:hover {
+    background: #00D4FF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
+}
+
+.btn-secondary {
+    background: rgba(200, 200, 200, 0.2);
+    color: var(--white);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.btn-secondary:hover {
+    background: rgba(200, 200, 200, 0.3);
+    border-color: #00D4FF;
 }
 
 @media (max-width: 768px) {
@@ -271,54 +493,96 @@
         width: 100%;
         justify-content: center;
     }
+
+    .preview-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.querySelector('.file-input');
-    const uploadArea = document.querySelector('.file-upload-area');
-    const preview = document.getElementById('image-preview');
-    const previewImg = document.getElementById('preview-img');
+    // Cover Image Upload Handler
+    const coverInput = document.getElementById('cover-image-input');
+    const coverUploadArea = document.getElementById('cover-upload-area');
+    const coverPreview = document.getElementById('cover-preview');
+    const coverPreviewImg = document.getElementById('cover-preview-img');
 
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
+    if (coverInput) {
+        setupDragAndDrop(coverInput, coverUploadArea, function(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                coverPreviewImg.src = e.target.result;
+                coverPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Gallery Images Upload Handler
+    const galleryInput = document.getElementById('gallery-images-input');
+    const galleryUploadArea = document.getElementById('gallery-upload-area');
+    const galleryPreview = document.getElementById('gallery-preview');
+    const galleryPreviewGrid = document.getElementById('gallery-preview-grid');
+
+    if (galleryInput) {
+        setupDragAndDrop(galleryInput, galleryUploadArea, function(files) {
+            galleryPreviewGrid.innerHTML = '';
+            Array.from(files).forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    previewImg.src = e.target.result;
-                    preview.style.display = 'block';
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}">
+                        <button type="button" class="remove-btn" data-index="${index}">×</button>
+                    `;
+                    galleryPreviewGrid.appendChild(previewItem);
                 };
                 reader.readAsDataURL(file);
+            });
+            galleryPreview.style.display = galleryPreviewGrid.children.length > 0 ? 'block' : 'none';
+        }, true);
+    }
+
+    function setupDragAndDrop(input, uploadArea, callback, isMultiple = false) {
+        input.addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                if (isMultiple) {
+                    callback(files);
+                } else {
+                    callback(files[0]);
+                }
             }
         });
 
-        // Drag and drop functionality
         uploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
-            uploadArea.style.borderColor = 'var(--neon-accent)';
-            uploadArea.style.background = 'rgba(0, 212, 255, 0.1)';
+            e.stopPropagation();
+            uploadArea.classList.add('dragover');
         });
 
         uploadArea.addEventListener('dragleave', function(e) {
             e.preventDefault();
-            uploadArea.style.borderColor = 'var(--gray-300)';
-            uploadArea.style.background = 'var(--dark-gray)';
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
         });
 
         uploadArea.addEventListener('drop', function(e) {
             e.preventDefault();
-            uploadArea.style.borderColor = 'var(--gray-300)';
-            uploadArea.style.background = 'var(--dark-gray)';
+            e.stopPropagation();
+            uploadArea.classList.remove('dragover');
 
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                fileInput.files = files;
-                const event = new Event('change');
-                fileInput.dispatchEvent(event);
+                input.files = files;
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
             }
         });
+
+        uploadArea.addEventListener('click', () => input.click());
     }
 });
 </script>

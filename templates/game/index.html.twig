@@ -64,8 +64,8 @@
     <!-- Games Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {% for game in games %}
-            <a href="{{ path('game_show', {id: game.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
-                <div class="card-gaming overflow-hidden h-full flex flex-col">
+            <div class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
+                <a href="{{ path('game_show', {id: game.id}) }}" class="card-gaming overflow-hidden h-full flex flex-col block hover:shadow-lg hover:shadow-primary/20 transition-all duration-300">
                     <!-- Image -->
                     <div class="relative aspect-[3/4] overflow-hidden">
                         {% if game.coverImage %}
@@ -98,23 +98,19 @@
                         
                         <div class="flex items-center gap-3 text-xs text-muted-foreground mb-4">
                             <div class="flex items-center gap-1">
-                                <i class="fas fa-users"></i>
-                                <span>{{ game.reservations|length }} players</span>
-                            </div>
-                            <div class="flex items-center gap-1">
                                 <i class="fas fa-star text-yellow-500"></i>
                                 <span>{{ game.reviews|length }} reviews</span>
                             </div>
                         </div>
                         
                         <div class="flex gap-2">
-                            <button class="btn-gaming flex-1 text-center text-sm reserve-btn" data-game-id="{{ game.id }}">
-                                <i class="fas fa-ticket-alt"></i> Reserve
-                            </button>
+                            <span class="btn-gaming flex-1 text-center text-sm">
+                                <i class="fas fa-eye"></i> View
+                            </span>
                         </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         {% else %}
             <div class="col-span-full flex flex-col items-center justify-center py-20 text-center">
                 <i class="fas fa-gamepad text-5xl text-muted-foreground mb-4 opacity-50"></i>

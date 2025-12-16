@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Game;
-use App\Entity\Reservation;
 use App\Entity\Review;
 use App\Form\GameType;
 use App\Form\ReviewType;
@@ -119,6 +118,34 @@ class GameController extends AbstractController
                 $game->setCoverImage('uploads/covers/'.$newFilename);
             }
 
+            $galleryFiles = $form->get('gallery')->getData();
+            $galleryPaths = [];
+
+            if ($galleryFiles) {
+                foreach ($galleryFiles as $galleryFile) {
+                    $originalFilename = pathinfo($galleryFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$galleryFile->guessExtension();
+
+                    try {
+                        $galleryFile->move(
+                            $this->getParameter('kernel.project_dir').'/public/uploads/gallery',
+                            $newFilename
+                        );
+                        $galleryPaths[] = 'uploads/gallery/'.$newFilename;
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Failed to upload gallery image.');
+                        continue;
+                    }
+                }
+            }
+
+            if (!empty($galleryPaths)) {
+                $game->setGallery($galleryPaths);
+            }
+
+            
+
             $entityManager->persist($game);
             $entityManager->flush();
 
@@ -132,56 +159,6 @@ class GameController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    #[Route('/{id}/reserve', name: 'game_reserve', methods: ['POST'])]
-    public function reserve(
-        Request $request,
-        Game $game,
-        EntityManagerInterface $entityManager
-    ): Response {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
-        $user = $this->getUser();
-
-        // Check if user already has a reservation for this game
-        $existingReservation = $entityManager->getRepository(Reservation::class)->findOneBy([
-            'user' => $user,
-            'game' => $game,
-            'status' => ['pending', 'confirmed']
-        ]);
-
-        if ($existingReservation) {
-            $this->addFlash('error', 'You already have a reservation for this game.');
-            return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
-        }
-
-        // Check capacity if set
-        if ($game->getCapacity() !== null) {
-            $confirmedReservations = $entityManager->getRepository(Reservation::class)->count([
-                'game' => $game,
-                'status' => 'confirmed'
-            ]);
-            if ($confirmedReservations >= $game->getCapacity()) {
-                $this->addFlash('error', 'This game is fully booked.');
-                return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
-            }
-        }
-
-        $reservation = new Reservation();
-        $reservation->setUser($user);
-        $reservation->setGame($game);
-        $reservation->setReservationDate(new \DateTime());
-        $reservation->setStatus('pending');
-
-        $entityManager->persist($reservation);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Reservation created successfully!');
-
-        return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
-    }
-
-
 
     #[Route('/{id}', name: 'game_show')]
     public function show(
@@ -258,4 +235,68 @@ class GameController extends AbstractController
             'relatedGames' => array_slice($relatedGames, 0, 3),
         ]);
     }
+    
+    #[Route('/{id}/edit', name: 'game_edit')]
+    public function edit(Game $game, Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    {
+        $form = $this->createForm(GameType::class, $game);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $coverImageFile = $form->get('coverImage')->getData();
+        
+            if ($coverImageFile) {
+                $originalFilename = pathinfo($coverImageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$coverImageFile->guessExtension();
+
+                try {
+                    $coverImageFile->move(
+                        $this->getParameter('kernel.project_dir').'/public/uploads/covers',
+                        $newFilename
+                    );
+                    $game->setCoverImage('uploads/covers/'.$newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Failed to upload cover image.');
+                }
+            }
+
+            $galleryFiles = $form->get('gallery')->getData();
+            if ($galleryFiles && count($galleryFiles) > 0) {
+            $galleryPaths = [];
+
+            foreach ($galleryFiles as $galleryFile) {
+                $originalFilename = pathinfo($galleryFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$galleryFile->guessExtension();
+
+                try {
+                    $galleryFile->move(
+                        $this->getParameter('kernel.project_dir').'/public/uploads/gallery',
+                        $newFilename
+                    );
+                    $galleryPaths[] = 'uploads/gallery/'.$newFilename;
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Failed to upload gallery image.');
+                    continue;
+                }
+            }
+
+            if (!empty($galleryPaths)) {
+                $game->setGallery($galleryPaths);
+            }
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Game updated successfully!');
+        
+            return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
+        }
+    
+        return $this->render('game/edit.html.twig', [
+        'game' => $game,
+        'form' => $form->createView(),
+        ]);
+    }
+
 }

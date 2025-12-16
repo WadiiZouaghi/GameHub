@@ -20,16 +20,12 @@
                     <h1 class="font-orbitron text-3xl font-bold text-foreground">{{ user.username }}</h1>
                     <div class="flex gap-4 mt-2">
                         <div class="text-sm">
-                            <div class="text-muted-foreground">Level</div>
-                            <div class="text-primary font-bold">{{ user.reservations|length + 1 }}</div>
-                        </div>
-                        <div class="text-sm">
-                            <div class="text-muted-foreground">Reservations</div>
-                            <div class="text-primary font-bold">{{ user.reservations|length }}</div>
-                        </div>
-                        <div class="text-sm">
                             <div class="text-muted-foreground">Reviews</div>
                             <div class="text-primary font-bold">{{ user.reviews|length }}</div>
+                        </div>
+                        <div class="text-sm">
+                            <div class="text-muted-foreground">Purchases</div>
+                            <div class="text-primary font-bold">{{ user.purchases|length }}</div>
                         </div>
                     </div>
                 </div>
@@ -53,24 +49,24 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div class="card-gaming p-6">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <i class="fas fa-gamepad text-primary text-xl"></i>
-                </div>
-                <div>
-                    <div class="text-xs text-muted-foreground uppercase tracking-wider">Total Reservations</div>
-                    <div class="text-2xl font-orbitron font-bold text-foreground">{{ user.reservations|length }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-gaming p-6">
-            <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center">
                     <i class="fas fa-star text-secondary text-xl"></i>
                 </div>
                 <div>
                     <div class="text-xs text-muted-foreground uppercase tracking-wider">Reviews Given</div>
                     <div class="text-2xl font-orbitron font-bold text-foreground">{{ user.reviews|length }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-gaming p-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
+                    <i class="fas fa-gamepad text-primary text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-muted-foreground uppercase tracking-wider">Games Owned</div>
+                    <div class="text-2xl font-orbitron font-bold text-foreground">{{ user.purchases|length }}</div>
                 </div>
             </div>
         </div>
@@ -88,51 +84,7 @@
         </div>
     </div>
 
-    <!-- Recent Reservations -->
-    <div class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="font-orbitron text-2xl font-bold text-foreground">
-                <i class="fas fa-history text-primary mr-3"></i>Recent Reservations
-            </h2>
-            <a href="{{ path('reservation_index') }}" class="btn-gaming">
-                View All
-            </a>
-        </div>
 
-        {% if user.reservations|length > 0 %}
-            <div class="space-y-3">
-                {% for reservation in user.reservations|slice(0, 5) %}
-                    <div class="card-gaming p-4 flex items-center justify-between hover:border-primary/50 transition-all">
-                        <div class="flex items-center gap-4">
-                            {% if reservation.game.coverImage %}
-                                <img src="{{ asset(reservation.game.coverImage) }}" alt="{{ reservation.game.title }}" class="w-16 h-20 object-cover rounded">
-                            {% else %}
-                                <div class="w-16 h-20 bg-muted rounded flex items-center justify-center">
-                                    <i class="fas fa-gamepad text-muted-foreground"></i>
-                                </div>
-                            {% endif %}
-                            <div>
-                                <h4 class="font-orbitron text-lg font-semibold text-foreground">{{ reservation.game.title }}</h4>
-                                <p class="text-xs text-muted-foreground">{{ reservation.game.category }} • {{ reservation.reservationDate|date('M j, Y') }}</p>
-                            </div>
-                        </div>
-                        <a href="{{ path('game_show', {id: reservation.game.id}) }}" class="btn-gaming text-sm">
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="card-gaming p-12 text-center">
-                <i class="fas fa-box-open text-4xl text-muted-foreground mb-3 opacity-50"></i>
-                <p class="text-muted-foreground mb-6">You haven't made any reservations yet!</p>
-                <a href="{{ path('game_index') }}" class="btn-hero inline-flex items-center gap-2">
-                    <i class="fas fa-search"></i>
-                    Explore Games
-                </a>
-            </div>
-        {% endif %}
-    </div>
 
     <!-- Recent Activity -->
     <div>
@@ -140,20 +92,9 @@
             <i class="fas fa-bolt text-primary mr-3"></i>Activity Feed
         </h2>
 
-        {% if user.reservations|length > 0 or user.reviews|length > 0 %}
+        {% if user.reviews|length > 0 %}
             <div class="space-y-3">
-                {% for reservation in user.reservations|slice(0, 3) %}
-                    <div class="card-gaming p-4 flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
-                            <i class="fas fa-ticket-alt text-primary"></i>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-foreground font-rajdhani">You reserved <span class="text-primary font-bold">{{ reservation.game.title }}</span></p>
-                            <p class="text-xs text-muted-foreground">{{ reservation.reservationDate|date('M j, Y \\a\\t g:i A') }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-                {% for review in user.reviews|slice(0, 2) %}
+                {% for review in user.reviews|slice(0, 5) %}
                     <div class="card-gaming p-4 flex items-center gap-4">
                         <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
                             <i class="fas fa-star text-yellow-500"></i>

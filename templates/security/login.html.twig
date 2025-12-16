@@ -1,27 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - GameHub</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎮</text></svg>">
+{% extends 'base.html.twig' %}
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
-    {% endblock %}
+{% block title %}Login - GameHub{% endblock %}
 
-    {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
+{% endblock %}
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="login-page">
-    <canvas id="canvas"></canvas>
-    <div class="login-container">
+{% block body %}
+    <div class="min-h-screen flex items-center justify-center px-4 py-12">
+        <div class="login-container">
         <h1 class="login-title">
             <i class="fas fa-sign-in-alt"></i>
             Welcome Back
@@ -59,8 +47,7 @@
         <div class="login-links">
             <a href="{{ path('app_register') }}">Don't have an account? Sign up here</a>
         </div>
+        </div>
     </div>
 
-    <script src="{{ asset('js/particles.js') }}"></script>
-</body>
-</html>
+{% endblock %}

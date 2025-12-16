@@ -262,6 +262,146 @@
             .animate-glow {
                 animation: glow 2s ease-in-out infinite;
             }
+
+            @keyframes float-cards {
+                0%, 100% {
+                    transform: translateY(0px) rotate(0deg);
+                }
+                25% {
+                    transform: translateY(-30px) rotate(2deg);
+                }
+                50% {
+                    transform: translateY(-60px) rotate(-1deg);
+                }
+                75% {
+                    transform: translateY(-30px) rotate(1deg);
+                }
+            }
+
+            .animate-float-cards {
+                animation: float-cards 8s ease-in-out infinite;
+            }
+
+            .neon-glow-purple {
+                box-shadow: 0 0 20px hsl(282 68% 38% / 0.4), 0 0 40px hsl(282 68% 38% / 0.2);
+            }
+
+            /* Login/Register Page Styles */
+            .login-container {
+                background: rgba(16, 20, 35, 0.8);
+                backdrop-filter: blur(10px);
+                padding: 2rem;
+                border-radius: 1rem;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                width: 100%;
+                max-width: 400px;
+                box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+                position: relative;
+                z-index: 10;
+            }
+
+            .login-title {
+                font-family: "Orbitron", sans-serif;
+                font-size: 2rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 2rem;
+                color: #fff;
+                text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            }
+
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-label {
+                display: block;
+                margin-bottom: 0.5rem;
+                color: #ccc;
+                font-size: 0.9rem;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 0.75rem;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 0.5rem;
+                color: #fff;
+                transition: all 0.3s;
+            }
+
+            .form-control:focus {
+                border-color: #00ffff;
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+                outline: none;
+            }
+
+            .btn {
+                width: 100%;
+                padding: 0.75rem;
+                background: linear-gradient(45deg, #00ffff, #0088ff);
+                border: none;
+                border-radius: 0.5rem;
+                color: #000;
+                font-weight: bold;
+                font-family: "Orbitron", sans-serif;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+            }
+
+            .login-links {
+                margin-top: 1.5rem;
+                text-align: center;
+            }
+
+            .login-links a {
+                color: #00ffff;
+                text-decoration: none;
+                font-size: 0.9rem;
+                transition: color 0.3s;
+            }
+
+            .login-links a:hover {
+                color: #fff;
+                text-shadow: 0 0 5px #00ffff;
+            }
+
+            .alert {
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                font-size: 0.9rem;
+            }
+
+            .alert-error {
+                background: rgba(255, 50, 50, 0.15);
+                border: 1px solid rgba(255, 50, 50, 0.3);
+                color: #ff6b6b;
+            }
+
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .checkbox-group input[type="checkbox"] {
+                accent-color: #00ffff;
+                width: 1rem;
+                height: 1rem;
+            }
         </style>
     {% endblock %}
 
@@ -272,35 +412,47 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body id="body">
+<body id="body" class="{% if app.request.attributes.get('_route') in ['app_login', 'app_register'] %}login-page{% endif %}">
+    {% if app.request.attributes.get('_route') in ['app_login', 'app_register'] %}
+    <canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;"></canvas>
+    {% endif %}
     <!-- Main Header / Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+    {% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0a0f1c]/90 backdrop-blur-md border-b border-white/5 shadow-2xl shadow-black/50 transition-all duration-300">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16 lg:h-20">
                 <!-- Logo -->
-                <a href="{{ path('app_home') }}" class="flex items-center gap-3 group">
-                    <div class="relative">
-                        <i class="fas fa-gamepad w-8 h-8 lg:w-10 lg:h-10 text-primary transition-all duration-300 group-hover:scale-110"></i>
-                        <div class="absolute inset-0 blur-lg bg-primary/30 group-hover:bg-primary/50 transition-all duration-300"></div>
-                    </div>
-                    <span class="font-orbitron text-xl lg:text-2xl font-bold text-gradient">
-                        GameHub
+                <a href="{{ path('app_home') }}" class="flex items-center gap-3 group relative">
+                    <span class="font-orbitron text-xl lg:text-2xl font-bold text-white tracking-wider group-hover:text-primary transition-colors duration-300">
+                        GAME<span class="text-primary">HUB</span>
                     </span>
                 </a>
 
                 <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ path('app_home') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'app_home' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
-                        Home
-                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'app_home' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                <div class="hidden md:flex items-center gap-1">
+                    <a href="{{ path('app_home') }}" class="px-4 py-2 font-rajdhani text-base font-semibold uppercase tracking-wider rounded-md transition-all duration-300 relative group overflow-hidden {% if app.request.attributes.get('_route') == 'app_home' %}text-white bg-white/5{% else %}text-gray-400 hover:text-white hover:bg-white/5{% endif %}">
+                        <span class="relative z-10">Home</span>
+                        {% if app.request.attributes.get('_route') == 'app_home' %}
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_rgba(0,255,255,0.7)]"></span>
+                        {% endif %}
                     </a>
-                    <a href="{{ path('game_index') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'game_index' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
-                        Games
-                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'game_index' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                    <a href="{{ path('game_index') }}" class="px-4 py-2 font-rajdhani text-base font-semibold uppercase tracking-wider rounded-md transition-all duration-300 relative group overflow-hidden {% if app.request.attributes.get('_route') == 'game_index' %}text-white bg-white/5{% else %}text-gray-400 hover:text-white hover:bg-white/5{% endif %}">
+                        <span class="relative z-10">Games</span>
+                        {% if app.request.attributes.get('_route') == 'game_index' %}
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_rgba(0,255,255,0.7)]"></span>
+                        {% endif %}
                     </a>
-                    <a href="{{ path('event_index') }}" class="font-rajdhani text-base font-medium uppercase tracking-wider transition-all duration-300 relative group {% if app.request.attributes.get('_route') == 'event_index' %}text-primary{% else %}text-muted-foreground hover:text-foreground{% endif %}">
-                        Events
-                        <span class="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-primary to-secondary transition-all duration-300 {% if app.request.attributes.get('_route') == 'event_index' %}w-full{% else %}w-0 group-hover:w-full{% endif %}"></span>
+                    <a href="{{ path('event_index') }}" class="px-4 py-2 font-rajdhani text-base font-semibold uppercase tracking-wider rounded-md transition-all duration-300 relative group overflow-hidden {% if app.request.attributes.get('_route') == 'event_index' %}text-white bg-white/5{% else %}text-gray-400 hover:text-white hover:bg-white/5{% endif %}">
+                        <span class="relative z-10">Events</span>
+                        {% if app.request.attributes.get('_route') == 'event_index' %}
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_rgba(0,255,255,0.7)]"></span>
+                        {% endif %}
+                    </a>
+                    <a href="{{ path('news_index') }}" class="px-4 py-2 font-rajdhani text-base font-semibold uppercase tracking-wider rounded-md transition-all duration-300 relative group overflow-hidden {% if app.request.attributes.get('_route') in ['news_index', 'news_show'] %}text-white bg-white/5{% else %}text-gray-400 hover:text-white hover:bg-white/5{% endif %}">
+                        <span class="relative z-10">News</span>
+                        {% if app.request.attributes.get('_route') in ['news_index', 'news_show'] %}
+                            <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary shadow-[0_0_10px_rgba(0,255,255,0.7)]"></span>
+                        {% endif %}
                     </a>
                 </div>
 
@@ -308,10 +460,16 @@
                 <div class="hidden md:flex items-center gap-4">
                     {% if app.user %}
                         <div class="relative group">
-                            <button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-muted transition-colors" id="userMenuBtn" aria-label="User menu" aria-expanded="false">
-                                <img src="{{ app.user.avatar ? asset(app.user.avatar) : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22%3E%3Crect width=%2236%22 height=%2236%22 fill=%22%237b1fa2%22/%3E%3Ctext x=%2218%22 y=%2224%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22%3EU%3C/text%3E%3C/svg%3E' }}" alt="Avatar" class="w-8 h-8 rounded-full">
-                                <span class="text-foreground font-rajdhani font-medium">{{ app.user.username }}</span>
-                                <i class="fas fa-chevron-down text-muted-foreground transition-transform group-hover:rotate-180"></i>
+                            <button class="flex items-center gap-3 px-3 py-2 rounded-lg border border-transparent hover:border-white/10 hover:bg-white/5 transition-all duration-300" id="userMenuBtn" aria-label="User menu" aria-expanded="false">
+                                <div class="relative">
+                                    <img src="{{ app.user.avatar ? asset(app.user.avatar) : 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 36 36%22%3E%3Crect width=%2236%22 height=%2236%22 fill=%22%2300a8e8%22/%3E%3Ctext x=%2218%22 y=%2224%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22%3EU%3C/text%3E%3C/svg%3E' }}" alt="Avatar" class="w-9 h-9 rounded-full ring-2 ring-primary/50 group-hover:ring-primary transition-all duration-300">
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#0a0f1c]"></div>
+                                </div>
+                                <div class="flex flex-col items-start">
+                                    <span class="text-white font-rajdhani font-bold text-sm leading-none">{{ app.user.username }}</span>
+                                    <span class="text-xs text-primary font-orbitron">LVL 69</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-gray-400 text-xs transition-transform duration-300 group-hover:rotate-180 ml-1"></i>
                             </button>
                             <div class="absolute right-0 top-full mt-2 w-56 bg-card border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" id="userDropdown">
                                 <div class="p-4 border-b border-border">
@@ -322,9 +480,9 @@
                                     <i class="fas fa-tachometer-alt"></i>
                                     <span>Dashboard</span>
                                 </a>
-                                <a href="{{ path('reservation_index') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
-                                    <i class="fas fa-ticket-alt"></i>
-                                    <span>My Reservations</span>
+                                <a href="{{ path('user_library') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
+                                    <i class="fas fa-book"></i>
+                                    <span>Library</span>
                                 </a>
                                 <a href="{{ path('user_profile') }}" class="flex items-center gap-2 px-4 py-2 text-muted-foreground hover:text-primary hover:bg-muted/50 transition-colors">
                                     <i class="fas fa-user"></i>
@@ -345,13 +503,11 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="btn-gaming">
-                            <i class="fas fa-sign-in-alt"></i>
-                            <span>Login</span>
+                        <a href="{{ path('app_login') }}" class="px-2 py-1 text-xs font-rajdhani font-semibold uppercase tracking-wider rounded-md border border-border transition-all duration-300 hover:text-primary hover:border-primary/50">
+                            Login
                         </a>
-                        <a href="{{ path('app_register') }}" class="btn-hero">
-                            <i class="fas fa-user-plus"></i>
-                            <span>Sign Up</span>
+                        <a href="{{ path('app_register') }}" class="px-2 py-1 text-xs font-rajdhani font-semibold uppercase tracking-wider rounded-md bg-primary/20 border border-primary/50 text-primary transition-all duration-300 hover:bg-primary/30">
+                            Sign Up
                         </a>
                     {% endif %}
                 </div>
@@ -374,10 +530,19 @@
                     <a href="{{ path('event_index') }}" class="font-rajdhani text-lg font-medium uppercase tracking-wider py-2 transition-colors {% if app.request.attributes.get('_route') == 'event_index' %}text-primary{% else %}text-muted-foreground{% endif %}">
                         Events
                     </a>
+                    <a href="{{ path('news_index') }}" class="font-rajdhani text-lg font-medium uppercase tracking-wider py-2 transition-colors {% if app.request.attributes.get('_route') in ['news_index', 'news_show'] %}text-primary{% else %}text-muted-foreground{% endif %}">
+                        News
+                    </a>
                     <div class="pt-4 border-t border-border">
                         {% if app.user %}
                             <a href="{{ path('user_dashboard') }}" class="block btn-gaming w-full mb-2">
                                 <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <a href="{{ path('user_library') }}" class="block btn-gaming w-full mb-2">
+                                <i class="fas fa-book"></i> Library
+                            </a>
+                            <a href="{{ path('user_profile') }}" class="block btn-gaming w-full mb-2">
+                                <i class="fas fa-user"></i> Profile Settings
                             </a>
                             <a href="{{ path('app_logout') }}" class="block btn-gaming w-full text-destructive">
                                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -395,6 +560,7 @@
             </div>
         </div>
     </nav>
+    {% endif %}
 
     <!-- Flash Messages -->
     {% for label, messages in app.flashes %}
@@ -410,11 +576,12 @@
     {% endfor %}
 
     <!-- Main Content -->
-    <main class="pt-16 lg:pt-20">
+    <main class="{% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}pt-16 lg:pt-20{% endif %}">
         {% block body %}{% endblock %}
     </main>
 
     <!-- Footer -->
+    {% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
     <footer class="bg-card border-t border-border">
         <div class="container mx-auto px-4 py-12 lg:py-16">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
@@ -544,43 +711,49 @@
             </div>
         </div>
     </footer>
+    {% endif %}
 
     <!-- Scripts -->
     <script>
         // User Menu Dropdown Toggle
-        let userMenuBtn = document.getElementById('userMenuBtn');
-        let userDropdown = document.getElementById('userDropdown');
+        (function() {
+            let userMenuBtn = document.getElementById('userMenuBtn');
+            let userDropdown = document.getElementById('userDropdown');
 
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const isExpanded = userMenuBtn.getAttribute('aria-expanded') === 'true';
-                userMenuBtn.setAttribute('aria-expanded', !isExpanded);
-                userDropdown.classList.toggle('active');
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isExpanded = userMenuBtn.getAttribute('aria-expanded') === 'true';
+                    userMenuBtn.setAttribute('aria-expanded', !isExpanded);
+                    userDropdown.classList.toggle('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userMenuBtn.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('active');
+                    }
+                });
+            }
+
+            // Alert close buttons
+            document.querySelectorAll('.alert-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.parentElement.style.display = 'none';
+                });
             });
 
-            document.addEventListener('click', (e) => {
-                if (!userMenuBtn.contains(e.target) && !userDropdown.contains(e.target)) {
-                    userMenuBtn.setAttribute('aria-expanded', 'false');
-                    userDropdown.classList.remove('active');
-                }
-            });
-        }
-
-        // Alert close buttons
-        document.querySelectorAll('.alert-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                btn.parentElement.style.display = 'none';
-            });
-        });
-
-        // Auto-hide alerts after 5 seconds
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.style.opacity = '0';
-                setTimeout(() => alert.style.display = 'none', 300);
-            });
-        }, 5000);
+            // Auto-hide alerts after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.style.display = 'none', 300);
+                });
+            }, 5000);
+        })();
     </script>
+
+<script src="{{ asset('js/particles.js') }}"></script>
+
 </body>
 </html>

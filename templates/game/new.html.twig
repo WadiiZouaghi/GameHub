@@ -3,114 +3,245 @@
 {% block title %}Add New Game - GameHub{% endblock %}
 
 {% block body %}
-<div class="container mx-auto px-4 pt-24 pb-20">
-    <div class="max-w-2xl mx-auto">
-        <!-- Header -->
-        <div class="mb-12">
-            <h1 class="font-orbitron text-4xl font-bold text-foreground mb-4">
-                <span class="text-gradient">Create</span> New Game
-            </h1>
-            <p class="text-muted-foreground">Add a new game to the GameHub catalogue</p>
-        </div>
+<div class="bg-gradient-to-b from-background via-background to-muted/30 min-h-screen">
+    <div class="container mx-auto px-4 pt-24 pb-20">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="mb-12">
+                <h1 class="font-orbitron text-5xl font-bold text-foreground mb-4">
+                    <span class="text-gradient">Create</span> New Game
+                </h1>
+                <p class="text-muted-foreground text-lg">Add a new game to the GameHub catalogue</p>
+            </div>
 
-        <!-- Form Card -->
-        <div class="card-gaming p-8">
-            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            <!-- Form Card -->
+            <div class="card-gaming p-10 rounded-xl shadow-xl border border-primary/10">
+                {{ form_start(form, {'attr': {'class': 'space-y-8', 'enctype': 'multipart/form-data'}}) }}
 
-                <!-- Title -->
-                <div>
-                    {{ form_label(form.title, 'Game Title', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                    {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Enter game title'}}) }}
-                    {% if form.title.vars.errors %}
-                        <div class="mt-1 text-destructive text-sm">
-                            {{ form_errors(form.title) }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Genre -->
-                <div>
-                    {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                    {{ form_widget(form.category, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'e.g., Action, RPG, Strategy'}}) }}
-                    {% if form.category.vars.errors %}
-                        <div class="mt-1 text-destructive text-sm">
-                            {{ form_errors(form.category) }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Description -->
-                <div>
-                    {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                    {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'rows': 5, 'placeholder': 'Describe the game...'}}) }}
-                    {% if form.description.vars.errors %}
-                        <div class="mt-1 text-destructive text-sm">
-                            {{ form_errors(form.description) }}
-                        </div>
-                    {% endif %}
-                </div>
-
-                <!-- Grid: Developer, Price, Capacity -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Developer -->
+                    <!-- Basic Information Section -->
                     <div>
-                        {{ form_label(form.developer, 'Developer', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                        {{ form_widget(form.developer, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Developer name'}}) }}
-                        {% if form.developer.vars.errors %}
-                            <div class="mt-1 text-destructive text-sm">
-                                {{ form_errors(form.developer) }}
-                            </div>
-                        {% endif %}
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-primary/30">
+                            <i class="fas fa-info-circle text-primary text-xl"></i>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground">Basic Information</h2>
+                        </div>
+
+                        <!-- Title -->
+                        <div class="mb-6">
+                            {{ form_label(form.title, 'Game Title', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                            {{ form_widget(form.title, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'placeholder': 'Enter game title'}}) }}
+                            {% if form.title.vars.errors %}
+                                <div class="mt-2 text-red-400 text-sm">
+                                    {{ form_errors(form.title) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-6">
+                            {{ form_label(form.category, 'Category', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                            {{ form_widget(form.category, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                            {% if form.category.vars.errors %}
+                                <div class="mt-2 text-red-400 text-sm">
+                                    {{ form_errors(form.category) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Description -->
+                        <div>
+                            {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                            {{ form_widget(form.description, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'rows': 5, 'placeholder': 'Describe the game in detail...'}}) }}
+                            {% if form.description.vars.errors %}
+                                <div class="mt-2 text-red-400 text-sm">
+                                    {{ form_errors(form.description) }}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
 
-                    <!-- Price -->
+                    <!-- Game Details Section -->
                     <div>
-                        {{ form_label(form.price, 'Price ($)', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                        {{ form_widget(form.price, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': '0.00', 'step': '0.01', 'min': '0'}}) }}
-                        {% if form.price.vars.errors %}
-                            <div class="mt-1 text-destructive text-sm">
-                                {{ form_errors(form.price) }}
-                            </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Capacity -->
-                    <div>
-                        {{ form_label(form.capacity, 'Max Players', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                        {{ form_widget(form.capacity, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Optional', 'min': '1'}}) }}
-                        {% if form.capacity.vars.errors %}
-                            <div class="mt-1 text-destructive text-sm">
-                                {{ form_errors(form.capacity) }}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Cover Image -->
-                <div>
-                    {{ form_label(form.coverImage, 'Cover Image', {'label_attr': {'class': 'block text-sm font-rajdhani font-semibold text-foreground mb-2'}}) }}
-                    {{ form_widget(form.coverImage, {'attr': {'class': 'w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition', 'placeholder': 'Image URL or path (optional)'}}) }}
-                    {% if form.coverImage.vars.errors %}
-                        <div class="mt-1 text-destructive text-sm">
-                            {{ form_errors(form.coverImage) }}
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-primary/30">
+                            <i class="fas fa-cog text-secondary text-xl"></i>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground">Game Details</h2>
                         </div>
-                    {% endif %}
-                </div>
 
-                <!-- Buttons -->
-                <div class="flex gap-4 pt-6 border-t border-border">
-                    <button class="flex-1 btn-hero flex items-center justify-center gap-2" type="submit">
-                        <i class="fas fa-plus"></i>
-                        Create Game
-                    </button>
-                    <a href="{{ path('game_index') }}" class="flex-1 btn-gaming flex items-center justify-center gap-2">
-                        <i class="fas fa-arrow-left"></i>
-                        Cancel
-                    </a>
-                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- Developer -->
+                            <div>
+                                {{ form_label(form.developer, 'Developer', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                                {{ form_widget(form.developer, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'placeholder': 'Studio/Developer name'}}) }}
+                                {% if form.developer.vars.errors %}
+                                    <div class="mt-2 text-red-400 text-sm">
+                                        {{ form_errors(form.developer) }}
+                                    </div>
+                                {% endif %}
+                            </div>
 
-            {{ form_end(form) }}
+                            <!-- Price -->
+                            <div>
+                                {{ form_label(form.price, 'Price ($)', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                                {{ form_widget(form.price, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'placeholder': '0.00', 'step': '0.01', 'min': '0'}}) }}
+                                {% if form.price.vars.errors %}
+                                    <div class="mt-2 text-red-400 text-sm">
+                                        {{ form_errors(form.price) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Platform -->
+                            <div>
+                                {{ form_label(form.platform, 'Platform', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                                {{ form_widget(form.platform, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'placeholder': 'e.g., PC, PlayStation, Xbox, Nintendo'}}) }}
+                                {% if form.platform.vars.errors %}
+                                    <div class="mt-2 text-red-400 text-sm">
+                                        {{ form_errors(form.platform) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Languages -->
+                            <div>
+                                {{ form_label(form.languages, 'Languages', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                                {{ form_widget(form.languages, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition', 'rows': 2, 'placeholder': 'English, Spanish, French, German...'}}) }}
+                                {% if form.languages.vars.errors %}
+                                    <div class="mt-2 text-red-400 text-sm">
+                                        {{ form_errors(form.languages) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Section -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-primary/30">
+                            <i class="fas fa-images text-primary text-xl"></i>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground">Game Media</h2>
+                        </div>
+
+                        <!-- Cover Image -->
+                        <div class="mb-8">
+                            {{ form_label(form.coverImage, 'Cover Image', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                            <div class="border-2 border-dashed border-primary/40 rounded-lg p-8 text-center hover:border-primary/70 transition cursor-pointer bg-primary/5">
+                                <i class="fas fa-image text-primary text-4xl mb-3"></i>
+                                <p class="text-foreground font-rajdhani mb-1">Click to upload or drag and drop</p>
+                                <p class="text-muted-foreground text-sm">PNG, JPG, GIF up to 10MB</p>
+                                {{ form_widget(form.coverImage, {'attr': {'class': 'w-full cursor-pointer opacity-0 absolute inset-0'}}) }}
+                            </div>
+                            {% if form.coverImage.vars.errors %}
+                                <div class="mt-2 text-red-400 text-sm">
+                                    {{ form_errors(form.coverImage) }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Gallery Images -->
+                        <div>
+                            {{ form_label(form.gallery, 'Gallery Images', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-3 uppercase tracking-wider'}}) }}
+                            <div class="border-2 border-dashed border-secondary/40 rounded-lg p-8 text-center hover:border-secondary/70 transition cursor-pointer bg-secondary/5">
+                                <i class="fas fa-images text-secondary text-4xl mb-3"></i>
+                                <p class="text-foreground font-rajdhani mb-1">Click to upload or drag and drop</p>
+                                <p class="text-muted-foreground text-sm">Select multiple images (PNG, JPG, GIF up to 10MB each)</p>
+                                {{ form_widget(form.gallery, {'attr': {'class': 'w-full cursor-pointer opacity-0 absolute inset-0'}}) }}
+                            </div>
+                            {% if form.gallery.vars.errors %}
+                                <div class="mt-2 text-red-400 text-sm">
+                                    {{ form_errors(form.gallery) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- System Requirements Section -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-primary/30">
+                            <i class="fas fa-microchip text-secondary text-xl"></i>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground">System Requirements</h2>
+                        </div>
+
+                        <!-- Minimum Requirements -->
+                        <div class="mb-8">
+                            <h3 class="font-orbitron text-lg font-bold text-yellow-400 mb-4 flex items-center gap-2">
+                                <i class="fas fa-arrow-down"></i>
+                                Minimum Requirements
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    {{ form_label(form.minOs, 'Operating System', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.minOs, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.minProcessor, 'Processor', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.minProcessor, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.minMemory, 'RAM', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.minMemory, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.minGraphics, 'Graphics Card', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.minGraphics, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div class="md:col-span-2">
+                                    {{ form_label(form.minStorage, 'Storage', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.minStorage, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommended Requirements -->
+                        <div>
+                            <h3 class="font-orbitron text-lg font-bold text-primary mb-4 flex items-center gap-2">
+                                <i class="fas fa-star"></i>
+                                Recommended Requirements
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    {{ form_label(form.recOs, 'Operating System', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.recOs, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.recProcessor, 'Processor', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.recProcessor, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.recMemory, 'RAM', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.recMemory, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div>
+                                    {{ form_label(form.recGraphics, 'Graphics Card', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.recGraphics, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                                <div class="md:col-span-2">
+                                    {{ form_label(form.recStorage, 'Storage', {'label_attr': {'class': 'block text-sm font-orbitron font-semibold text-foreground mb-2 uppercase tracking-wider'}}) }}
+                                    {{ form_widget(form.recStorage, {'attr': {'class': 'w-full px-4 py-3 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition'}}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex gap-4 pt-8 border-t border-border">
+                        <button class="flex-1 btn-hero flex items-center justify-center gap-2 py-4 text-lg" type="submit">
+                            <i class="fas fa-plus"></i>
+                            Create Game
+                        </button>
+                        <a href="{{ path('game_index') }}" class="flex-1 btn-gaming flex items-center justify-center gap-2 py-4 text-lg">
+                            <i class="fas fa-arrow-left"></i>
+                            Cancel
+                        </a>
+                    </div>
+
+                {{ form_end(form) }}
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+.relative {
+    position: relative;
+}
+</style>
 {% endblock %}

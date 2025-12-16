@@ -27,23 +27,30 @@ class Game
     #[ORM\Column(name: 'cover_image', length: 255, nullable: true)]
     private ?string $coverImage = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $capacity = null;
-
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2, nullable: true)]
     private ?float $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $developer = null;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $platform = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $languages = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $gallery = [];
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $minSystemRequirements = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $recommendedSystemRequirements = null;
+
+
     #[ORM\Column(name: 'created_at', type: 'datetime')]
     private ?\DateTimeInterface $createdAt = null;
-
-    /**
-     * @var Collection<int, Reservation>
-     */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'game')]
-    private Collection $reservations;
 
     /**
      * @var Collection<int, Event>
@@ -65,7 +72,6 @@ class Game
 
     public function __construct()
     {
-        $this->reservations = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->purchases = new ArrayCollection();
@@ -146,15 +152,36 @@ class Game
         return $this;
     }
 
-    public function getCapacity(): ?int
+    public function getPlatform(): ?string
     {
-        return $this->capacity;
+        return $this->platform;
     }
 
-    public function setCapacity(?int $capacity): static
+    public function setPlatform(?string $platform): static
     {
-        $this->capacity = $capacity;
+        $this->platform = $platform;
+        return $this;
+    }
 
+    public function getLanguages(): ?string
+    {
+        return $this->languages;
+    }
+
+    public function setLanguages(?string $languages): static
+    {
+        $this->languages = $languages;
+        return $this;
+    }
+
+    public function getGallery(): ?array
+    {
+        return $this->gallery;
+    }
+
+    public function setGallery(?array $gallery): static
+    {
+        $this->gallery = $gallery;
         return $this;
     }
 
@@ -194,35 +221,28 @@ class Game
         return $this;
     }
 
-    /**
-     * @return Collection<int, Reservation>
-     */
-    public function getReservations(): Collection
+    public function getMinSystemRequirements(): ?array
     {
-        return $this->reservations;
+        return $this->minSystemRequirements;
     }
 
-    public function addReservation(Reservation $reservation): static
+    public function setMinSystemRequirements(?array $minSystemRequirements): static
     {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations->add($reservation);
-            $reservation->setGame($this);
-        }
-
+        $this->minSystemRequirements = $minSystemRequirements;
         return $this;
     }
 
-    public function removeReservation(Reservation $reservation): static
+    public function getRecommendedSystemRequirements(): ?array
     {
-        if ($this->reservations->removeElement($reservation)) {
-            // set the owning side to null (unless already changed)
-            if ($reservation->getGame() === $this) {
-                $reservation->setGame(null);
-            }
-        }
-
-        return $this;
+        return $this->recommendedSystemRequirements;
     }
+
+    public function setRecommendedSystemRequirements(?array $recommendedSystemRequirements): static
+    {   
+    $this->recommendedSystemRequirements = $recommendedSystemRequirements;
+    return $this;
+    }
+
 
     /**
      * @return Collection<int, Event>

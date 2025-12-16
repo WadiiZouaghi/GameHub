@@ -12,15 +12,81 @@
     <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float"></div>
     <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
     
+    <!-- Floating Game Cards - Left Side -->
+    <div class="hidden lg:block absolute top-20 left-10 w-40 h-56 animate-float-cards" style="animation-delay: 0s;">
+        <a href="{{ featuredGames|length > 0 ? path('game_show', {id: featuredGames[0].id}) : '#' }}" class="group block h-full">
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow group-hover:scale-110 transition-transform duration-500">
+                {% if featuredGames|length > 0 %}
+                    {% if featuredGames[0].coverImage %}
+                        <img src="{{ asset(featuredGames[0].coverImage) }}" alt="{{ featuredGames[0].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
+                    {% else %}
+                        <div class="w-full h-full bg-muted flex items-center justify-center text-4xl">🎮</div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                        <div class="text-white font-orbitron text-xs font-bold line-clamp-2">{{ featuredGames[0].title }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+
+    <!-- Floating Game Cards - Top Right -->
+    <div class="hidden lg:block absolute top-32 right-16 w-48 h-64 animate-float-cards" style="animation-delay: -2s;">
+        <a href="{{ featuredGames|length > 1 ? path('game_show', {id: featuredGames[1].id}) : '#' }}" class="group block h-full">
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple group-hover:scale-110 transition-transform duration-500">
+                {% if featuredGames|length > 1 %}
+                    {% if featuredGames[1].coverImage %}
+                        <img src="{{ asset(featuredGames[1].coverImage) }}" alt="{{ featuredGames[1].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
+                    {% else %}
+                        <div class="w-full h-full bg-muted flex items-center justify-center text-4xl">🎮</div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                        <div class="text-white font-orbitron text-xs font-bold line-clamp-2">{{ featuredGames[1].title }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+
+    <!-- Floating Game Cards - Bottom Left -->
+    <div class="hidden lg:block absolute bottom-32 left-20 w-44 h-60 animate-float-cards" style="animation-delay: -4s;">
+        <a href="{{ featuredGames|length > 2 ? path('game_show', {id: featuredGames[2].id}) : '#' }}" class="group block h-full">
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow group-hover:scale-110 transition-transform duration-500">
+                {% if featuredGames|length > 2 %}
+                    {% if featuredGames[2].coverImage %}
+                        <img src="{{ asset(featuredGames[2].coverImage) }}" alt="{{ featuredGames[2].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
+                    {% else %}
+                        <div class="w-full h-full bg-muted flex items-center justify-center text-4xl">🎮</div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                        <div class="text-white font-orbitron text-xs font-bold line-clamp-2">{{ featuredGames[2].title }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+
+    <!-- Floating Game Cards - Bottom Right -->
+    <div class="hidden lg:block absolute bottom-40 right-10 w-40 h-56 animate-float-cards" style="animation-delay: -3s;">
+        <a href="{{ featuredGames|length > 3 ? path('game_show', {id: featuredGames[3].id}) : '#' }}" class="group block h-full">
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple group-hover:scale-110 transition-transform duration-500">
+                {% if featuredGames|length > 3 %}
+                    {% if featuredGames[3].coverImage %}
+                        <img src="{{ asset(featuredGames[3].coverImage) }}" alt="{{ featuredGames[3].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
+                    {% else %}
+                        <div class="w-full h-full bg-muted flex items-center justify-center text-4xl">🎮</div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-3">
+                        <div class="text-white font-orbitron text-xs font-bold line-clamp-2">{{ featuredGames[3].title }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+    </div>
+    
     <!-- Content -->
     <div class="container mx-auto px-4 pt-20 lg:pt-0 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8 animate-fade-in">
-                <i class="fas fa-sparkles text-primary w-4 h-4"></i>
-                <span class="text-sm font-medium text-primary">Hello Gamer!</span>
-            </div>
-            
             <!-- Main Heading -->
             <h1 class="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style="animation-delay: 0.1s;">
                 <span class="text-foreground">Your Gateway to</span>
@@ -168,8 +234,8 @@
                 <div class="card-gaming overflow-hidden group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
                     <!-- Image -->
                     <div class="relative h-48 overflow-hidden">
-                        {% if event.image %}
-                            <img src="{{ event.image }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        {% if event.game.coverImage %}
+                            <img src="{{ asset(event.game.coverImage) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                         {% else %}
                             <div class="w-full h-full bg-muted flex items-center justify-center">
                                 <i class="fas fa-calendar text-muted-foreground w-12 h-12"></i>
@@ -289,73 +355,49 @@
             
             <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.4s;">
                 <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-bolt w-7 h-7 text-primary"></i>
+                    <i class="fas fa-trophy w-7 h-7 text-primary"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                    Lightning Fast
+                    Rewards & Recognition
                 </h3>
                 <p class="text-muted-foreground leading-relaxed">
-                    Optimized downloads and seamless updates. Get into the action faster than ever.
+                    Earn badges, achievements, and recognition for your gaming accomplishments.
                 </p>
             </div>
             
             <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.5s;">
                 <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-trophy w-7 h-7 text-primary"></i>
+                    <i class="fas fa-heart w-7 h-7 text-primary"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                    Achievements
+                    Player-First Philosophy
                 </h3>
                 <p class="text-muted-foreground leading-relaxed">
-                    Track your progress, unlock achievements, and showcase your gaming prowess.
+                    Your gaming experience comes first. We listen and continuously improve based on feedback.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Newsletter Section -->
-<section class="py-20 lg:py-32 relative overflow-hidden hero-gradient">
-    <!-- Background Elements -->
-    <div class="absolute inset-0 grid-pattern opacity-30"></div>
-    <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl"></div>
+<!-- CTA Section -->
+<section class="py-20 lg:py-32 bg-gradient-to-r from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+    <div class="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-secondary/20 rounded-full blur-3xl"></div>
     
     <div class="container mx-auto px-4 relative z-10">
-        <div class="max-w-3xl mx-auto text-center">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/30 mb-8">
-                <i class="fas fa-sparkles w-4 h-4 text-primary"></i>
-                <span class="text-sm font-medium text-primary">Stay Updated</span>
-            </div>
-            
-            <!-- Heading -->
-            <h2 class="font-orbitron text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-                <span class="text-foreground">Never Miss a</span>
-                <br />
-                <span class="text-gradient">Gaming Moment</span>
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="font-orbitron text-4xl md:text-5xl font-bold mb-6">
+                Ready to Level Up?
             </h2>
-            
-            <!-- Description -->
-            <p class="text-lg text-muted-foreground mb-10 max-w-xl mx-auto">
-                Subscribe to our newsletter for exclusive deals, game releases, tournament updates, and community highlights.
+            <p class="text-lg text-muted-foreground mb-10">
+                Join thousands of gamers and start your adventure with GameHub today.
             </p>
-            
-            <!-- Form -->
-            <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <div class="relative flex-1">
-                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"></i>
-                    <input type="email" placeholder="Enter your email" class="w-full pl-12 h-12 bg-background/50 border border-border backdrop-blur-sm rounded-lg focus:outline-none focus:border-primary text-foreground placeholder-muted-foreground transition-colors" required />
-                </div>
-                <button type="submit" class="btn-hero">
-                    Subscribe
-                </button>
-            </form>
-            
-            <!-- Trust -->
-            <p class="text-sm text-muted-foreground mt-6">
-                Join 50,000+ gamers. No spam, unsubscribe anytime.
-            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group">
+                    Browse Our Catalog
+                    <i class="fas fa-arrow-right w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
         </div>
     </div>
 </section>

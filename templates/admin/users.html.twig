@@ -50,10 +50,6 @@
                         <i class="fas fa-users"></i>
                         Users
                     </a>
-                    <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
-                        <i class="fas fa-ticket-alt"></i>
-                        Reservations
-                    </a>
                     <a href="{{ path('admin_events') }}" class="admin-menu-item">
                         <i class="fas fa-calendar-alt"></i>
                         Events
@@ -119,7 +115,6 @@
                                     <th>User</th>
                                     <th>Email</th>
                                     <th>Role</th>
-                                    <th>Reservations</th>
                                     <th>Joined</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -160,9 +155,6 @@
                                                     {% endif %}
                                                 {% endfor %}
                                             </div>
-                                        </td>
-                                        <td>
-                                            <span class="reservations-count">{{ user.reservations|length }}</span>
                                         </td>
                                         <td>{{ user.createdAt|date('M j, Y') }}</td>
                                         <td>

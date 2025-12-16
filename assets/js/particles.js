@@ -40,7 +40,7 @@
         }
 
         show(context, alpha) {
-            context.fillStyle = "rgba(76, 107, 34," + alpha + ")";
+            context.fillStyle = "rgba(0, 255, 255," + alpha + ")";
             context.beginPath();
             context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
             context.fill();
@@ -64,7 +64,7 @@
     }
 
     function drawLine(context, v1, v2, alpha) {
-        context.strokeStyle = "rgba(76, 107, 34," + alpha + ")";
+        context.strokeStyle = "rgba(0, 255, 255," + alpha + ")";
         context.beginPath();
         context.moveTo(v1.x, v1.y);
         context.lineTo(v2.x, v2.y);
@@ -137,7 +137,8 @@
         canvas.height = window.innerHeight;
 
         let context = canvas.getContext("2d");
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "rgba(10, 15, 28, 1)";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
         boundary = [
             new Line(0, 0, canvas.width, 0),
@@ -170,23 +171,31 @@
         window.particlesAnimation = requestAnimationFrame(draw);
     }
 
+    function shouldInitializeParticles() {
+        return document.body.classList.contains('login-page');
+    }
+
     // Initialize particles on page load
     window.addEventListener('load', () => {
-        nodes = [];
-        init();
+        if (shouldInitializeParticles()) {
+            nodes = [];
+            init();
+        }
     });
 
     // Also initialize on DOMContentLoaded for faster loading
     document.addEventListener('DOMContentLoaded', () => {
-        nodes = [];
-        init();
+        if (shouldInitializeParticles()) {
+            nodes = [];
+            init();
+        }
     });
 
     // Additional check for pages that might load the script dynamically
     // or when the canvas element becomes available
     function checkAndInitParticles() {
         const canvas = document.getElementById('canvas');
-        if (canvas && !window.particlesAnimation) {
+        if (shouldInitializeParticles() && canvas && !window.particlesAnimation) {
             nodes = [];
             init();
         }

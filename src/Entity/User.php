@@ -37,12 +37,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeInterface $updatedAt;
 
     /**
-     * @var Collection<int, Reservation>
-     */
-    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: 'user')]
-    private Collection $reservations;
-
-    /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'user')]
@@ -74,9 +68,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->reservations = new ArrayCollection();
         $this->reviews = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->purchases = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -159,33 +153,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private function updateTimestamp(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
-    }
-
-    /**
-     * @return Collection<int, Reservation>
-     */
-    public function getReservations(): Collection
-    {
-        return $this->reservations;
-    }
-
-    public function addReservation(Reservation $reservation): static
-    {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations->add($reservation);
-            $reservation->setUser($this);
-        }
-        return $this;
-    }
-
-    public function removeReservation(Reservation $reservation): static
-    {
-        if ($this->reservations->removeElement($reservation)) {
-            if ($reservation->getUser() === $this) {
-                $reservation->setUser(null);
-            }
-        }
-        return $this;
     }
 
     /**

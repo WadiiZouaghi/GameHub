@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}News - GameHub{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 pt-24 pb-20">
+    <div class="mb-12">
+        <h1 class="font-orbitron text-4xl md:text-5xl font-bold mb-3">
+            <span class="text-foreground">Gaming</span>
+            <span class="text-gradient">News</span>
+        </h1>
+        <p class="text-muted-foreground max-w-md">
+            Stay updated with the latest gaming news, updates, and releases
+        </p>
+    </div>
+
+    <div class="card-gaming p-6 mb-12 animate-fade-in">
+        <label for="search-input" class="block text-sm font-orbitron font-semibold text-foreground mb-2">
+            <i class="fas fa-search text-primary mr-2"></i>Search News
+        </label>
+        <input type="text" id="search-input" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani placeholder-muted-foreground focus:outline-none focus:border-primary" placeholder="Search gaming news...">
+    </div>
+
+    {% if api_error %}
+        <div class="card-gaming p-6 mb-12 border-l-4 border-destructive bg-destructive/10">
+            <p class="text-destructive font-semibold">API Error: {{ api_error }}</p>
+        </div>
+    {% endif %}
+
+    {% if news|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for article in news %}
+                <a href="{{ path('news_show', {id: article.id}) }}" class="card-gaming overflow-hidden group hover:shadow-lg hover:shadow-primary/20 transition-all duration-300 flex flex-col h-full">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="{{ article.image }}" alt="{{ article.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="inline-block bg-primary/20 px-2 py-1 rounded text-primary text-xs font-bold mb-2 w-fit">
+                            {{ article.category }}
+                        </div>
+                        
+                        <h3 class="font-orbitron text-lg font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 mb-2">
+                            {{ article.title }}
+                        </h3>
+
+                        <p class="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
+                            {{ article.content }}
+                        </p>
+
+                        <div class="flex items-center gap-2 text-xs text-muted-foreground border-t border-border pt-3">
+                            <span><i class="fas fa-calendar mr-1"></i>{{ article.publishDate|date('M j, Y') }}</span>
+                            <span><i class="fas fa-user mr-1"></i>{{ article.author }}</span>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="flex flex-col items-center justify-center py-20 text-center">
+            <i class="fas fa-newspaper text-5xl text-muted-foreground mb-4 opacity-50"></i>
+            <h2 class="font-orbitron text-2xl font-bold text-foreground mb-2">No News Available</h2>
+            <p class="text-muted-foreground">Check back soon for the latest gaming news and announcements!</p>
+        </div>
+    {% endif %}
+
+    <div class="flex justify-center gap-2 mt-12">
+        {% if previous_page %}
+            <a href="{{ path('news_index', {page: previous_page, search: search_query}) }}" class="btn-gaming">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+        {% endif %}
+
+        <div class="flex gap-1 items-center">
+            {% for pageNum in range(1, 5) %}
+                {% set isCurrentPage = pageNum == current_page %}
+                <a href="{{ path('news_index', {page: pageNum, search: search_query}) }}" 
+                   class="px-3 py-2 rounded {{ isCurrentPage ? 'bg-primary text-background' : 'bg-muted text-foreground hover:bg-muted/80' }} font-semibold transition-colors">
+                    {{ pageNum }}
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if next_page %}
+            <a href="{{ path('news_index', {page: next_page, search: search_query}) }}" class="btn-gaming">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('search-input');
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const search = this.value.trim();
+                let url = new URL(window.location.href);
+                url.searchParams.set('search', search);
+                url.searchParams.set('page', 1);
+                window.location.href = url.toString();
+            }
+        });
+    });
+</script>
+{% endblock %}

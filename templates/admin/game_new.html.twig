@@ -23,10 +23,6 @@
                     <i class="fas fa-users"></i>
                     Users
                 </a>
-                <a href="{{ path('admin_reservations') }}" class="admin-menu-item">
-                    <i class="fas fa-ticket-alt"></i>
-                    Reservations
-                </a>
                 <a href="{{ path('admin_events') }}" class="admin-menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     Events
@@ -65,50 +61,168 @@
                     </a>
                 </div>
 
-                {{ form_start(form, {'attr': {'class': 'admin-form'}}) }}
-                    <div class="form-grid">
-                        <div class="form-group">
-                            {{ form_label(form.title) }}
-                            {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.title) }}
-                        </div>
+                {{ form_start(form, {'attr': {'class': 'admin-form', 'enctype': 'multipart/form-data'}}) }}
+                    <!-- Basic Info -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Basic Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                {{ form_label(form.title) }}
+                                {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.title) }}
+                            </div>
 
-                        <div class="form-group">
-                            {{ form_label(form.category) }}
-                            {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.category) }}
-                        </div>
+                            <div class="form-group">
+                                {{ form_label(form.category) }}
+                                {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.category) }}
+                            </div>
 
-                        <div class="form-group form-group-full">
-                            {{ form_label(form.description) }}
-                            {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
-                            {{ form_errors(form.description) }}
+                            <div class="form-group form-group-full">
+                                {{ form_label(form.description) }}
+                                {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                                {{ form_errors(form.description) }}
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            {{ form_label(form.capacity) }}
-                            {{ form_widget(form.capacity, {'attr': {'class': 'form-control'}}) }}
-                            {{ form_errors(form.capacity) }}
+                    <!-- Game Details -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Game Details</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                {{ form_label(form.developer) }}
+                                {{ form_widget(form.developer, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.developer) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.price) }}
+                                {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.price) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.platform) }}
+                                {{ form_widget(form.platform, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.platform) }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form_label(form.languages) }}
+                                {{ form_widget(form.languages, {'attr': {'class': 'form-control', 'rows': '2'}}) }}
+                                {{ form_errors(form.languages) }}
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group form-group-full">
-                            {{ form_label(form.coverImage) }}
-                            <div class="file-upload-container">
-                                <div class="file-upload-area">
-                                    <div class="upload-icon">
-                                        <i class="fas fa-cloud-upload-alt"></i>
+                    <!-- Media -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Game Media</h3>
+                        <div class="form-grid">
+                            <div class="form-group form-group-full">
+                                {{ form_label(form.coverImage) }}
+                                <div class="file-upload-container">
+                                    <div class="file-upload-area">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-image"></i>
+                                        </div>
+                                        <div class="upload-text">
+                                            <strong>Drop image here or click to browse</strong>
+                                            <p>PNG, JPG, GIF up to 10MB</p>
+                                        </div>
+                                        {{ form_widget(form.coverImage, {'attr': {'class': 'file-input'}}) }}
                                     </div>
-                                    <div class="upload-text">
-                                        <strong>Drop image here or click to browse</strong>
-                                        <p>PNG, JPG, GIF up to 10MB</p>
+                                    <div class="upload-preview" id="image-preview" style="display: none;">
+                                        <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
                                     </div>
-                                    {{ form_widget(form.coverImage, {'attr': {'class': 'file-input'}}) }}
                                 </div>
-                                <div class="upload-preview" id="image-preview" style="display: none;">
-                                    <img id="preview-img" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                                {{ form_errors(form.coverImage) }}
+                            </div>
+
+                            <div class="form-group form-group-full">
+                                {{ form_label(form.gallery) }}
+                                <div class="file-upload-container">
+                                    <div class="file-upload-area">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-images"></i>
+                                        </div>
+                                        <div class="upload-text">
+                                            <strong>Drop images here or click to browse</strong>
+                                            <p>PNG, JPG, GIF up to 10MB each (multiple allowed)</p>
+                                        </div>
+                                        {{ form_widget(form.gallery, {'attr': {'class': 'file-input'}}) }}
+                                    </div>
+                                </div>
+                                {{ form_errors(form.gallery) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Requirements -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">System Requirements</h3>
+                        
+                        <div class="requirement-subsection">
+                            <h4>Minimum Requirements</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    {{ form_label(form.minOs) }}
+                                    {{ form_widget(form.minOs, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.minOs) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.minProcessor) }}
+                                    {{ form_widget(form.minProcessor, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.minProcessor) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.minMemory) }}
+                                    {{ form_widget(form.minMemory, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.minMemory) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.minGraphics) }}
+                                    {{ form_widget(form.minGraphics, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.minGraphics) }}
+                                </div>
+                                <div class="form-group form-group-full">
+                                    {{ form_label(form.minStorage) }}
+                                    {{ form_widget(form.minStorage, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.minStorage) }}
                                 </div>
                             </div>
-                            {{ form_errors(form.coverImage) }}
+                        </div>
+
+                        <div class="requirement-subsection">
+                            <h4>Recommended Requirements</h4>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    {{ form_label(form.recOs) }}
+                                    {{ form_widget(form.recOs, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.recOs) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.recProcessor) }}
+                                    {{ form_widget(form.recProcessor, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.recProcessor) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.recMemory) }}
+                                    {{ form_widget(form.recMemory, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.recMemory) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ form_label(form.recGraphics) }}
+                                    {{ form_widget(form.recGraphics, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.recGraphics) }}
+                                </div>
+                                <div class="form-group form-group-full">
+                                    {{ form_label(form.recStorage) }}
+                                    {{ form_widget(form.recStorage, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.recStorage) }}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -132,11 +246,42 @@
     max-width: none;
 }
 
+.form-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+}
+
+.form-section-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.requirement-subsection {
+    margin-bottom: 2rem;
+}
+
+.requirement-subsection h4 {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray-300);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    margin-bottom: 2rem;
 }
 
 .form-group-full {
