@@ -1,0 +1,11 @@
+.git
+.github
+.env.dev
+.env.test
+.editorconfig
+tests/
+var/
+phpunit.dist.xml
+compose.yaml
+compose.override.yaml
+README.md
