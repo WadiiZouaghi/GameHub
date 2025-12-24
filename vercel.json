@@ -12,12 +12,8 @@
   ],
   "routes": [
     {
-      "src": "^/index\\.php(/|$)",
-      "use": "vercel-php@0.6.0"
-    },
-    {
       "src": "/(.*)",
-      "dest": "/index.php"
+      "dest": "/public/index.php"
     }
   ]
 }
