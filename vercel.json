@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "buildCommand": "composer install --no-dev && php bin/console cache:clear",
   "builds": [
     {
       "src": "public/index.php",
@@ -15,5 +16,8 @@
       "src": "/(.*)",
       "dest": "/public/index.php"
     }
-  ]
+  ],
+  "env": {
+    "APP_ENV": "prod"
+  }
 }
