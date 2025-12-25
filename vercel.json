@@ -3,10 +3,7 @@
   "builds": [
     {
       "src": "public/index.php",
-      "use": "vercel-php@0.7.2",
-      "config": {
-        "document_root": "public"
-      }
+      "use": "vercel-php@0.7.2"
     }
   ],
   "routes": [
