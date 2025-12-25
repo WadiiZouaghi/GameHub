@@ -11,5 +11,8 @@
       "src": "/(.*)",
       "dest": "/api/index.php"
     }
-  ]
+  ],
+  "env": {
+    "DEFAULT_URI": "https://game-hub-tau-topaz.vercel.app/"
+  }
 }
