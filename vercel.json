@@ -16,7 +16,7 @@
     "APP_ENV": "prod",
     "APP_SECRET": "e1tVYHwobVF3dX1Gb3c3QlhkVEtlUDlZIS5TUTwlOEU=",
     "DEFAULT_URI": "https://game-hub-tau-topaz.vercel.app/",
-    "DATABASE_URL": "mysql://root:@127.0.0.1:3307/gaming_db",
+    "DATABASE_URL": "mysql://root:dVAlwFJNKdoeHlNyWACPVNzBZgUVIsnD@shortline.proxy.rlwy.net:32366/railway",
     "MAILER_DSN": "null://null",
     "NEWS_API_KEY": "cc63640e58e2422381eecc3807eb24a9"
   }

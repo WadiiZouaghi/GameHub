@@ -7,9 +7,10 @@
 - [x] Removed buildCommand from vercel.json as composer not available on Vercel
 - [x] Added DEFAULT_URI environment variable to vercel.json (user needs to replace placeholder)
 - [x] Cleared production cache locally with php bin/console cache:clear --env=prod
+- [x] Generated APP_SECRET and set other environment variables in vercel.json
+- [x] User provided Railway DATABASE_URL: mysql://root:dVAlwFJNKdoeHlNyWACPVNzBZgUVIsnD@shortline.proxy.rlwy.net:32366/railway
 
 ## Next Steps
-- [ ] User to replace placeholder DEFAULT_URI in vercel.json with actual Vercel app URL
-- [ ] Redeploy to Vercel to pick up the latest changes (the error suggests old code is still deployed)
-- [ ] If error persists, check Vercel deployment logs for details
-- [ ] Consider updating vercel-php runtime version if needed
+- [ ] User to update DATABASE_URL in Vercel dashboard with the Railway URL
+- [ ] Redeploy to Vercel to pick up the latest changes and correct DATABASE_URL
+- [ ] Test that the 500 Internal Server Error is resolved
