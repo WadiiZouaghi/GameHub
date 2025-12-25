@@ -10,5 +10,6 @@
 
 ## Next Steps
 - [ ] User to replace placeholder DEFAULT_URI in vercel.json with actual Vercel app URL
-- [ ] Deploy to Vercel and test if the error is resolved
-- [ ] If error persists, check Vercel logs for more details
+- [ ] Redeploy to Vercel to pick up the latest changes (the error suggests old code is still deployed)
+- [ ] If error persists, check Vercel deployment logs for details
+- [ ] Consider updating vercel-php runtime version if needed
