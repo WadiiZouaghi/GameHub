@@ -1,27 +1,14 @@
 <?php
 
-require_once __DIR__ . '/../vendor/autoload_runtime.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-use Symfony\Component\Filesystem\Filesystem;
-use App\Kernel;
+use Symfony\Component\HttpFoundation\Request;
 
-$cacheDir = $_ENV['SYMFONY_CACHE_DIR'] ?? '/tmp/cache';
-$logDir   = $_ENV['SYMFONY_LOG_DIR'] ?? '/tmp/log';
+$kernel = new App\Kernel('prod', false);
 
-$_SERVER['SYMFONY_CACHE_DIR'] = $_ENV['SYMFONY_CACHE_DIR'] = $cacheDir;
-$_SERVER['SYMFONY_LOG_DIR']   = $_ENV['SYMFONY_LOG_DIR']   = $logDir;
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
 
-$filesystem = new Filesystem();
-if (!$filesystem->exists($cacheDir)) {
-    $filesystem->mkdir($cacheDir, 0777);
-}
-if (!$filesystem->exists($logDir)) {
-    $filesystem->mkdir($logDir, 0777);
-}
+$response->send();
 
-return function (array $context) {
-    return new Kernel(
-        $context['APP_ENV'] ?? 'prod',
-        (bool) ($context['APP_DEBUG'] ?? false)
-    );
-};
+$kernel->terminate($request, $response);
