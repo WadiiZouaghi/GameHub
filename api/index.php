@@ -8,6 +8,9 @@ use App\Kernel;
 $cacheDir = $_ENV['SYMFONY_CACHE_DIR'] ?? '/tmp/cache';
 $logDir   = $_ENV['SYMFONY_LOG_DIR'] ?? '/tmp/log';
 
+$_SERVER['SYMFONY_CACHE_DIR'] = $_ENV['SYMFONY_CACHE_DIR'] = $cacheDir;
+$_SERVER['SYMFONY_LOG_DIR']   = $_ENV['SYMFONY_LOG_DIR']   = $logDir;
+
 $filesystem = new Filesystem();
 if (!$filesystem->exists($cacheDir)) {
     $filesystem->mkdir($cacheDir, 0777);
