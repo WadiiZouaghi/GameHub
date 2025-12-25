@@ -1,15 +1,18 @@
 <?php
 
-use Symfony\Component\Filesystem\Filesystem;
+$cacheDir = $_ENV['SYMFONY_CACHE_DIR'] ?? '/tmp/cache';
+$logDir   = $_ENV['SYMFONY_LOG_DIR'] ?? '/tmp/log';
 
-$fs = new Filesystem();
-$fs->mkdir($_ENV['SYMFONY_CACHE_DIR'] ?? '/tmp/cache', 0777);
-$fs->mkdir($_ENV['SYMFONY_LOG_DIR'] ?? '/tmp/log', 0777);
+@mkdir($cacheDir, 0777, true);
+@mkdir($logDir, 0777, true);
 
 use App\Kernel;
 
 require_once __DIR__ . '/../vendor/autoload_runtime.php';
 
 return function (array $context) {
-    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+    return new Kernel(
+        $context['APP_ENV'] ?? 'prod',
+        (bool) ($context['APP_DEBUG'] ?? false)
+    );
 };
