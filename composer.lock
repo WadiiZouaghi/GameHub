@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d9635806dbb0c8e75b61ea51f33075a",
+    "content-hash": "1659a61aac27387bcf45fdc95fca9e74",
     "packages": [
         {
             "name": "composer/semver",
@@ -3214,16 +3214,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v7.3.6",
+            "version": "v7.3.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "e9bcfd7837928ab656276fe00464092cc9e1826a"
+                "reference": "ce0b94a0e57b7499520d9e5150da9716d729a645"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/e9bcfd7837928ab656276fe00464092cc9e1826a",
-                "reference": "e9bcfd7837928ab656276fe00464092cc9e1826a",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/ce0b94a0e57b7499520d9e5150da9716d729a645",
+                "reference": "ce0b94a0e57b7499520d9e5150da9716d729a645",
                 "shasum": ""
             },
             "require": {
@@ -3260,7 +3260,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v7.3.6"
+                "source": "https://github.com/symfony/filesystem/tree/v7.3.8"
             },
             "funding": [
                 {
@@ -3280,7 +3280,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-05T09:52:27+00:00"
+            "time": "2025-11-26T15:55:45+00:00"
         },
         {
             "name": "symfony/finder",
