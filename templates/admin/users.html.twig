@@ -2,89 +2,14 @@
 
 {% block title %}Users Management - GameHub Admin{% endblock %}
 
-{% block body %}
-    <!-- Top Header Bar -->
-    <header class="admin-topbar">
-        <div class="admin-topbar-left">
-            <h1>GameHub Admin</h1>
-        </div>
-        <div class="admin-topbar-right">
-            <div class="admin-search">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search...">
-            </div>
-            <div class="admin-notifications">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="admin-user-menu">
-                <div class="admin-user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="admin-user-info">
-                    <div class="admin-user-name">Admin</div>
-                    <div class="admin-user-role">Administrator</div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Wrapper -->
-    <div class="admin-main-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="admin-sidebar-nav">
-            <div class="admin-sidebar-header">
-                <h2>GameHub Admin</h2>
-            </div>
-            <nav class="admin-sidebar-menu">
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">MAIN</div>
-                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
-                        <i class="fas fa-gamepad"></i>
-                        Games
-                    </a>
-                    <a href="{{ path('admin_users') }}" class="admin-menu-item active">
-                        <i class="fas fa-users"></i>
-                        Users
-                    </a>
-                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        Events
-                    </a>
-                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
-                        <i class="fas fa-star"></i>
-                        Reviews
-                    </a>
-                </div>
-
-                <div class="sidebar-section">
-                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="admin-main">
-            <div class="admin-main-content">
-                <!-- Users Management Section -->
+{% block content %}
+    <!-- Users Management Section -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h2>
                             <i class="fas fa-users"></i>
                             Users Management
                         </h2>
-                        <div class="section-actions">
-                            <a href="#" class="btn btn-primary btn-small">
-                                <i class="fas fa-plus"></i>
-                                Add User
-                            </a>
-                        </div>
                     </div>
 
                     <!-- Filters and Search -->
@@ -205,7 +130,4 @@
                         </div>
                     {% endif %}
                 </div>
-            </div>
-        </main>
-    </div>
 {% endblock %}

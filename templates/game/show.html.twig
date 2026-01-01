@@ -205,6 +205,7 @@
             const totalItems = track.children.length;
             const itemsPerView = 3;
             const maxIndex = Math.max(0, totalItems - itemsPerView);
+            let autoPlayInterval = null;
 
             function updateCarousel() {
                 const offset = currentIndex * itemWidth;
@@ -215,6 +216,20 @@
                     dot.classList.toggle('w-6', index === currentIndex);
                     dot.classList.toggle('bg-muted-foreground/40', index !== currentIndex);
                 });
+            }
+
+            function startAutoPlay() {
+                autoPlayInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % (maxIndex + 1);
+                    updateCarousel();
+                }, 3500);
+            }
+
+            function stopAutoPlay() {
+                if (autoPlayInterval) {
+                    clearInterval(autoPlayInterval);
+                    autoPlayInterval = null;
+                }
             }
 
             if (prevBtn) {
@@ -237,6 +252,9 @@
                     updateCarousel();
                 });
             });
+
+            gallery.addEventListener('mouseenter', stopAutoPlay);
+            gallery.addEventListener('mouseleave', startAutoPlay);
 
             let touchStartX = 0;
             let touchEndX = 0;
@@ -263,12 +281,14 @@
                     updateCarousel();
                 }
             }
+
+            startAutoPlay();
         });
     </script>
 {% endif %}
 
     <!-- SYSTEM REQUIREMENTS -->
-{% if game.minSystemRequirements or game.recommendedSystemRequirements %}
+{% if (game.minSystemRequirements and game.minSystemRequirements|length > 0) or (game.recommendedSystemRequirements and game.recommendedSystemRequirements|length > 0) %}
     <div class="border-b border-border/50 py-16">
         <div class="container mx-auto px-4">
             <div class="mb-10">
@@ -278,7 +298,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Minimum Requirements -->
-                {% if game.minSystemRequirements %}
+                {% if game.minSystemRequirements and game.minSystemRequirements|length > 0 %}
                     <div class="card-gaming p-8 border-l-4 border-l-yellow-500 bg-gradient-to-br from-yellow-500/5 to-yellow-500/10 rounded-xl shadow-lg shadow-yellow-500/10">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center">
@@ -299,7 +319,7 @@
                 {% endif %}
 
                 <!-- Recommended Requirements -->
-                {% if game.recommendedSystemRequirements %}
+                {% if game.recommendedSystemRequirements and game.recommendedSystemRequirements|length > 0 %}
                     <div class="card-gaming p-8 border-l-4 border-l-primary bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl shadow-lg shadow-primary/10">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
@@ -322,10 +342,6 @@
         </div>
     </div>
 {% endif %}
-
-            </div>
-        </div>
-    </div>
 
     <!-- WHY GAMEHUB -->
     <div class="border-b border-border/50 py-16">

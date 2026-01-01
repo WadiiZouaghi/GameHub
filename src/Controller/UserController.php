@@ -17,59 +17,31 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class UserController extends AbstractController
 {
     #[Route('/dashboard', name: 'user_dashboard')]
-    public function dashboard(
-        EventRepository $eventRepository,
-        GameRepository $gameRepository,
-        EntityManagerInterface $entityManager
-    ): Response
+    public function dashboard(EventRepository $eventRepo, GameRepository $gameRepo): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
+        $recentActivity = array_map(fn($r) => [
+            'type' => 'review',
+            'item' => $r,
+            'date' => $r->getCreatedAt(),
+            'action' => 'Reviewed',
+        ], $user->getReviews()->toArray());
 
-        // Get upcoming events (next 5)
-        $upcomingEvents = $eventRepository->findBy(
-            [],
-            ['date' => 'ASC'],
-            5
-        );
-
-        $recommendedGames = $gameRepository->findBy(
-            [],
-            ['id' => 'DESC'],
-            6
-        );
-
-        $recentActivity = [];
-
-        foreach ($user->getReviews() as $review) {
-            $recentActivity[] = [
-                'type' => 'review',
-                'item' => $review,
-                'date' => $review->getCreatedAt(),
-                'action' => 'Reviewed',
-            ];
-        }
-
-        usort($recentActivity, function($a, $b) {
-            return $b['date'] <=> $a['date'];
-        });
-        $recentActivity = array_slice($recentActivity, 0, 10);
+        usort($recentActivity, fn($a, $b) => $b['date'] <=> $a['date']);
 
         return $this->render('user/dashboard.html.twig', [
             'user' => $user,
-            'upcomingEvents' => $upcomingEvents,
-            'recommendedGames' => $recommendedGames,
-            'recentActivity' => $recentActivity,
+            'upcomingEvents' => $eventRepo->findBy([], ['date' => 'ASC'], 5),
+            'recommendedGames' => $gameRepo->findBy([], ['id' => 'DESC'], 6),
+            'recentActivity' => array_slice($recentActivity, 0, 10),
         ]);
     }
 
     #[Route('/profile', name: 'user_profile')]
-    public function profile(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        SluggerInterface $slugger
-    ): Response {
+    public function profile(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
@@ -77,39 +49,29 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Handle avatar upload
             $avatarFile = $form->get('avatar')->getData();
 
             if ($avatarFile) {
-                $originalFilename = pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $avatarFile->guessExtension();
+                $name = $slugger->slug(pathinfo($avatarFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $filename = $name . '-' . uniqid() . '.' . $avatarFile->guessExtension();
 
                 try {
-                    $avatarFile->move(
-                        $this->getParameter('avatars_directory'),
-                        $newFilename
-                    );
+                    $avatarFile->move($this->getParameter('avatars_directory'), $filename);
 
-                    // Remove old avatar if exists
                     if ($user->getAvatar()) {
-                        $oldAvatarPath = $this->getParameter('avatars_directory') . '/' . $user->getAvatar();
-                        if (file_exists($oldAvatarPath)) {
-                            unlink($oldAvatarPath);
-                        }
+                        $old = $this->getParameter('avatars_directory') . '/' . $user->getAvatar();
+                        if (file_exists($old)) unlink($old);
                     }
 
-                    $user->setAvatar('uploads/avatars/'.$newFilename);
+                    $user->setAvatar('uploads/avatars/' . $filename);
                 } catch (FileException $e) {
-                    $this->addFlash('error', 'Failed to upload avatar. Please try again.');
+                    $this->addFlash('error', 'Failed to upload avatar.');
                     return $this->redirectToRoute('user_profile');
                 }
             }
 
-            $entityManager->flush();
-
+            $em->flush();
             $this->addFlash('success', 'Profile updated successfully!');
-
             return $this->redirectToRoute('user_profile');
         }
 

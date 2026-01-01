@@ -54,6 +54,51 @@ html, body {
 }
 
 /* ===================================
+   Custom Scrollbar
+   =================================== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* ===================================
+   Visual Utility Classes
+   =================================== */
+.glass-panel {
+    background: rgba(26, 31, 58, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neon-border {
+    position: relative;
+    border: 1px solid rgba(0, 168, 232, 0.3);
+    box-shadow: 0 0 15px rgba(0, 168, 232, 0.1);
+}
+
+.neon-border:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 25px rgba(0, 168, 232, 0.3);
+}
+
+.text-glow {
+    text-shadow: 0 0 10px rgba(0, 168, 232, 0.5);
+}
+
+/* ===================================
    Main Header (Enhanced Gaming Style)
    =================================== */
 .main-header {

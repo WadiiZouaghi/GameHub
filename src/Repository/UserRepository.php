@@ -35,24 +35,35 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function getNewUsersTrendData(\DateTime $startDate): array
     {
-        $qb = $this->createQueryBuilder('u')
-            ->select('DATE(u.createdAt) as date, COUNT(u.id) as count')
-            ->where('u.createdAt >= :startDate')
-            ->setParameter('startDate', $startDate)
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->getQuery();
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "
+            SELECT DATE(created_at) as date, COUNT(id) as count
+            FROM user
+            WHERE created_at >= :startDate
+            GROUP BY DATE(created_at)
+            ORDER BY DATE(created_at) ASC
+        ";
 
-        $results = $qb->getResult();
-        
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery(['startDate' => $startDate->format('Y-m-d H:i:s')]);
+
         $data = [];
-        foreach ($results as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $data[] = [
                 'date' => $row['date'],
                 'count' => (int)$row['count']
             ];
         }
-        
+
         return $data;
+    }
+
+    public function findRecentUsers(int $limit = 10): array
+    {
+        return $this->createQueryBuilder('u')
+            ->orderBy('u.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -172,7 +172,7 @@
     }
 
     function shouldInitializeParticles() {
-        return document.body.classList.contains('login-page');
+        return !!document.getElementById('canvas');
     }
 
     // Initialize particles on page load

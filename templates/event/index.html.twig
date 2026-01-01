@@ -23,20 +23,15 @@
                     <!-- Image -->
                     <div class="relative h-48 overflow-hidden">
                         {% if event.image %}
-                            <img src="{{ event.image }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            <img src="{{ asset(event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        {% elseif event.game.coverImage %}
+                            <img src="{{ asset(event.game.coverImage) }}" alt="{{ event.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                         {% else %}
                             <div class="w-full h-full bg-muted flex items-center justify-center">
                                 <i class="fas fa-calendar text-muted-foreground w-12 h-12"></i>
                             </div>
                         {% endif %}
                         <div class="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent"></div>
-                        
-                        <!-- Prize Badge -->
-                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-primary/90 backdrop-blur-sm">
-                            <span class="text-sm font-bold text-primary-foreground">
-                                ${{ (loop.index * 1000)|number_format(0) }}
-                            </span>
-                        </div>
                     </div>
                     
                     <!-- Content -->

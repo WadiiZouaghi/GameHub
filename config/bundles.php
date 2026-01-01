@@ -16,4 +16,5 @@ return [
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => $env === 'dev'],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => $env === 'dev', 'test' => $env === 'test'],
+    KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
 ];

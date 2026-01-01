@@ -34,7 +34,7 @@
                 <select id="category-filter" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani focus:outline-none focus:border-primary">
                     <option value="">All Categories</option>
                     {% for category in categories %}
-                        <option value="{{ category }}">{{ category }}</option>
+                        <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -43,7 +43,7 @@
                 <label for="search-input" class="block text-sm font-orbitron font-semibold text-foreground mb-2">
                     <i class="fas fa-search text-primary mr-2"></i>Search Games
                 </label>
-                <input type="text" id="search-input" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani placeholder-muted-foreground focus:outline-none focus:border-primary" placeholder="Search by title...">
+                <input type="text" id="search-input" value="{{ search_query|default('') }}" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani placeholder-muted-foreground focus:outline-none focus:border-primary" placeholder="Search by title...">
             </div>
 
             <div>
@@ -51,62 +51,51 @@
                     <i class="fas fa-sort text-primary mr-2"></i>Sort By
                 </label>
                 <select id="sort-select" class="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground font-rajdhani focus:outline-none focus:border-primary">
-                    <option value="title_asc">Title (A-Z)</option>
-                    <option value="title_desc">Title (Z-A)</option>
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="genre">Genre</option>
+                    <option value="title_asc" {% if selected_sort == 'title_asc' %}selected{% endif %}>Title (A-Z)</option>
+                    <option value="title_desc" {% if selected_sort == 'title_desc' %}selected{% endif %}>Title (Z-A)</option>
+                    <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                    <option value="oldest" {% if selected_sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                    <option value="category" {% if selected_sort == 'category' %}selected{% endif %}>Category</option>
                 </select>
             </div>
         </div>
     </div>
 
     <!-- Games Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {% for game in games %}
-            <div class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
-                <a href="{{ path('game_show', {id: game.id}) }}" class="card-gaming overflow-hidden h-full flex flex-col block hover:shadow-lg hover:shadow-primary/20 transition-all duration-300">
-                    <!-- Image -->
-                    <div class="relative aspect-[3/4] overflow-hidden">
+            <div class="game-card group" 
+                 data-game-id="{{ game.id }}"
+                 {% if game.gallery and game.gallery|length > 0 %}
+                 data-gallery='{{ game.gallery|json_encode }}'
+                 {% endif %}>
+                <a href="{{ path('game_show', {id: game.id}) }}" class="block bg-card rounded overflow-hidden hover:shadow-lg transition-shadow">
+                    <!-- Image Container -->
+                    <div class="relative aspect-[16/9] overflow-hidden bg-muted">
                         {% if game.coverImage %}
-                            <img src="{{ asset(game.coverImage) }}" alt="{{ game.title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            <img src="{{ asset(game.coverImage) }}" 
+                                 alt="{{ game.title }}" 
+                                 class="game-main-image w-full h-full object-cover" />
                         {% else %}
-                            <div class="w-full h-full bg-muted flex flex-col items-center justify-center">
-                                <i class="fas fa-gamepad text-muted-foreground w-12 h-12 mb-2"></i>
-                                <span class="text-xs text-muted-foreground">{{ game.title|slice(0, 1)|upper }}</span>
+                            <div class="w-full h-full bg-muted flex items-center justify-center">
+                                <i class="fas fa-gamepad text-4xl text-muted-foreground/40"></i>
                             </div>
                         {% endif %}
-                        
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent"></div>
-                        
-                        <!-- Genre Badge -->
-                        <div class="absolute top-4 right-4 px-3 py-1 rounded-lg bg-background/80 backdrop-blur-sm">
-                            <span class="text-xs font-bold text-primary uppercase">{{ game.category }}</span>
-                        </div>
                     </div>
                     
                     <!-- Content -->
-                    <div class="p-4 flex-1 flex flex-col">
-                        <h3 class="font-orbitron text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
+                    <div class="p-3">
+                        <h3 class="font-semibold text-foreground mb-1 truncate">
                             {{ game.title }}
                         </h3>
                         
-                        <p class="text-sm text-muted-foreground mb-4 flex-1">
-                            {{ game.description|slice(0, 80) }}{% if game.description|length > 80 %}...{% endif %}
-                        </p>
-                        
-                        <div class="flex items-center gap-3 text-xs text-muted-foreground mb-4">
-                            <div class="flex items-center gap-1">
-                                <i class="fas fa-star text-yellow-500"></i>
-                                <span>{{ game.reviews|length }} reviews</span>
-                            </div>
-                        </div>
-                        
-                        <div class="flex gap-2">
-                            <span class="btn-gaming flex-1 text-center text-sm">
-                                <i class="fas fa-eye"></i> View
-                            </span>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-muted-foreground text-xs">{{ game.category }}</span>
+                            {% if game.price == 0 %}
+                                <span class="text-green-500 font-semibold">Free</span>
+                            {% else %}
+                                <span class="text-foreground font-semibold">${{ game.price|number_format(2) }}</span>
+                            {% endif %}
                         </div>
                     </div>
                 </a>
@@ -141,7 +130,6 @@
 {% block javascripts %}
 {{ parent() }}
 <script>
-    // Filter and sort UI triggers full page reload to backend filtering with query parameters
     document.addEventListener('DOMContentLoaded', () => {
         const categoryFilter = document.getElementById('category-filter');
         const searchInput = document.getElementById('search-input');
@@ -166,6 +154,49 @@
             }
         });
         sortSelect.addEventListener('change', submitFilters);
+
+        // Gallery preview on hover (Steam-like)
+        const gameCards = document.querySelectorAll('.game-card');
+        
+        gameCards.forEach(card => {
+            const gallery = card.dataset.gallery;
+            if (!gallery) return;
+            
+            let images = [];
+            try {
+                images = JSON.parse(gallery);
+            } catch (e) {
+                return;
+            }
+            
+            if (images.length === 0) return;
+            
+            const imgElement = card.querySelector('.game-main-image');
+            if (!imgElement) return;
+            
+            const originalSrc = imgElement.src;
+            let currentIndex = 0;
+            let interval = null;
+            
+            card.addEventListener('mouseenter', () => {
+                if (images.length === 0) return;
+                
+                currentIndex = 0;
+                interval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % images.length;
+                    const newSrc = '{{ asset('') }}' + images[currentIndex];
+                    imgElement.src = newSrc;
+                }, 800);
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (interval) {
+                    clearInterval(interval);
+                    interval = null;
+                }
+                imgElement.src = originalSrc;
+            });
+        });
     });
 </script>
 {% endblock %}

@@ -104,7 +104,7 @@
         }
 
         .admin-main-content {
-            padding: 2rem;
+            padding: 1.5rem;
             max-width: 1600px;
             margin: 0 auto;
             width: 100%;
@@ -342,22 +342,22 @@
             color: hsl(var(--muted-foreground));
         }
 
-        /* Minimal Gaming KPI Cards */
+        /* Compact KPI Cards */
         .admin-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .stat-card {
-            background: hsl(var(--card));
+            background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--dark-elevated)) 100%);
             border: 1px solid hsl(var(--border));
-            border-radius: var(--radius);
-            padding: 2rem;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
             display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             color: hsl(var(--card-foreground));
             transition: all 0.3s ease;
             position: relative;
@@ -370,34 +370,35 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)));
         }
 
         .stat-card:hover {
             border-color: hsl(var(--primary));
-            box-shadow: 0 8px 25px hsl(var(--primary) / 0.15);
+            box-shadow: 0 4px 15px hsl(var(--primary) / 0.15);
             transform: translateY(-2px);
         }
 
         .stat-icon {
-            width: 56px;
-            height: 56px;
+            width: 42px;
+            height: 42px;
             background: hsl(var(--muted));
             border: 1px solid hsl(var(--border));
-            border-radius: 0.5rem;
+            border-radius: 0.4rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: hsl(var(--foreground));
-            font-size: 1.5rem;
+            color: hsl(var(--primary));
+            font-size: 1.2rem;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
 
         .stat-content h3 {
-            margin: 0 0 0.25rem 0;
-            font-size: 2.5rem;
+            margin: 0 0 0.2rem 0;
+            font-size: 1.75rem;
             color: hsl(var(--foreground));
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
@@ -406,15 +407,15 @@
         }
 
         .stat-content p {
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 0.25rem 0;
             color: hsl(var(--muted-foreground));
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             position: relative;
             z-index: 1;
         }
 
         .stat-change {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: hsl(var(--primary));
             font-weight: 600;
             position: relative;
@@ -425,13 +426,13 @@
             color: hsl(var(--destructive));
         }
 
-        /* Minimal Gaming Sections */
+        /* Compact Sections */
         .admin-section {
             background: hsl(var(--card));
             border: 1px solid hsl(var(--border));
             border-radius: var(--radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             color: hsl(var(--card-foreground));
         }
 
@@ -439,21 +440,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid hsl(var(--border));
         }
 
         .section-header h2 {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             font-family: 'Orbitron', sans-serif;
             font-weight: 600;
             color: hsl(var(--foreground));
-            font-size: 1.2rem;
+            font-size: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         /* Minimal Gaming Tables */
@@ -613,30 +614,178 @@
             border-color: hsl(var(--destructive) / 0.8);
         }
 
-        /* Minimal Gaming Charts */
+        /* Admin Select */
+        .admin-select {
+            background: hsl(var(--input));
+            border: 1px solid hsl(var(--border));
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: hsl(var(--foreground));
+            font-size: 0.9rem;
+            font-family: 'Rajdhani', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-select:focus {
+            outline: none;
+            border-color: hsl(var(--primary));
+            box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+        }
+
+        .admin-select option {
+            background: hsl(var(--card));
+            color: hsl(var(--foreground));
+        }
+
+        /* Compact Charts */
         .charts-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 0;
         }
 
         .chart-wrapper {
-            background: hsl(var(--card));
+            background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--dark-elevated)) 100%);
             border: 1px solid hsl(var(--border));
-            border-radius: var(--radius);
-            padding: 1.5rem;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .chart-wrapper:hover {
+            border-color: hsl(var(--primary));
+            box-shadow: 0 4px 15px hsl(var(--primary) / 0.1);
         }
 
         .chart-wrapper h3 {
-            margin: 0 0 1rem 0;
+            margin: 0 0 0.5rem 0;
             color: hsl(var(--foreground));
-            font-size: 1.1rem;
-            text-align: center;
+            font-size: 0.75rem;
+            text-align: left;
             font-weight: 600;
             font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .chart-wrapper h3 i {
+            color: hsl(var(--primary));
+            font-size: 0.75rem;
+        }
+
+        .chart-wrapper canvas {
+            max-height: 80px !important;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.95rem;
+            border: 1px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: hsl(var(--primary) / 0.1);
+            border-color: hsl(var(--primary) / 0.3);
+            color: hsl(var(--primary));
+        }
+
+        .alert-error, .alert-danger {
+            background: hsl(var(--destructive) / 0.1);
+            border-color: hsl(var(--destructive) / 0.3);
+            color: hsl(var(--destructive));
+        }
+
+        .alert-warning {
+            background: hsl(var(--secondary) / 0.1);
+            border-color: hsl(var(--secondary) / 0.3);
+            color: hsl(var(--secondary));
+        }
+
+        .alert-info {
+            background: hsl(var(--muted));
+            border-color: hsl(var(--border));
+            color: hsl(var(--foreground));
+        }
+
+        .alert i {
+            font-size: 1.2rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+
+        /* User Cell */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-avatar.small {
+            width: 32px;
+            height: 32px;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: hsl(var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: hsl(var(--primary-foreground));
+            font-weight: 600;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .avatar-placeholder.small {
+            width: 32px;
+            height: 32px;
+            font-size: 0.85rem;
+        }
+
+        /* Stats Filters */
+        .stats-filters {
+            display: flex;
+            gap: 0.5rem;
         }
 
         /* Responsive */
@@ -646,11 +795,7 @@
             }
 
             .admin-stats {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-
-            .charts-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
         }
 
@@ -670,13 +815,98 @@
             .charts-container {
                 grid-template-columns: 1fr;
             }
+
+            .admin-main-content {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="admin-wrapper">
         <div class="admin-layout">
-            {% block body %}{% endblock %}
+            <header class="admin-topbar">
+                <div class="admin-topbar-left">
+                    <h1>GameHub Admin</h1>
+                </div>
+                <div class="admin-topbar-right">
+                    <div class="admin-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="admin-notifications">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="admin-user-menu">
+                        <div class="admin-user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="admin-user-info">
+                            <div class="admin-user-name">{{ app.user.username ?? 'Admin' }}</div>
+                            <div class="admin-user-role">Administrator</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="admin-main-wrapper">
+                <aside class="admin-sidebar-nav">
+                    <div class="admin-sidebar-header">
+                        <h2>GameHub Admin</h2>
+                    </div>
+                    <nav class="admin-sidebar-menu">
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-title">MAIN</div>
+                            <a href="{{ path('admin_dashboard') }}" class="admin-menu-item {% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}">
+                                <i class="fas fa-tachometer-alt"></i>
+                                Dashboard
+                            </a>
+                            <a href="{{ path('admin_games') }}" class="admin-menu-item {% if app.request.get('_route') starts with 'admin_games' %}active{% endif %}">
+                                <i class="fas fa-gamepad"></i>
+                                Games
+                            </a>
+                            <a href="{{ path('admin_users') }}" class="admin-menu-item {% if app.request.get('_route') starts with 'admin_users' %}active{% endif %}">
+                                <i class="fas fa-users"></i>
+                                Users
+                            </a>
+                            <a href="{{ path('admin_events') }}" class="admin-menu-item {% if app.request.get('_route') starts with 'admin_events' %}active{% endif %}">
+                                <i class="fas fa-calendar-alt"></i>
+                                Events
+                            </a>
+                            <a href="{{ path('admin_reviews') }}" class="admin-menu-item {% if app.request.get('_route') starts with 'admin_reviews' %}active{% endif %}">
+                                <i class="fas fa-star"></i>
+                                Reviews
+                            </a>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <a href="{{ path('app_home') }}" class="admin-menu-item">
+                                <i class="fas fa-home"></i>
+                                Back to Site
+                            </a>
+                            <a href="{{ path('app_logout') }}" class="admin-menu-item">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </nav>
+                </aside>
+
+                <main class="admin-main">
+                    <div class="admin-main-content">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} mb-4">
+                                    <i class="fas fa-{{ label == 'success' ? 'check-circle' : (label == 'error' or label == 'danger' ? 'exclamation-circle' : 'info-circle') }}"></i>
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% block content %}{% endblock %}
+                    </div>
+                </main>
+            </div>
         </div>
     </div>
 </body>

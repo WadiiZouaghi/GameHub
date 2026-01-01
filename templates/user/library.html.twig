@@ -1,209 +1,195 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}My Game Library{% endblock %}
+{% block title %}My Library{% endblock %}
 
 {% block body %}
-<div class="library-container">
-    <div class="library-header">
-        <h1>My Game Library</h1>
-        <p class="library-count">{{ purchases|length }} games owned</p>
-    </div>
-
-    {% if purchases is empty %}
-        <div class="empty-library">
-            <div class="empty-icon">🎮</div>
-            <h2>Your library is empty</h2>
-            <p>Start building your collection by purchasing games from our store!</p>
-            <a href="{{ path('game_index') }}" class="btn btn-primary">Browse Games</a>
-        </div>
-    {% else %}
-        <div class="games-grid">
-            {% for purchase in purchases %}
-                <div class="game-card library-card">
-                    <div class="game-cover">
-                        {% if purchase.game.coverImage %}
-                            <img src="{{ asset('uploads/covers/' ~ purchase.game.coverImage) }}" alt="{{ purchase.game.title }}">
-                        {% else %}
-                            <div class="no-cover">🎮</div>
-                        {% endif %}
-                    </div>
-                    <div class="game-info">
-                        <h3>{{ purchase.game.title }}</h3>
-                        <p class="game-genre">{{ purchase.game.category }}</p>
-                        <div class="purchase-info">
-                            <small>Purchased: {{ purchase.purchaseDate|date('M j, Y') }}</small>
-                        </div>
-                        <div class="game-actions">
-                            <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="btn btn-secondary btn-sm">View Details</a>
-                            {% if purchase.game.reviews|length == 0 %}
-                                <a href="{{ path('game_show', {'id': purchase.game.id}) }}#review-section" class="btn btn-outline-primary btn-sm">Write Review</a>
-                            {% endif %}
-                        </div>
-                    </div>
+<div class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-24">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="mb-12 flex items-center justify-between">
+                <div>
+                    <h1 class="font-orbitron text-3xl font-bold text-foreground mb-2">My Library</h1>
+                    <p class="text-muted-foreground font-rajdhani">{{ purchases|length }} {{ purchases|length == 1 ? 'game' : 'games' }}</p>
                 </div>
-            {% endfor %}
+                
+                {% if purchases is not empty %}
+                    <div class="flex gap-2">
+                        <button id="gridViewBtn" class="px-4 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20 font-rajdhani transition-colors">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button id="listViewBtn" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground border border-border font-rajdhani transition-colors">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if purchases is empty %}
+                <!-- Empty State -->
+                <div class="text-center py-20">
+                    <i class="fas fa-gamepad text-6xl text-muted-foreground/30 mb-6"></i>
+                    <h2 class="font-orbitron text-2xl font-bold text-foreground mb-3">No games yet</h2>
+                    <p class="text-muted-foreground font-rajdhani mb-8">Start building your collection</p>
+                    <a href="{{ path('game_index') }}" class="btn-hero inline-flex items-center gap-2">
+                        <i class="fas fa-store"></i>
+                        Browse Games
+                    </a>
+                </div>
+            {% else %}
+                <!-- Games Grid -->
+                <div id="gridView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    {% for purchase in purchases %}
+                        <div class="group">
+                            <!-- Game Cover -->
+                            <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="block relative aspect-[3/4] rounded-lg overflow-hidden bg-card border border-border/50 hover:border-primary/50 transition-all mb-3">
+                                {% if purchase.game.coverImage %}
+                                    <img src="{{ asset(purchase.game.coverImage) }}" 
+                                         alt="{{ purchase.game.title }}" 
+                                         class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full bg-muted flex items-center justify-center">
+                                        <i class="fas fa-gamepad text-4xl text-muted-foreground/40"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Hover Overlay -->
+                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i class="fas fa-play text-white text-2xl"></i>
+                                </div>
+                            </a>
+
+                            <!-- Game Info -->
+                            <div class="space-y-2">
+                                <h3 class="font-rajdhani font-semibold text-foreground text-sm line-clamp-2 leading-tight">
+                                    {{ purchase.game.title }}
+                                </h3>
+                                
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-xs text-muted-foreground font-rajdhani">
+                                        {{ purchase.game.category }}
+                                    </span>
+                                    <button onclick="confirmDelete({{ purchase.id }}, '{{ purchase.game.title|e('js') }}')" 
+                                            class="text-muted-foreground hover:text-destructive transition-colors"
+                                            title="Remove from library">
+                                        <i class="fas fa-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Games List -->
+                <div id="listView" class="hidden space-y-2">
+                    {% for purchase in purchases %}
+                        <div class="group bg-card border border-border/50 hover:border-primary/30 rounded-lg p-4 transition-all">
+                            <div class="flex items-center gap-4">
+                                <!-- Thumbnail -->
+                                <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="flex-shrink-0">
+                                    <div class="w-20 h-28 rounded-lg overflow-hidden bg-muted border border-border/30">
+                                        {% if purchase.game.coverImage %}
+                                            <img src="{{ asset(purchase.game.coverImage) }}" 
+                                                 alt="{{ purchase.game.title }}" 
+                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform">
+                                        {% else %}
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-gamepad text-2xl text-muted-foreground/40"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+
+                                <!-- Game Info -->
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-rajdhani font-bold text-foreground text-lg mb-1 truncate">
+                                        {{ purchase.game.title }}
+                                    </h3>
+                                    <div class="flex items-center gap-4 text-sm text-muted-foreground font-rajdhani">
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fas fa-tag text-xs"></i>
+                                            {{ purchase.game.category }}
+                                        </span>
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fas fa-calendar text-xs"></i>
+                                            {{ purchase.purchaseDate|date('M d, Y') }}
+                                        </span>
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fas fa-dollar-sign text-xs"></i>
+                                            {{ purchase.game.price|number_format(2) }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex items-center gap-3">
+                                    <button onclick="confirmDelete({{ purchase.id }}, '{{ purchase.game.title|e('js') }}')" 
+                                            class="px-4 py-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/30 transition-colors"
+                                            title="Remove from library">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
 </div>
 
-<style>
-.library-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+    <div class="bg-card max-w-md w-full rounded-xl border border-border p-6">
+        <h3 class="font-orbitron text-xl font-bold text-foreground mb-3">Remove from Library?</h3>
+        <p class="text-muted-foreground font-rajdhani mb-6">
+            Are you sure you want to remove <span id="gameName" class="text-foreground font-semibold"></span> from your library?
+        </p>
+        
+        <div class="flex gap-3">
+            <button onclick="closeModal()" class="flex-1 px-4 py-2 rounded-lg border border-border text-foreground hover:bg-muted transition-colors font-rajdhani">
+                Cancel
+            </button>
+            <form id="deleteForm" method="post" class="flex-1">
+                <button type="submit" class="w-full px-4 py-2 rounded-lg bg-destructive hover:bg-destructive/80 text-destructive-foreground font-rajdhani transition-colors">
+                    Remove
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
-.library-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
+<script>
+    const modal = document.getElementById('deleteModal');
 
-.library-header h1 {
-    color: #fff;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
+    window.confirmDelete = (id, name) => {
+        document.getElementById('gameName').textContent = name;
+        document.getElementById('deleteForm').action = '{{ path('library_remove', {'id': '__ID__'}) }}'.replace('__ID__', id);
+        modal.classList.replace('hidden', 'flex');
+    };
 
-.library-count {
-    color: #888;
-    font-size: 1.1rem;
-}
+    window.closeModal = () => modal.classList.replace('flex', 'hidden');
 
-.empty-library {
-    text-align: center;
-    padding: 80px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    margin: 40px 0;
-}
+    modal.addEventListener('click', e => e.target.id === 'deleteModal' && closeModal());
+    document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
 
-.empty-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
-}
+    const [gridBtn, listBtn, gridView, listView] = ['gridViewBtn', 'listViewBtn', 'gridView', 'listView'].map(id => document.getElementById(id));
 
-.empty-library h2 {
-    color: #fff;
-    margin-bottom: 10px;
-}
+    if (gridBtn && listBtn) {
+        const activeClasses = ['bg-primary/10', 'text-primary', 'border-primary/20'];
+        const inactiveClasses = ['hover:bg-muted', 'text-muted-foreground', 'border-border'];
+        
+        const toggleView = (show, hide, activeBtn, inactiveBtn) => {
+            show.classList.remove('hidden');
+            hide.classList.add('hidden');
+            activeBtn.classList.add(...activeClasses);
+            activeBtn.classList.remove(...inactiveClasses);
+            inactiveBtn.classList.remove(...activeClasses);
+            inactiveBtn.classList.add(...inactiveClasses);
+        };
 
-.empty-library p {
-    color: #888;
-    margin-bottom: 30px;
-}
-
-.games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.game-card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.game-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-}
-
-.game-cover {
-    height: 200px;
-    overflow: hidden;
-    position: relative;
-}
-
-.game-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.no-cover {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    font-size: 3rem;
-}
-
-.game-info {
-    padding: 20px;
-}
-
-.game-info h3 {
-    color: #fff;
-    margin: 0 0 8px 0;
-    font-size: 1.2rem;
-}
-
-.game-genre {
-    color: #4CAF50;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-.purchase-info {
-    margin-bottom: 15px;
-}
-
-.purchase-info small {
-    color: #888;
-}
-
-.game-actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: #007bff;
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #0056b3;
-}
-
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background: #545b62;
-}
-
-.btn-outline-primary {
-    background: transparent;
-    color: #007bff;
-    border: 1px solid #007bff;
-}
-
-.btn-outline-primary:hover {
-    background: #007bff;
-    color: white;
-}
-
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-}
-</style>
+        gridBtn.addEventListener('click', () => toggleView(gridView, listView, gridBtn, listBtn));
+        listBtn.addEventListener('click', () => toggleView(listView, gridView, listBtn, gridBtn));
+    }
+</script>
 {% endblock %}

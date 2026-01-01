@@ -2,77 +2,8 @@
 
 {% block title %}Admin Dashboard - GameHub Admin{% endblock %}
 
-{% block body %}
-    <!-- Top Header Bar -->
-    <header class="admin-topbar">
-        <div class="admin-topbar-left">
-            <h1>GameHub Admin</h1>
-        </div>
-        <div class="admin-topbar-right">
-            <div class="admin-search">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search...">
-            </div>
-            <div class="admin-notifications">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="admin-user-menu">
-                <div class="admin-user-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="admin-user-info">
-                    <div class="admin-user-name">Admin</div>
-                    <div class="admin-user-role">Administrator</div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content Wrapper -->
-    <div class="admin-main-wrapper">
-        <!-- Sidebar Navigation -->
-        <aside class="admin-sidebar-nav">
-            <div class="admin-sidebar-header">
-                <h2>GameHub Admin</h2>
-            </div>
-            <nav class="admin-sidebar-menu">
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">MAIN</div>
-                    <a href="{{ path('admin_dashboard') }}" class="admin-menu-item active">
-                        <i class="fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                    <a href="{{ path('admin_games') }}" class="admin-menu-item">
-                        <i class="fas fa-gamepad"></i>
-                        Games
-                    </a>
-                    <a href="{{ path('admin_users') }}" class="admin-menu-item">
-                        <i class="fas fa-users"></i>
-                        Users
-                    </a>
-                    <a href="{{ path('admin_events') }}" class="admin-menu-item">
-                        <i class="fas fa-calendar-alt"></i>
-                        Events
-                    </a>
-                    <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
-                        <i class="fas fa-star"></i>
-                        Reviews
-                    </a>
-                </div>
-
-                <div class="sidebar-section">
-                    <a href="{{ path('app_logout') }}" class="admin-menu-item">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </div>
-            </nav>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="admin-main">
-            <div class="admin-main-content">
-                <!-- Statistics Cards -->
+{% block content %}
+    <!-- Statistics Cards -->
                 <div class="admin-stats">
                     <div class="stat-card">
                         <div class="stat-icon">
@@ -81,7 +12,7 @@
                         <div class="stat-content">
                             <h3>{{ stats.totalUsers }}</h3>
                             <p>Total Users</p>
-                            <span class="stat-change">+12% this month</span>
+                            <span class="stat-change">Active members</span>
                         </div>
                     </div>
 
@@ -92,7 +23,7 @@
                         <div class="stat-content">
                             <h3>{{ stats.totalGames }}</h3>
                             <p>Games Available</p>
-                            <span class="stat-change">+5 this week</span>
+                            <span class="stat-change">In library</span>
                         </div>
                     </div>
 
@@ -103,7 +34,29 @@
                         <div class="stat-content">
                             <h3>{{ stats.totalEvents }}</h3>
                             <p>Events Created</p>
-                            <span class="stat-change">Active events</span>
+                            <span class="stat-change">Total events</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalReviews }}</h3>
+                            <p>Reviews</p>
+                            <span class="stat-change">User feedback</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ stats.totalPurchases }}</h3>
+                            <p>Purchases</p>
+                            <span class="stat-change">Total sales</span>
                         </div>
                     </div>
                 </div>
@@ -126,8 +79,12 @@
 
                     <div class="charts-container">
                         <div class="chart-wrapper">
-                            <h3>User Registrations</h3>
-                            <canvas id="usersChart" width="400" height="200"></canvas>
+                            <h3><i class="fas fa-users"></i> Users</h3>
+                            <canvas id="usersChart"></canvas>
+                        </div>
+                        <div class="chart-wrapper">
+                            <h3><i class="fas fa-gamepad"></i> Games</h3>
+                            <canvas id="gamesChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -181,9 +138,6 @@
                         </table>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -192,48 +146,115 @@
         // Initialize Charts
         const usersCtx = document.getElementById('usersChart').getContext('2d');
 
-        const usersData = {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'New Users',
-                data: [15, 22, 8, 12],
-                borderColor: '#888888',
-                backgroundColor: 'rgba(136, 136, 136, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
+        // Prepare user registration data from PHP
+        const userTrendData = {{ userTrendData|json_encode|raw }};
+        const gameTrendData = {{ gameTrendData|json_encode|raw }};
+
+        // Chart colors
+        const primaryColor = 'rgba(0, 191, 230, 1)';
+        const primaryColorLight = 'rgba(0, 191, 230, 0.1)';
+        const borderColor = 'rgba(255, 255, 255, 0.1)';
+        const textColor = 'rgba(255, 255, 255, 0.6)';
+
+        // Helper function to create chart data
+        function createChartData(trendData, label) {
+            const labels = trendData.map(item => {
+                const date = new Date(item.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            const data = trendData.map(item => item.count);
+
+            return {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: primaryColor,
+                    backgroundColor: primaryColorLight,
+                    tension: 0.4,
+                    fill: true
+                }]
+            };
+        }
+
+        // Chart options
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            aspectRatio: 3,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: primaryColor,
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: borderColor,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 10
+                        },
+                        maxTicksLimit: 4
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: textColor,
+                        font: {
+                            size: 10
+                        },
+                        maxRotation: 0,
+                        maxTicksLimit: 7
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 2,
+                    hitRadius: 10,
+                    hoverRadius: 4,
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor
+                },
+                line: {
+                    borderWidth: 2
+                }
+            }
         };
 
+        // Initialize Users Chart
+        const usersData = createChartData(userTrendData, 'New Users');
         new Chart(usersCtx, {
             type: 'line',
             data: usersData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#333333'
-                        },
-                        ticks: {
-                            color: '#AAAAAA'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: '#333333'
-                        },
-                        ticks: {
-                            color: '#AAAAAA'
-                        }
-                    }
-                }
-            }
+            options: chartOptions
+        });
+
+        // Initialize Games Chart
+        const gamesCtx = document.getElementById('gamesChart').getContext('2d');
+        const gamesData = createChartData(gameTrendData, 'New Games');
+        new Chart(gamesCtx, {
+            type: 'line',
+            data: gamesData,
+            options: chartOptions
         });
 
         // Stats period filter

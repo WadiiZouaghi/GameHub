@@ -2,52 +2,18 @@
 
 {% block title %}Edit Game - GameHub Admin{% endblock %}
 
-{% block body %}
-<div class="admin-main-wrapper">
-    <aside class="admin-sidebar-nav">
-        <div class="admin-sidebar-header">
-            <h2>GameHub Admin</h2>
+{% block content %}
+    <div class="admin-header" style="margin-bottom: 2rem;">
+        <div class="admin-welcome" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="admin-avatar" style="width: 50px; height: 50px; background: hsl(var(--primary) / 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-gamepad" style="color: hsl(var(--primary)); font-size: 1.5rem;"></i>
+            </div>
+            <div class="welcome-content">
+                <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.75rem; font-weight: 700; color: hsl(var(--foreground)); margin: 0;">Edit Game</h1>
+                <p style="color: hsl(var(--muted-foreground)); margin: 0.25rem 0 0 0;">Update game details</p>
+            </div>
         </div>
-        <nav class="admin-sidebar-menu">
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">MAIN</div>
-                <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Dashboard
-                </a>
-                <a href="{{ path('admin_games') }}" class="admin-menu-item active">
-                    <i class="fas fa-gamepad"></i>
-                    Games
-                </a>
-                <a href="{{ path('admin_users') }}" class="admin-menu-item">
-                    <i class="fas fa-users"></i>
-                    Users
-                </a>
-                <a href="{{ path('admin_events') }}" class="admin-menu-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    Events
-                </a>
-                <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
-                    <i class="fas fa-star"></i>
-                    Reviews
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <main class="admin-main">
-        <div class="admin-main-content">
-            <div class="admin-header">
-                <div class="admin-welcome">
-                    <div class="admin-avatar">
-                        <i class="fas fa-gamepad"></i>
-                    </div>
-                    <div class="welcome-content">
-                        <h1>Edit Game</h1>
-                        <p>Update game details</p>
-                    </div>
-                </div>
-            </div>
+    </div>
 
             <div class="admin-section">
                 <div class="section-header">
@@ -124,6 +90,13 @@
                     <!-- Cover Image -->
                     <div class="form-group form-group-full">
                         {{ form_label(form.coverImage) }}
+                        {% if game.coverImage %}
+                            <div style="margin-bottom: 1rem;">
+                                <p style="color: rgba(200, 200, 200, 0.8); margin-bottom: 0.5rem;">Current cover image:</p>
+                                <img src="{{ asset(game.coverImage) }}" alt="Current Cover" style="max-width: 200px; max-height: 300px; border-radius: 8px; border: 2px solid rgba(0, 212, 255, 0.3);">
+                                <p style="color: rgba(200, 200, 200, 0.6); font-size: 0.85rem; margin-top: 0.5rem;">Upload a new image to replace the current one (leave empty to keep current)</p>
+                            </div>
+                        {% endif %}
                         <div class="file-upload-container">
                             <div class="file-upload-area" id="cover-upload-area">
                                 <div class="upload-icon">
@@ -145,6 +118,17 @@
                     <!-- Gallery Images -->
                     <div class="form-group form-group-full">
                         {{ form_label(form.gallery) }}
+                        {% if game.gallery and game.gallery|length > 0 %}
+                            <div style="margin-bottom: 1rem;">
+                                <p style="color: rgba(200, 200, 200, 0.8); margin-bottom: 0.5rem;">Current gallery images ({{ game.gallery|length }}):</p>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                    {% for image in game.gallery %}
+                                        <img src="{{ asset(image) }}" alt="Gallery Image" style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 2px solid rgba(0, 212, 255, 0.3);">
+                                    {% endfor %}
+                                </div>
+                                <p style="color: rgba(200, 200, 200, 0.6); font-size: 0.85rem;">Upload new images to replace the current gallery (leave empty to keep current)</p>
+                            </div>
+                        {% endif %}
                         <div class="file-upload-container">
                             <div class="file-upload-area" id="gallery-upload-area">
                                 <div class="upload-icon">
@@ -236,9 +220,6 @@
                     </div>
                 {{ form_end(form) }}
             </div>
-        </div>
-    </main>
-</div>
 
 <style>
 .admin-form {
@@ -248,21 +229,22 @@
 .section-divider {
     margin: 2rem 0 1.5rem 0;
     padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(0, 212, 255, 0.2);
+    border-bottom: 2px solid hsl(var(--border));
 }
 
 .section-divider h3 {
     margin: 0;
-    color: var(--white);
+    color: hsl(var(--foreground));
     font-size: 1.2rem;
     font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .section-divider i {
-    color: #00D4FF;
+    color: hsl(var(--primary));
 }
 
 .form-grid {
@@ -284,41 +266,36 @@
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--white);
+    color: hsl(var(--foreground));
     font-weight: 600;
     font-size: 0.95rem;
-}
-
-.form-group label::after {
-    content: '';
-    color: #00D4FF;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .form-control {
     width: 100%;
-    background: rgba(50, 50, 50, 0.8);
-    border: 1px solid rgba(200, 200, 200, 0.2);
-    border-radius: 8px;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
     padding: 0.875rem 1rem;
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
+    color: hsl(var(--foreground));
+    font-family: 'Rajdhani', sans-serif;
     font-size: 0.95rem;
     transition: all 0.3s ease;
 }
 
 .form-control::placeholder {
-    color: rgba(200, 200, 200, 0.5);
+    color: hsl(var(--muted-foreground));
 }
 
 .form-control:hover {
-    border-color: rgba(0, 212, 255, 0.5);
+    border-color: hsl(var(--primary) / 0.5);
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #00D4FF;
-    background: rgba(50, 50, 50, 1);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
 }
 
 .form-control[rows] {
@@ -331,11 +308,11 @@
 }
 
 .file-upload-area {
-    border: 2px dashed rgba(0, 212, 255, 0.4);
-    border-radius: 12px;
+    border: 2px dashed hsl(var(--border));
+    border-radius: 0.75rem;
     padding: 3rem 2rem;
     text-align: center;
-    background: rgba(50, 50, 50, 0.8);
+    background: hsl(var(--muted));
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
@@ -343,33 +320,35 @@
 }
 
 .file-upload-area:hover {
-    border-color: #00D4FF;
-    background: rgba(0, 212, 255, 0.1);
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.1);
     transform: translateY(-2px);
 }
 
 .file-upload-area.dragover {
-    border-color: #00D4FF;
-    background: rgba(0, 212, 255, 0.15);
+    border-color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.15);
 }
 
 .upload-icon {
     font-size: 3rem;
-    color: #00D4FF;
+    color: hsl(var(--primary));
     margin-bottom: 1rem;
 }
 
 .upload-text strong {
     display: block;
-    color: var(--white);
+    color: hsl(var(--foreground));
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .upload-text p {
-    color: rgba(200, 200, 200, 0.6);
+    color: hsl(var(--muted-foreground));
     margin: 0;
     font-size: 0.9rem;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .file-input {
@@ -388,7 +367,8 @@
 }
 
 .upload-preview img {
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
 }
 
 .gallery-preview {
@@ -403,9 +383,9 @@
 
 .preview-item {
     position: relative;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     overflow: hidden;
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    border: 1px solid hsl(var(--border));
 }
 
 .preview-item img {
@@ -418,8 +398,8 @@
     position: absolute;
     top: 5px;
     right: 5px;
-    background: rgba(255, 0, 0, 0.8);
-    color: white;
+    background: hsl(var(--destructive));
+    color: hsl(var(--destructive-foreground));
     border: none;
     border-radius: 50%;
     width: 24px;
@@ -433,7 +413,7 @@
 }
 
 .preview-item .remove-btn:hover {
-    background: rgba(255, 0, 0, 1);
+    background: hsl(var(--destructive) / 0.8);
 }
 
 .form-actions {

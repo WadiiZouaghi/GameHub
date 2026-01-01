@@ -19,6 +19,8 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
         $user = $token->getUser();
         
         if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            // Force redirection to admin dashboard even if a target path exists in session
+            $request->getSession()->remove('_security.main.target_path');
             return new RedirectResponse($this->router->generate('admin_dashboard'));
         }
 

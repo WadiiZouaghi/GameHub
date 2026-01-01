@@ -1,52 +1,21 @@
-{% extends 'admin/dashboard.html.twig' %}
+{% extends 'admin.html.twig' %}
 
 {% block title %}Edit Event - GameHub Admin{% endblock %}
 
-{% block body %}
-<div class="admin-layout">
-    <aside class="admin-sidebar-nav">
-        <div class="admin-sidebar-header">
-            <h2>GameHub Admin</h2>
-        </div>
-        <nav class="admin-sidebar-menu">
-            <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
-                <i class="fas fa-tachometer-alt"></i>
-                Dashboard
-            </a>
-            <a href="{{ path('admin_games') }}" class="admin-menu-item">
-                <i class="fas fa-gamepad"></i>
-                Games
-            </a>
-            <a href="{{ path('admin_users') }}" class="admin-menu-item">
-                <i class="fas fa-users"></i>
-                Users
-            </a>
-            <a href="{{ path('admin_events') }}" class="admin-menu-item active">
-                <i class="fas fa-calendar-alt"></i>
-                Events
-            </a>
-            <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
-                <i class="fas fa-star"></i>
-                Reviews
-            </a>
-        </nav>
-    </aside>
-
-    <main class="admin-main">
-        <div class="admin-main-content">
-            <div class="admin-header">
-                <div class="admin-welcome">
-                    <div class="admin-avatar">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                    <div class="welcome-content">
-                        <h1>Edit Event</h1>
-                        <p>Update event details</p>
-                    </div>
-                </div>
+{% block content %}
+    <div class="admin-header" style="margin-bottom: 2rem;">
+        <div class="admin-welcome" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="admin-avatar" style="width: 50px; height: 50px; background: hsl(var(--primary) / 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-calendar-check" style="color: hsl(var(--primary)); font-size: 1.5rem;"></i>
             </div>
+            <div class="welcome-content">
+                <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.75rem; font-weight: 700; color: hsl(var(--foreground)); margin: 0;">Edit Event</h1>
+                <p style="color: hsl(var(--muted-foreground)); margin: 0.25rem 0 0 0;">Update event details</p>
+            </div>
+        </div>
+    </div>
 
-            <div class="admin-section">
+    <div class="admin-section">
                 <a href="{{ path('admin_events') }}" class="btn btn-outline" style="margin-bottom: 1rem;">
                     <i class="fas fa-arrow-left"></i>
                     Back to Events
@@ -67,7 +36,7 @@
 
                     <div class="form-group">
                         {{ form_label(form.date) }}
-                        {{ form_widget(form.date, {'attr': {'class': 'form-control', 'type': 'datetime-local'}}) }}
+                        {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.date) }}
                     </div>
 
@@ -75,6 +44,12 @@
                         {{ form_label(form.maxPlayers) }}
                         {{ form_widget(form.maxPlayers, {'attr': {'class': 'form-control', 'type': 'number', 'min': '1'}}) }}
                         {{ form_errors(form.maxPlayers) }}
+                    </div>
+
+                    <div class="form-group">
+                        {{ form_label(form.description) }}
+                        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'placeholder': 'Event description...'}}) }}
+                        {{ form_errors(form.description) }}
                     </div>
 
                     <div class="form-actions">
@@ -88,9 +63,6 @@
                     </div>
                 {{ form_end(form) }}
             </div>
-        </div>
-    </main>
-</div>
 
 <style>
 .admin-form {
@@ -104,39 +76,48 @@
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--accent-purple);
+    color: hsl(var(--foreground));
     font-weight: 600;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .form-control {
     width: 100%;
-    background: var(--tertiary-dark);
-    border: 1px solid var(--accent-purple);
-    border-radius: 6px;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
     padding: 0.75rem 1rem;
-    color: var(--text-primary);
-    font-family: inherit;
-    font-size: 1rem;
+    color: hsl(var(--foreground));
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+}
+
+.form-control[rows] {
+    resize: vertical;
+    min-height: 100px;
 }
 
 .form-actions {
     display: flex;
     gap: 1rem;
-    margin-top: 2rem;
+    justify-content: flex-end;
+    padding-top: 2rem;
+    border-top: 1px solid hsl(var(--border));
 }
 
 .btn-outline {
     background: transparent;
-    border: 1px solid var(--accent-purple);
-    color: var(--accent-purple);
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
     padding: 0.75rem 1.5rem;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.3s;
@@ -146,9 +127,9 @@
 }
 
 .btn-outline:hover {
-    background: rgba(139, 92, 246, 0.1);
-    border-color: var(--accent-cyan);
-    color: var(--accent-cyan);
+    background: hsl(var(--muted));
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
 }
 </style>
 {% endblock %}

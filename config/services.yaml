@@ -6,6 +6,10 @@
 parameters:
     avatars_directory: '%kernel.project_dir%/public/uploads/avatars'
     newsapi_key: '%env(NEWSAPI_KEY)%'
+    square_application_id: '%env(SQUARE_APPLICATION_ID)%'
+    square_access_token: '%env(SQUARE_ACCESS_TOKEN)%'
+    square_location_id: '%env(SQUARE_LOCATION_ID)%'
+    square_environment: '%env(SQUARE_ENVIRONMENT)%'
 
 services:
     # default configuration for services in *this* file

@@ -2,52 +2,18 @@
 
 {% block title %}Edit User - GameHub Admin{% endblock %}
 
-{% block body %}
-<div class="admin-main-wrapper">
-    <aside class="admin-sidebar-nav">
-        <div class="admin-sidebar-header">
-            <h2>GameHub Admin</h2>
+{% block content %}
+    <div class="admin-header" style="margin-bottom: 2rem;">
+        <div class="admin-welcome" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="admin-avatar" style="width: 50px; height: 50px; background: hsl(var(--primary) / 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-user-edit" style="color: hsl(var(--primary)); font-size: 1.5rem;"></i>
+            </div>
+            <div class="welcome-content">
+                <h1 style="font-family: 'Orbitron', sans-serif; font-size: 1.75rem; font-weight: 700; color: hsl(var(--foreground)); margin: 0;">Edit User</h1>
+                <p style="color: hsl(var(--muted-foreground)); margin: 0.25rem 0 0 0;">Update user details and permissions</p>
+            </div>
         </div>
-        <nav class="admin-sidebar-menu">
-            <div class="sidebar-section">
-                <div class="sidebar-section-title">MAIN</div>
-                <a href="{{ path('admin_dashboard') }}" class="admin-menu-item">
-                    <i class="fas fa-tachometer-alt"></i>
-                    Dashboard
-                </a>
-                <a href="{{ path('admin_games') }}" class="admin-menu-item">
-                    <i class="fas fa-gamepad"></i>
-                    Games
-                </a>
-                <a href="{{ path('admin_users') }}" class="admin-menu-item active">
-                    <i class="fas fa-users"></i>
-                    Users
-                </a>
-                <a href="{{ path('admin_events') }}" class="admin-menu-item">
-                    <i class="fas fa-calendar-alt"></i>
-                    Events
-                </a>
-                <a href="{{ path('admin_reviews') }}" class="admin-menu-item">
-                    <i class="fas fa-star"></i>
-                    Reviews
-                </a>
-            </div>
-        </nav>
-    </aside>
-
-    <main class="admin-main">
-        <div class="admin-main-content">
-            <div class="admin-header">
-                <div class="admin-welcome">
-                    <div class="admin-avatar">
-                        <i class="fas fa-user-edit"></i>
-                    </div>
-                    <div class="welcome-content">
-                        <h1>Edit User</h1>
-                        <p>Update user details and permissions</p>
-                    </div>
-                </div>
-            </div>
+    </div>
 
             <div class="admin-section">
                 <div class="section-header">
@@ -104,9 +70,6 @@
                     </div>
                 {{ form_end(form) }}
             </div>
-        </div>
-    </main>
-</div>
 
 <style>
 .admin-form {
@@ -127,27 +90,28 @@
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--white);
+    color: hsl(var(--foreground));
     font-weight: 600;
     font-size: 0.9rem;
+    font-family: 'Rajdhani', sans-serif;
 }
 
 .form-control {
     width: 100%;
-    background: var(--dark-gray);
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
     padding: 0.875rem 1rem;
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
+    color: hsl(var(--foreground));
+    font-family: 'Rajdhani', sans-serif;
     font-size: 0.95rem;
     transition: all 0.2s ease;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--neon-accent);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
 }
 
 .form-control[rows] {
@@ -161,24 +125,24 @@
 
 .roles-select {
     min-height: 120px;
-    background: var(--dark-gray);
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
     padding: 0.5rem;
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
+    color: hsl(var(--foreground));
+    font-family: 'Rajdhani', sans-serif;
     font-size: 0.95rem;
 }
 
 .roles-select:focus {
     outline: none;
-    border-color: var(--neon-accent);
-    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
 }
 
 .roles-select option {
-    background: var(--dark-gray);
-    color: var(--white);
+    background: hsl(var(--input));
+    color: hsl(var(--foreground));
     padding: 0.5rem;
 }
 
@@ -187,7 +151,7 @@
 }
 
 .roles-info small {
-    color: var(--gray-400);
+    color: hsl(var(--muted-foreground));
     font-size: 0.8rem;
 }
 
@@ -196,28 +160,7 @@
     gap: 1rem;
     justify-content: flex-end;
     padding-top: 2rem;
-    border-top: 1px solid var(--gray-100);
-}
-
-.btn-admin {
-    background: var(--neon-accent);
-    color: var(--black);
-    border: 1px solid var(--neon-accent);
-    padding: 0.875rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.2s ease;
-}
-
-.btn-admin:hover {
-    background: var(--white);
-    color: var(--black);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+    border-top: 1px solid hsl(var(--border));
 }
 
 @media (max-width: 768px) {

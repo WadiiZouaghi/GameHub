@@ -16,7 +16,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Game $game = null;
 
     #[ORM\Column(length: 255)]

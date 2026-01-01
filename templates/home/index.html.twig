@@ -5,6 +5,42 @@
 {% block body %}
 <!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient">
+    <!-- Particles Background -->
+    <div class="particles-bg-home">
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+        <div class="particle-home"></div>
+    </div>
+    
     <!-- Grid Pattern Overlay -->
     <div class="absolute inset-0 grid-pattern opacity-50"></div>
     
@@ -242,13 +278,6 @@
                             </div>
                         {% endif %}
                         <div class="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent"></div>
-                        
-                        <!-- Prize -->
-                        <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-primary/90 backdrop-blur-sm">
-                            <span class="text-sm font-bold text-primary-foreground">
-                                $10,000
-                            </span>
-                        </div>
                     </div>
                     
                     <!-- Content -->
@@ -401,4 +430,65 @@
         </div>
     </div>
 </section>
+
+<style>
+.particles-bg-home {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.particle-home {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: hsl(var(--primary));
+    border-radius: 50%;
+    box-shadow: 0 0 10px hsl(var(--primary));
+    animation: float-home 20s infinite;
+    opacity: 0.6;
+}
+
+.particle-home:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 15s; }
+.particle-home:nth-child(2) { left: 20%; top: 80%; animation-delay: 2s; animation-duration: 18s; }
+.particle-home:nth-child(3) { left: 50%; top: 10%; animation-delay: 4s; animation-duration: 22s; }
+.particle-home:nth-child(4) { left: 80%; top: 30%; animation-delay: 6s; animation-duration: 20s; }
+.particle-home:nth-child(5) { left: 30%; top: 50%; animation-delay: 1s; animation-duration: 16s; }
+.particle-home:nth-child(6) { left: 70%; top: 70%; animation-delay: 3s; animation-duration: 19s; }
+.particle-home:nth-child(7) { left: 90%; top: 50%; animation-delay: 5s; animation-duration: 21s; }
+.particle-home:nth-child(8) { left: 60%; top: 90%; animation-delay: 7s; animation-duration: 17s; }
+.particle-home:nth-child(9) { left: 15%; top: 40%; animation-delay: 0.5s; animation-duration: 19s; }
+.particle-home:nth-child(10) { left: 85%; top: 15%; animation-delay: 3.5s; animation-duration: 16s; }
+.particle-home:nth-child(11) { left: 40%; top: 75%; animation-delay: 2.5s; animation-duration: 21s; }
+.particle-home:nth-child(12) { left: 65%; top: 25%; animation-delay: 4.5s; animation-duration: 18s; }
+.particle-home:nth-child(13) { left: 25%; top: 60%; animation-delay: 1.5s; animation-duration: 20s; }
+.particle-home:nth-child(14) { left: 75%; top: 45%; animation-delay: 6.5s; animation-duration: 17s; }
+.particle-home:nth-child(15) { left: 45%; top: 35%; animation-delay: 1.8s; animation-duration: 22s; }
+.particle-home:nth-child(16) { left: 55%; top: 65%; animation-delay: 3.2s; animation-duration: 19s; }
+.particle-home:nth-child(17) { left: 12%; top: 85%; animation-delay: 5.5s; animation-duration: 18s; }
+.particle-home:nth-child(18) { left: 88%; top: 55%; animation-delay: 2.2s; animation-duration: 20s; }
+.particle-home:nth-child(19) { left: 35%; top: 15%; animation-delay: 4.8s; animation-duration: 16s; }
+.particle-home:nth-child(20) { left: 72%; top: 82%; animation-delay: 0.8s; animation-duration: 21s; }
+.particle-home:nth-child(21) { left: 18%; top: 32%; animation-delay: 6.2s; animation-duration: 17s; }
+.particle-home:nth-child(22) { left: 82%; top: 68%; animation-delay: 1.3s; animation-duration: 19s; }
+.particle-home:nth-child(23) { left: 48%; top: 48%; animation-delay: 3.8s; animation-duration: 22s; }
+.particle-home:nth-child(24) { left: 62%; top: 12%; animation-delay: 5.2s; animation-duration: 18s; }
+.particle-home:nth-child(25) { left: 28%; top: 72%; animation-delay: 2.8s; animation-duration: 20s; }
+.particle-home:nth-child(26) { left: 78%; top: 38%; animation-delay: 4.2s; animation-duration: 16s; }
+.particle-home:nth-child(27) { left: 38%; top: 88%; animation-delay: 0.3s; animation-duration: 21s; }
+.particle-home:nth-child(28) { left: 92%; top: 22%; animation-delay: 6.8s; animation-duration: 17s; }
+.particle-home:nth-child(29) { left: 22%; top: 52%; animation-delay: 1.2s; animation-duration: 19s; }
+.particle-home:nth-child(30) { left: 52%; top: 78%; animation-delay: 3.6s; animation-duration: 22s; }
+.particle-home:nth-child(31) { left: 68%; top: 42%; animation-delay: 5.8s; animation-duration: 18s; }
+.particle-home:nth-child(32) { left: 42%; top: 58%; animation-delay: 2.4s; animation-duration: 20s; }
+
+@keyframes float-home {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -30px) scale(1.2); }
+    50% { transform: translate(-20px, -60px) scale(0.8); }
+    75% { transform: translate(30px, -40px) scale(1.1); }
+}
+</style>
 {% endblock %}

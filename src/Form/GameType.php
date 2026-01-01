@@ -54,6 +54,7 @@ class GameType extends AbstractType
                 'attr' => ['accept' => 'image/*'],
                 'help' => 'Select multiple screenshot/artwork images',
                 'data_class' => null,
+                'mapped' => false,
             ])
             ->add('coverImage', FileType::class, [
                 'required' => false,
@@ -61,6 +62,7 @@ class GameType extends AbstractType
                 'attr' => ['accept' => 'image/*'],
                 'help' => 'Select an image file from your computer',
                 'data_class' => null,
+                'mapped' => false,
             ])
 
             // Minimum System Requirements

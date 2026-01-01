@@ -25,59 +25,33 @@ class GameController extends AbstractController
         $category = $request->query->get('category');
         $search = $request->query->get('search');
         $sort = $request->query->get('sort', 'title_asc');
-        $page = (int) $request->query->get('page', 1);
+        $page = max(1, (int) $request->query->get('page', 1));
         $limit = 12;
-        $offset = ($page - 1) * $limit;
 
         $qb = $repo->createQueryBuilder('g');
 
         if ($category) {
-            $qb->andWhere('g.category = :category')
-                ->setParameter('category', $category);
+            $qb->andWhere('g.category = :category')->setParameter('category', $category);
         }
         if ($search) {
-            $qb->andWhere('LOWER(g.title) LIKE :search')
-                ->setParameter('search', '%' . strtolower($search) . '%');
+            $qb->andWhere('LOWER(g.title) LIKE :search')->setParameter('search', '%' . strtolower($search) . '%');
         }
 
-        switch ($sort) {
-            case 'title_desc':
-                $qb->orderBy('g.title', 'DESC');
-                break;
-            case 'newest':
-                $qb->orderBy('g.id', 'DESC');
-                break;
-            case 'oldest':
-                $qb->orderBy('g.id', 'ASC');
-                break;
-            case 'category':
-                $qb->orderBy('g.category', 'ASC');
-                break;
-            case 'title_asc':
-            default:
-                $qb->orderBy('g.title', 'ASC');
-                break;
-        }
+        $orderMap = [
+            'title_desc' => ['g.title', 'DESC'],
+            'newest' => ['g.id', 'DESC'],
+            'oldest' => ['g.id', 'ASC'],
+            'category' => ['g.category', 'ASC'],
+            'title_asc' => ['g.title', 'ASC'],
+        ];
+        [$field, $direction] = $orderMap[$sort] ?? $orderMap['title_asc'];
+        $qb->orderBy($field, $direction);
 
-        $qbForCount = clone $qb;
-        $qbForCount->select('COUNT(g.id)');
-        $totalGames = (int) $qbForCount->getQuery()->getSingleScalarResult();
+        $total = (int) (clone $qb)->select('COUNT(g.id)')->getQuery()->getSingleScalarResult();
+        $games = $qb->setFirstResult(($page - 1) * $limit)->setMaxResults($limit)->getQuery()->getResult();
 
-        $games = $qb->setFirstResult($offset)
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-
-        // Group categories for filter dropdown
-        $allGames = $repo->findAll();
-        $categories = [];
-        foreach ($allGames as $game) {
-            $categories[$game->getCategory()] = $game->getCategory();
-        }
+        $categories = array_unique(array_map(fn($g) => $g->getCategory(), $repo->findAll()));
         sort($categories);
-
-        $nextPage = ($offset + $limit) < $totalGames ? $page + 1 : null;
-        $previousPage = $page > 1 ? $page - 1 : null;
 
         return $this->render('game/index.html.twig', [
             'games' => $games,
@@ -85,8 +59,8 @@ class GameController extends AbstractController
             'selected_category' => $category,
             'search_query' => $search,
             'selected_sort' => $sort,
-            'next_page' => $nextPage,
-            'previous_page' => $previousPage,
+            'next_page' => ($page * $limit < $total) ? $page + 1 : null,
+            'previous_page' => $page > 1 ? $page - 1 : null,
         ]);
     }
 
@@ -98,59 +72,12 @@ class GameController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $coverImageFile = $form->get('coverImage')->getData();
-
-            if ($coverImageFile) {
-                $originalFilename = pathinfo($coverImageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$coverImageFile->guessExtension();
-
-                try {
-                    $coverImageFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/uploads/covers',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Failed to upload cover image.');
-                    return $this->redirectToRoute('game_new');
-                }
-
-                $game->setCoverImage('uploads/covers/'.$newFilename);
-            }
-
-            $galleryFiles = $form->get('gallery')->getData();
-            $galleryPaths = [];
-
-            if ($galleryFiles) {
-                foreach ($galleryFiles as $galleryFile) {
-                    $originalFilename = pathinfo($galleryFile->getClientOriginalName(), PATHINFO_FILENAME);
-                    $safeFilename = $slugger->slug($originalFilename);
-                    $newFilename = $safeFilename.'-'.uniqid().'.'.$galleryFile->guessExtension();
-
-                    try {
-                        $galleryFile->move(
-                            $this->getParameter('kernel.project_dir').'/public/uploads/gallery',
-                            $newFilename
-                        );
-                        $galleryPaths[] = 'uploads/gallery/'.$newFilename;
-                    } catch (FileException $e) {
-                        $this->addFlash('error', 'Failed to upload gallery image.');
-                        continue;
-                    }
-                }
-            }
-
-            if (!empty($galleryPaths)) {
-                $game->setGallery($galleryPaths);
-            }
-
-            
+            $this->handleFileUploads($form, $game, $slugger);
 
             $entityManager->persist($game);
             $entityManager->flush();
 
             $this->addFlash('success', 'Game created successfully!');
-
             return $this->redirectToRoute('game_index');
         }
 
@@ -161,70 +88,37 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'game_show')]
-    public function show(
-        Game $game,
-        Request $request,
-        EntityManagerInterface $entityManager,
-        PurchaseRepository $purchaseRepository
-    ): Response {
+    public function show(Game $game, Request $request, EntityManagerInterface $em, PurchaseRepository $purchaseRepo): Response
+    {
         $user = $this->getUser();
-        $hasPurchased = false;
-        $userReview = null;
+        $hasPurchased = $user && $purchaseRepo->findOneBy(['user' => $user, 'game' => $game]);
+        $userReview = $user ? $em->getRepository(Review::class)->findOneBy(['user' => $user, 'game' => $game]) : null;
 
-        if ($user) {
-            // Check if user has purchased this game
-            $purchase = $purchaseRepository->findOneBy([
-                'user' => $user,
-                'game' => $game
-            ]);
-            $hasPurchased = $purchase !== null;
-
-            // Get user's review if exists
-            $userReview = $entityManager->getRepository(Review::class)->findOneBy([
-                'user' => $user,
-                'game' => $game
-            ]);
-        }
-
-        // Handle review submission
-        $review = new Review();
-        $form = $this->createForm(ReviewType::class, $review);
+        $form = $this->createForm(ReviewType::class, new Review());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && $hasPurchased) {
-            if (!$userReview) {
-                $review->setUser($user);
-                $review->setGame($game);
-                $entityManager->persist($review);
-                $this->addFlash('success', 'Review submitted successfully!');
-            } else {
+            if ($userReview) {
                 $this->addFlash('warning', 'You have already reviewed this game.');
-                return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
+            } else {
+                $review = $form->getData();
+                $review->setUser($user)->setGame($game);
+                $em->persist($review);
+                $em->flush();
+                $this->addFlash('success', 'Review submitted successfully!');
             }
-
-            $entityManager->flush();
             return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
         }
 
-        // Calculate average rating
         $reviews = $game->getReviews();
-        $averageRating = 0;
-        if ($reviews->count() > 0) {
-            $totalRating = 0;
-            foreach ($reviews as $review) {
-                $totalRating += $review->getRating();
-            }
-            $averageRating = $totalRating / $reviews->count();
-        }
+        $averageRating = $reviews->count() > 0 
+            ? array_sum(array_map(fn($r) => $r->getRating(), $reviews->toArray())) / $reviews->count() 
+            : 0;
 
-        // Get related games (same category, excluding current)
-        $relatedGames = $entityManager->getRepository(Game::class)->findBy(
-            ['category' => $game->getCategory()],
-            ['id' => 'DESC'],
-            4
+        $relatedGames = array_filter(
+            $em->getRepository(Game::class)->findBy(['category' => $game->getCategory()], ['id' => 'DESC'], 4),
+            fn($g) => $g->getId() !== $game->getId()
         );
-
-        $relatedGames = array_filter($relatedGames, fn($g) => $g->getId() !== $game->getId());
 
         return $this->render('game/show.html.twig', [
             'game' => $game,
@@ -243,60 +137,53 @@ class GameController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $coverImageFile = $form->get('coverImage')->getData();
-        
-            if ($coverImageFile) {
-                $originalFilename = pathinfo($coverImageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$coverImageFile->guessExtension();
-
-                try {
-                    $coverImageFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/uploads/covers',
-                        $newFilename
-                    );
-                    $game->setCoverImage('uploads/covers/'.$newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Failed to upload cover image.');
-                }
-            }
-
-            $galleryFiles = $form->get('gallery')->getData();
-            if ($galleryFiles && count($galleryFiles) > 0) {
-            $galleryPaths = [];
-
-            foreach ($galleryFiles as $galleryFile) {
-                $originalFilename = pathinfo($galleryFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$galleryFile->guessExtension();
-
-                try {
-                    $galleryFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/uploads/gallery',
-                        $newFilename
-                    );
-                    $galleryPaths[] = 'uploads/gallery/'.$newFilename;
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Failed to upload gallery image.');
-                    continue;
-                }
-            }
-
-            if (!empty($galleryPaths)) {
-                $game->setGallery($galleryPaths);
-            }
-            }
+            $this->handleFileUploads($form, $game, $slugger);
 
             $entityManager->flush();
             $this->addFlash('success', 'Game updated successfully!');
-        
             return $this->redirectToRoute('game_show', ['id' => $game->getId()]);
         }
-    
+
         return $this->render('game/edit.html.twig', [
-        'game' => $game,
-        'form' => $form->createView(),
+            'game' => $game,
+            'form' => $form->createView(),
         ]);
     }
 
+    private function handleFileUploads($form, Game $game, SluggerInterface $slugger): void
+    {
+        $baseDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
+
+        $coverFile = $form->get('coverImage')->getData();
+        if ($coverFile) {
+            $name = $slugger->slug(pathinfo($coverFile->getClientOriginalName(), PATHINFO_FILENAME));
+            $filename = $name . '-' . uniqid() . '.' . $coverFile->guessExtension();
+
+            try {
+                $coverFile->move($baseDir . '/covers', $filename);
+                $game->setCoverImage('uploads/covers/' . $filename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Failed to upload cover image.');
+            }
+        }
+
+        $galleryFiles = $form->get('gallery')->getData();
+        if ($galleryFiles) {
+            $paths = [];
+            foreach ($galleryFiles as $file) {
+                $name = $slugger->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+                $filename = $name . '-' . uniqid() . '.' . $file->guessExtension();
+
+                try {
+                    $file->move($baseDir . '/gallery', $filename);
+                    $paths[] = 'uploads/gallery/' . $filename;
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Failed to upload gallery image.');
+                }
+            }
+            if ($paths) {
+                $game->setGallery($paths);
+            }
+        }
+    }
 }

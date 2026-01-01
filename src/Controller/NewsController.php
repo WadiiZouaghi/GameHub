@@ -12,42 +12,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class NewsController extends AbstractController
 {
     #[Route('', name: 'news_index')]
-    public function index(NewsApiService $newsApiService, Request $request): Response
+    public function index(NewsApiService $newsApi, Request $request): Response
     {
         $search = $request->query->get('search');
-        $page = (int) $request->query->get('page', 1);
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = 12;
 
-        if ($search) {
-            $result = $newsApiService->searchNews($search, [
-                'page' => $page,
-                'pageSize' => 50,
-            ]);
-        } else {
-            $result = $newsApiService->getTopHeadlines([
-                'page' => $page,
-                'pageSize' => 50,
-            ]);
-        }
+        $result = $search 
+            ? $newsApi->searchNews($search, ['page' => $page, 'pageSize' => 50])
+            : $newsApi->getTopHeadlines(['page' => $page, 'pageSize' => 50]);
 
         $allNews = $result['articles'] ?? [];
-        $totalResults = $result['totalResults'] ?? 0;
-        $limit = 12;
-        
         $news = array_slice($allNews, 0, $limit);
 
-        $categories = [];
-        foreach ($news as $article) {
-            $categories[$article['category']] = $article['category'];
-        }
+        $categories = array_unique(array_column($news, 'category'));
         sort($categories);
 
-        $hasMoreNews = count($allNews) > $limit;
-        $nextPage = $hasMoreNews ? $page + 1 : null;
-        $previousPage = $page > 1 ? $page - 1 : null;
-
-        $error = $result['error'] ?? null;
-        if ($error) {
-            \error_log('News Index Error: ' . $error);
+        if ($error = $result['error'] ?? null) {
+            error_log('News Index Error: ' . $error);
         }
 
         return $this->render('news/index.html.twig', [
@@ -55,40 +37,25 @@ class NewsController extends AbstractController
             'categories' => $categories,
             'selected_category' => null,
             'search_query' => $search,
-            'next_page' => $nextPage,
-            'previous_page' => $previousPage,
+            'next_page' => count($allNews) > $limit ? $page + 1 : null,
+            'previous_page' => $page > 1 ? $page - 1 : null,
             'current_page' => $page,
             'api_error' => $error,
         ]);
     }
 
     #[Route('/{id}', name: 'news_show')]
-    public function show(NewsApiService $newsApiService, string $id): Response
+    public function show(NewsApiService $newsApi, string $id): Response
     {
-        $result = $newsApiService->getTopHeadlines([
-            'pageSize' => 100,
-        ]);
+        $articles = $newsApi->getTopHeadlines(['pageSize' => 100])['articles'];
 
-        $news = null;
-        $relatedNews = [];
+        $news = current(array_filter($articles, fn($a) => $a['id'] === $id)) ?: throw $this->createNotFoundException('News article not found');
 
-        foreach ($result['articles'] as $article) {
-            if ($article['id'] === $id) {
-                $news = $article;
-                break;
-            }
-        }
-
-        if (!$news) {
-            throw $this->createNotFoundException('News article not found');
-        }
-
-        $category = $news['category'];
-        foreach ($result['articles'] as $article) {
-            if ($article['category'] === $category && $article['id'] !== $id && count($relatedNews) < 3) {
-                $relatedNews[] = $article;
-            }
-        }
+        $relatedNews = array_slice(
+            array_filter($articles, fn($a) => $a['category'] === $news['category'] && $a['id'] !== $id),
+            0,
+            3
+        );
 
         return $this->render('news/show.html.twig', [
             'news' => $news,

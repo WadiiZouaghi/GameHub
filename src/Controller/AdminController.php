@@ -13,6 +13,8 @@ use App\Repository\GameRepository;
 use App\Repository\UserRepository;
 use App\Repository\EventRepository;
 use App\Repository\ReviewRepository;
+use App\Repository\PurchaseRepository;
+use App\Repository\NewsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,37 +39,40 @@ class AdminController extends AbstractController
 
     #[Route('/dashboard', name: 'admin_dashboard')]
     public function dashboard(
-        GameRepository $gameRepository,
-        UserRepository $userRepository,
-        EventRepository $eventRepository
+        GameRepository $gameRepo,
+        UserRepository $userRepo,
+        EventRepository $eventRepo,
+        ReviewRepository $reviewRepo,
+        PurchaseRepository $purchaseRepo
     ): Response {
         $this->denyAccessUnlessAdmin();
 
+        $startDate = new \DateTime('-30 days');
+
         return $this->render('admin/dashboard.html.twig', [
             'stats' => [
-                'totalUsers' => $userRepository->count([]),
-                'totalGames' => $gameRepository->count([]),
-                'totalEvents' => $eventRepository->count([]),
+                'totalUsers' => $userRepo->count([]),
+                'totalGames' => $gameRepo->count([]),
+                'totalEvents' => $eventRepo->count([]),
+                'totalReviews' => $reviewRepo->count([]),
+                'totalPurchases' => $purchaseRepo->count([]),
             ],
+            'recentUsers' => $userRepo->findBy([], ['createdAt' => 'DESC'], 5),
+            'userTrendData' => $userRepo->getNewUsersTrendData($startDate),
+            'gameTrendData' => $gameRepo->getNewGamesTrendData($startDate),
         ]);
     }
 
     #[Route('/games', name: 'admin_games')]
-    public function games(GameRepository $gameRepository): Response
+    public function games(GameRepository $gameRepo): Response
     {
         $this->denyAccessUnlessAdmin();
-
-        return $this->render('admin/games.html.twig', [
-            'games' => $gameRepository->findAll(),
-        ]);
+        return $this->render('admin/games.html.twig', ['games' => $gameRepo->findAll()]);
     }
 
     #[Route('/games/new', name: 'admin_games_new')]
-    public function newGame(
-        Request $request,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger
-    ): Response {
+    public function newGame(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
         $this->denyAccessUnlessAdmin();
 
         $game = new Game();
@@ -77,7 +82,6 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->handleSystemRequirements($form, $game);
             $this->handleFiles($form, $game, $slugger);
-
             $em->persist($game);
             $em->flush();
 
@@ -85,64 +89,51 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_games');
         }
 
-        return $this->render('admin/game_new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('admin/game_new.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route('/games/{id}/edit', name: 'admin_games_edit')]
-    public function editGame(
-        Request $request,
-        Game $game,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger
-    ): Response {
+    public function editGame(Request $request, Game $game, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
         $this->denyAccessUnlessAdmin();
 
         $form = $this->createForm(GameType::class, $game);
+        
+        $this->populateSystemRequirements($form, $game->getMinSystemRequirements(), 'min');
+        $this->populateSystemRequirements($form, $game->getRecommendedSystemRequirements(), 'rec');
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->handleSystemRequirements($form, $game);
             $this->handleFiles($form, $game, $slugger);
-
             $em->flush();
 
             $this->addFlash('success', 'Game updated successfully!');
             return $this->redirectToRoute('admin_games');
         }
 
-        return $this->render('admin/game_edit.html.twig', [
-            'game' => $game,
-            'form' => $form->createView(),
-        ]);
+        return $this->render('admin/game_edit.html.twig', ['game' => $game, 'form' => $form->createView()]);
+    }
+
+    private function populateSystemRequirements($form, ?array $reqs, string $prefix): void
+    {
+        if (!$reqs) return;
+
+        foreach (['Os', 'Processor', 'Memory', 'Graphics', 'Storage'] as $field) {
+            $form->get($prefix . $field)->setData($reqs[strtolower($field)] ?? null);
+        }
     }
 
     private function handleSystemRequirements($form, Game $game): void
     {
-        $min = array_filter([
-            'os' => $form->get('minOs')->getData(),
-            'processor' => $form->get('minProcessor')->getData(),
-            'memory' => $form->get('minMemory')->getData(),
-            'graphics' => $form->get('minGraphics')->getData(),
-            'storage' => $form->get('minStorage')->getData(),
-        ]);
+        $fields = ['os', 'processor', 'memory', 'graphics', 'storage'];
 
-        if ($min) {
-            $game->setMinSystemRequirements($min);
-        }
+        $min = array_filter(array_combine($fields, array_map(fn($f) => $form->get('min' . ucfirst($f))->getData(), $fields)));
+        $game->setMinSystemRequirements($min ?: null);
 
-        $rec = array_filter([
-            'os' => $form->get('recOs')->getData(),
-            'processor' => $form->get('recProcessor')->getData(),
-            'memory' => $form->get('recMemory')->getData(),
-            'graphics' => $form->get('recGraphics')->getData(),
-            'storage' => $form->get('recStorage')->getData(),
-        ]);
-
-        if ($rec) {
-            $game->setRecommendedSystemRequirements($rec);
-        }
+        $rec = array_filter(array_combine($fields, array_map(fn($f) => $form->get('rec' . ucfirst($f))->getData(), $fields)));
+        $game->setRecommendedSystemRequirements($rec ?: null);
     }
 
     private function handleFiles($form, Game $game, SluggerInterface $slugger): void
@@ -175,35 +166,25 @@ class AdminController extends AbstractController
     }
 
     #[Route('/games/{id}/delete', name: 'admin_games_delete', methods: ['POST'])]
-    public function deleteGame(
-        Game $game,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteGame(Game $game, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
-
         $em->remove($game);
         $em->flush();
-
         $this->addFlash('success', 'Game deleted successfully!');
         return $this->redirectToRoute('admin_games');
     }
 
     #[Route('/users', name: 'admin_users')]
-    public function users(UserRepository $userRepository): Response
+    public function users(UserRepository $userRepo): Response
     {
         $this->denyAccessUnlessAdmin();
-
-        return $this->render('admin/users.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
+        return $this->render('admin/users.html.twig', ['users' => $userRepo->findAll()]);
     }
 
     #[Route('/users/{id}/edit', name: 'admin_users_edit')]
-    public function editUser(
-        User $user,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    public function editUser(User $user, Request $request, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
 
         $form = $this->createForm(UserAdminType::class, $user);
@@ -215,66 +196,53 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_users');
         }
 
-        return $this->render('admin/user_edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
+        return $this->render('admin/user_edit.html.twig', ['user' => $user, 'form' => $form->createView()]);
     }
 
     #[Route('/users/{id}/delete', name: 'admin_users_delete', methods: ['POST'])]
-    public function deleteUser(
-        User $user,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteUser(User $user, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
+
+        if ($count = $user->getPurchases()->count()) {
+            $this->addFlash('error', "Cannot delete user with existing purchases. User has $count purchase(s) in the system.");
+            return $this->redirectToRoute('admin_users');
+        }
 
         $em->remove($user);
         $em->flush();
-
         $this->addFlash('success', 'User deleted successfully!');
         return $this->redirectToRoute('admin_users');
     }
 
     #[Route('/events', name: 'admin_events')]
-    public function events(EventRepository $eventRepository): Response
+    public function events(EventRepository $eventRepo): Response
     {
         $this->denyAccessUnlessAdmin();
-
-        return $this->render('admin/events.html.twig', [
-            'events' => $eventRepository->findAll(),
-        ]);
+        return $this->render('admin/events.html.twig', ['events' => $eventRepo->findAll()]);
     }
 
     #[Route('/events/new', name: 'admin_events_new')]
-    public function newEvent(
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    public function newEvent(Request $request, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
 
-        $event = new Event();
-        $form = $this->createForm(EventType::class, $event);
+        $form = $this->createForm(EventType::class, new Event());
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($event);
+            $em->persist($form->getData());
             $em->flush();
-
             $this->addFlash('success', 'Event created successfully!');
             return $this->redirectToRoute('admin_events');
         }
 
-        return $this->render('admin/event_new.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('admin/event_new.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route('/events/{id}/edit', name: 'admin_events_edit')]
-    public function editEvent(
-        Event $event,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    public function editEvent(Event $event, Request $request, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
 
         $form = $this->createForm(EventType::class, $event);
@@ -286,46 +254,32 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('admin_events');
         }
 
-        return $this->render('admin/event_edit.html.twig', [
-            'event' => $event,
-            'form' => $form->createView(),
-        ]);
+        return $this->render('admin/event_edit.html.twig', ['event' => $event, 'form' => $form->createView()]);
     }
 
     #[Route('/events/{id}/delete', name: 'admin_events_delete', methods: ['POST'])]
-    public function deleteEvent(
-        Event $event,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteEvent(Event $event, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
-
         $em->remove($event);
         $em->flush();
-
         $this->addFlash('success', 'Event deleted successfully!');
         return $this->redirectToRoute('admin_events');
     }
 
     #[Route('/reviews', name: 'admin_reviews')]
-    public function reviews(ReviewRepository $reviewRepository): Response
+    public function reviews(ReviewRepository $reviewRepo): Response
     {
         $this->denyAccessUnlessAdmin();
-
-        return $this->render('admin/reviews.html.twig', [
-            'reviews' => $reviewRepository->findAll(),
-        ]);
+        return $this->render('admin/reviews.html.twig', ['reviews' => $reviewRepo->findAll()]);
     }
 
     #[Route('/reviews/{id}/delete', name: 'admin_reviews_delete', methods: ['POST'])]
-    public function deleteReview(
-        Review $review,
-        EntityManagerInterface $em
-    ): Response {
+    public function deleteReview(Review $review, EntityManagerInterface $em): Response
+    {
         $this->denyAccessUnlessAdmin();
-
         $em->remove($review);
         $em->flush();
-
         $this->addFlash('success', 'Review deleted successfully!');
         return $this->redirectToRoute('admin_reviews');
     }

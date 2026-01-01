@@ -14,12 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(
-        Request $request,
-        UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
-    ): Response {
-        // Redirect if already logged in
+    public function register(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $em): Response
+    {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
         }
@@ -28,28 +24,19 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                // Hash the password
-                $hashedPassword = $passwordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                );
-                $user->setPassword($hashedPassword);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($hasher->hashPassword($user, $form->get('password')->getData()))
+                ->setRoles(['ROLE_USER']);
 
-                // Set default role
-                $user->setRoles(['ROLE_USER']);
+            $em->persist($user);
+            $em->flush();
 
-                // Save to database
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $this->addFlash('success', 'Registration successful! You can now log in.');
+            return $this->redirectToRoute('app_login');
+        }
 
-                $this->addFlash('success', 'Registration successful! You can now log in.');
-
-                return $this->redirectToRoute('app_login');
-            } else {
-                $this->addFlash('error', 'Form validation failed. Please check your input.');
-            }
+        if ($form->isSubmitted() && !$form->isValid()) {
+            $this->addFlash('error', 'Form validation failed. Please check your input.');
         }
 
         return $this->render('security/register.html.twig', [

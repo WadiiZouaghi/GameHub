@@ -96,8 +96,7 @@
     @apply opacity-100;
   }
 
-  .hero-gradient {
-    background: linear-gradient(135deg, hsl(228 60% 6%) 0%, hsl(228 50% 12%) 50%, hsl(282 40% 15%) 100%);
+
   }
 
   .grid-pattern {
@@ -119,4 +118,4 @@
   .btn-gaming {
     @apply bg-card border border-border text-foreground font-orbitron font-semibold px-4 py-2 rounded-lg transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/20;
   }
-}
+
