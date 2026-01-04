@@ -1,11 +1,11 @@
-# 🎮 GameHub
+# 🎮 Gaming Platform
 
 > A modern Symfony-based gaming platform for managing, discovering games, and participating in community events.
 
 ![Symfony](https://img.shields.io/badge/Symfony-7.3-000000?style=flat-square&logo=symfony)
 ![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php)
 ![Doctrine](https://img.shields.io/badge/Doctrine-ORM-FC6D26?style=flat-square)
-![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat-square&logo=docker)
+![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1?style=flat-square&logo=mysql)
 ![License](https://img.shields.io/badge/License-Educational-green?style=flat-square)
 
 > **Educational Project** | Self-training initiative to master Symfony and modern web development practices
@@ -52,9 +52,8 @@
 </tr>
 </table>
 
-**Database**: PostgreSQL with Doctrine ORM  
+**Database**: MySQL with Doctrine ORM  
 **Templating**: Twig  
-**Containerization**: Docker Compose  
 **Version Control**: Git
 
 ---
@@ -64,14 +63,12 @@
 ### Prerequisites
 - PHP 8.2+
 - Composer
-- Docker & Docker Compose (recommended)
-- PostgreSQL (or use Docker)
+- MySQL
 
 ### Installation Steps
 
-**1️⃣ Clone the Repository**
+**1️⃣ Navigate to Project Directory**
 ```bash
-git clone https://github.com/WadiiZouaghi/GameHub.git
 cd GameHub
 ```
 
@@ -83,26 +80,22 @@ composer install
 **3️⃣ Configure Environment**
 ```bash
 cp .env .env.local
-# Update database credentials in .env.local if needed
+# Update DATABASE_URL in .env.local with your MySQL credentials
+# Example: DATABASE_URL="mysql://user:password@127.0.0.1:3306/database_name"
 ```
 
-**4️⃣ Start Docker (Optional but Recommended)**
-```bash
-docker-compose up -d
-```
-
-**5️⃣ Setup Database**
+**4️⃣ Setup Database**
 ```bash
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
 
-**6️⃣ Load Sample Data** (Optional)
+**5️⃣ Load Sample Data** (Optional)
 ```bash
 php bin/console doctrine:fixtures:load
 ```
 
-**7️⃣ Start Development Server**
+**6️⃣ Start Development Server**
 ```bash
 symfony server:start
 # or
@@ -134,7 +127,6 @@ GameHub/
 │   └── uploads/          # 📦 User uploads (avatars, covers, gallery)
 ├── assets/               # 🎭 CSS & JavaScript
 ├── tests/                # ✅ Test files
-├── compose.yaml          # 🐳 Docker Compose configuration
 └── phpunit.dist.xml      # 🧪 PHPUnit configuration
 ```
 
@@ -166,7 +158,5 @@ Educational project for learning purposes.
 <div align="center">
 
 **Made with ❤️ for learning**
-
-[⭐ Star this repository](https://github.com/WadiiZouaghi/GameHub) if you find it helpful!
 
 </div>
