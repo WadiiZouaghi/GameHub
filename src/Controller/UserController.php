@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\EventRepository;
 use App\Repository\GameRepository;
+use App\Repository\WishlistRepository;
 use App\Form\RegistrationFormType;
 use App\Form\UserProfileType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,17 +18,40 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class UserController extends AbstractController
 {
     #[Route('/dashboard', name: 'user_dashboard')]
-    public function dashboard(EventRepository $eventRepo, GameRepository $gameRepo): Response
+    public function dashboard(EventRepository $eventRepo, GameRepository $gameRepo, WishlistRepository $wishlistRepo): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         $user = $this->getUser();
-        $recentActivity = array_map(fn($r) => [
-            'type' => 'review',
-            'item' => $r,
-            'date' => $r->getCreatedAt(),
-            'action' => 'Reviewed',
-        ], $user->getReviews()->toArray());
+        
+        $recentActivity = [];
+        
+        foreach ($user->getReviews() as $review) {
+            $recentActivity[] = [
+                'type' => 'review',
+                'item' => $review,
+                'date' => $review->getCreatedAt(),
+                'action' => 'Reviewed',
+            ];
+        }
+        
+        foreach ($user->getPurchases() as $purchase) {
+            $recentActivity[] = [
+                'type' => 'purchase',
+                'item' => $purchase,
+                'date' => $purchase->getPurchaseDate(),
+                'action' => 'Purchased',
+            ];
+        }
+        
+        foreach ($wishlistRepo->findByUser($user) as $wishlist) {
+            $recentActivity[] = [
+                'type' => 'wishlist',
+                'item' => $wishlist,
+                'date' => $wishlist->getAddedAt(),
+                'action' => 'Added to Wishlist',
+            ];
+        }
 
         usort($recentActivity, fn($a, $b) => $b['date'] <=> $a['date']);
 
