@@ -78,19 +78,25 @@ class PurchaseController extends AbstractController
     }
 
     #[Route('/library', name: 'user_library')]
-    public function library(PurchaseRepository $purchaseRepo): Response
+    public function library(PurchaseRepository $purchaseRepo, \App\Repository\WishlistRepository $wishlistRepo): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
         return $this->render('user/library.html.twig', [
             'purchases' => $purchaseRepo->findByUser($this->getUser()),
+            'wishlistItems' => $wishlistRepo->findByUser($this->getUser()),
         ]);
     }
 
     #[Route('/library/remove/{id}', name: 'library_remove', methods: ['POST'])]
-    public function removeFromLibrary(Purchase $purchase, EntityManagerInterface $em): Response
+    public function removeFromLibrary(Request $request, Purchase $purchase, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
+        if (!$this->isCsrfTokenValid('library_remove', $request->request->get('_token'))) {
+            $this->addFlash('error', 'Invalid security token.');
+            return $this->redirectToRoute('user_library');
+        }
         
         if ($purchase->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('You cannot remove this purchase.');

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0f1c">
     <title>{% block title %}GameHub{% endblock %} - Gaming Platform</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎮</text></svg>">
     
@@ -38,6 +39,7 @@
                 --dark-navy: 228 60% 6%;
                 --dark-card: 228 50% 10%;
                 --dark-elevated: 228 45% 14%;
+                background-color: #0a0f1c;
             }
 
             * {
@@ -48,6 +50,27 @@
                 background-color: hsl(var(--background));
                 color: hsl(var(--foreground));
                 font-family: "Rajdhani", sans-serif;
+            }
+
+            html {
+                background-color: #0a0f1c !important;
+            }
+
+            html::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #0a0f1c;
+                z-index: -9999;
+            }
+
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation: none;
+                mix-blend-mode: normal;
             }
 
             h1, h2, h3, h4, h5, h6 {
@@ -458,6 +481,75 @@
                 width: 1rem;
                 height: 1rem;
             }
+
+            .page-transition {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 9999;
+                pointer-events: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.1s;
+            }
+
+            .page-transition.active {
+                opacity: 1;
+            }
+
+            .page-transition-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, 
+                    #0a0f1c 0%, 
+                    rgba(0, 168, 232, 0.15) 50%, 
+                    rgba(157, 78, 221, 0.15) 100%);
+                opacity: 0;
+                transition: opacity 0.2s ease-out;
+            }
+
+            .page-transition.active .page-transition-overlay {
+                opacity: 1;
+            }
+
+            .page-transition.exit .page-transition-overlay {
+                opacity: 0;
+                transition: opacity 0.15s ease-in;
+            }
+
+            .page-transition-logo {
+                position: relative;
+                z-index: 10000;
+                font-family: "Orbitron", sans-serif;
+                font-size: 3rem;
+                font-weight: 900;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.3s ease-out 0.2s;
+                text-shadow: 0 0 30px hsl(var(--primary)), 0 0 60px hsl(var(--primary) / 0.5);
+            }
+
+            .page-transition.active .page-transition-logo {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            .page-transition.exit .page-transition-logo {
+                opacity: 0;
+                transform: scale(1.2);
+                transition: all 0.3s ease-in;
+            }
+
+            body.transitioning {
+                overflow: hidden;
+            }
         </style>
     {% endblock %}
 
@@ -472,6 +564,14 @@
     {% if app.request.attributes.get('_route') in ['app_login', 'app_register'] %}
     <canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;"></canvas>
     {% endif %}
+    
+    <!-- Page Transition Overlay -->
+    <div class="page-transition" id="pageTransition">
+        <div class="page-transition-overlay"></div>
+        <div class="page-transition-logo text-gradient">
+            <i class="fas fa-gamepad"></i>
+        </div>
+    </div>
     <!-- Main Header / Navbar -->
     {% if app.request.attributes.get('_route') not in ['app_login', 'app_register'] %}
     <nav class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-[#0a0f1c]/95 to-[#0a0f1c]/85 backdrop-blur-xl border-b border-primary/10 shadow-2xl shadow-black/50 transition-all duration-300">
@@ -759,9 +859,55 @@
                 });
             }, 5000);
         })();
+
+        // Smooth Page Transitions
+        (function() {
+            const transition = document.getElementById('pageTransition');
+            const body = document.body;
+            let isTransitioning = false;
+
+            function playPageTransition(targetUrl) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+
+                body.classList.add('transitioning');
+                transition.classList.add('active');
+
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 200);
+            }
+
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                
+                if (link && 
+                    link.href && 
+                    link.href.indexOf(window.location.origin) === 0 && 
+                    !link.hasAttribute('download') && 
+                    link.target !== '_blank' &&
+                    !link.href.includes('#') &&
+                    !link.classList.contains('no-transition')) {
+                    
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playPageTransition(link.href);
+                }
+            }, true);
+
+            window.addEventListener('pageshow', () => {
+                transition.classList.add('exit');
+                setTimeout(() => {
+                    isTransitioning = false;
+                    body.classList.remove('transitioning');
+                    transition.classList.remove('active', 'exit');
+                }, 150);
+            });
+        })();
     </script>
 
 <script src="{{ asset('js/particles.js') }}"></script>
+<script src="{{ asset('js/animations.js') }}"></script>
 
 </body>
 </html>

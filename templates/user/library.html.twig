@@ -3,74 +3,115 @@
 {% block title %}My Library{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-background">
-    <div class="container mx-auto px-4 py-24">
+{% for message in app.flashes('success') %}
+    <div data-confetti-trigger style="display: none;">{{ message }}</div>
+{% endfor %}
+
+<!-- Hero Section -->
+<div class="relative bg-gradient-to-b from-primary/5 via-background to-background border-b border-border/50 overflow-hidden">
+    <div class="absolute inset-0 grid-pattern opacity-30"></div>
+    <div class="absolute top-10 right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 left-10 w-64 h-64 bg-secondary/10 rounded-full blur-3xl"></div>
+    
+    <div class="container mx-auto px-4 pt-28 pb-12 relative">
         <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="mb-12 flex items-center justify-between">
+            <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h1 class="font-orbitron text-3xl font-bold text-foreground mb-2">My Library</h1>
-                    <p class="text-muted-foreground font-rajdhani">{{ purchases|length }} {{ purchases|length == 1 ? 'game' : 'games' }}</p>
+                    <h1 class="font-orbitron text-5xl font-bold text-gradient mb-3">My Collection</h1>
+                    <p class="text-muted-foreground font-rajdhani text-lg">Your personal gaming library</p>
                 </div>
                 
-                {% if purchases is not empty %}
-                    <div class="flex gap-2">
-                        <button id="gridViewBtn" class="px-4 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20 font-rajdhani transition-colors">
-                            <i class="fas fa-th"></i>
-                        </button>
-                        <button id="listViewBtn" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground border border-border font-rajdhani transition-colors">
-                            <i class="fas fa-list"></i>
-                        </button>
+                <div class="hidden md:flex gap-6">
+                    <div class="card-gaming px-6 py-4 text-center">
+                        <div class="text-3xl font-orbitron font-bold text-primary">{{ purchases|length }}</div>
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Owned</div>
                     </div>
-                {% endif %}
+                    <div class="card-gaming px-6 py-4 text-center">
+                        <div class="text-3xl font-orbitron font-bold text-destructive">{{ wishlistItems|length }}</div>
+                        <div class="text-xs text-muted-foreground uppercase tracking-wider mt-1">Wishlist</div>
+                    </div>
+                </div>
             </div>
 
-            {% if purchases is empty %}
-                <!-- Empty State -->
-                <div class="text-center py-20">
-                    <i class="fas fa-gamepad text-6xl text-muted-foreground/30 mb-6"></i>
-                    <h2 class="font-orbitron text-2xl font-bold text-foreground mb-3">No games yet</h2>
-                    <p class="text-muted-foreground font-rajdhani mb-8">Start building your collection</p>
-                    <a href="{{ path('game_index') }}" class="btn-hero inline-flex items-center gap-2">
-                        <i class="fas fa-store"></i>
-                        Browse Games
-                    </a>
-                </div>
-            {% else %}
-                <!-- Games Grid -->
-                <div id="gridView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- Tabs -->
+            <div class="flex gap-4 border-b border-border/50">
+                <button id="libraryTab" class="relative px-6 py-3 font-orbitron font-semibold text-sm uppercase tracking-wider transition-all text-primary">
+                    <i class="fas fa-book mr-2"></i>Library
+                    <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
+                </button>
+                <button id="wishlistTab" class="relative px-6 py-3 font-orbitron font-semibold text-sm uppercase tracking-wider transition-all text-muted-foreground hover:text-foreground">
+                    <i class="fas fa-heart mr-2"></i>Wishlist
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-7xl mx-auto">
+            <!-- View Toggle -->
+            <div class="mb-8 flex items-center justify-end gap-2">
+                <button id="gridViewBtn" class="px-4 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20 font-rajdhani transition-all hover:bg-primary/20">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button id="listViewBtn" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground border border-border font-rajdhani transition-all">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+
+            <!-- Library Tab Content -->
+            <div id="libraryContent">
+                {% if purchases is empty %}
+                    <div class="card-gaming p-16 text-center">
+                        <div class="max-w-md mx-auto">
+                            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                                <i class="fas fa-gamepad text-5xl text-muted-foreground/40"></i>
+                            </div>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground mb-3">Your Library is Empty</h2>
+                            <p class="text-muted-foreground font-rajdhani mb-8">Discover amazing games and start building your collection</p>
+                            <a href="{{ path('game_index') }}" class="btn-hero inline-flex items-center gap-2">
+                                <i class="fas fa-store"></i>
+                                Browse Games
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Games Grid -->
+                    <div id="gridView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {% for purchase in purchases %}
-                        <div class="group">
+                        <div class="group card-gaming overflow-hidden">
                             <!-- Game Cover -->
-                            <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="block relative aspect-[3/4] rounded-lg overflow-hidden bg-card border border-border/50 hover:border-primary/50 transition-all mb-3">
+                            <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="block relative aspect-[3/4] overflow-hidden bg-muted">
                                 {% if purchase.game.coverImage %}
                                     <img src="{{ asset(purchase.game.coverImage) }}" 
                                          alt="{{ purchase.game.title }}" 
-                                         class="w-full h-full object-cover">
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                                 {% else %}
                                     <div class="w-full h-full bg-muted flex items-center justify-center">
-                                        <i class="fas fa-gamepad text-4xl text-muted-foreground/40"></i>
+                                        <i class="fas fa-gamepad text-5xl text-muted-foreground/30"></i>
                                     </div>
                                 {% endif %}
                                 
                                 <!-- Hover Overlay -->
-                                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                    <i class="fas fa-play text-white text-2xl"></i>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3">
+                                    <i class="fas fa-play text-white text-3xl transform scale-75 group-hover:scale-100 transition-transform"></i>
+                                    <span class="text-white font-orbitron font-bold text-sm">PLAY NOW</span>
                                 </div>
                             </a>
 
                             <!-- Game Info -->
-                            <div class="space-y-2">
-                                <h3 class="font-rajdhani font-semibold text-foreground text-sm line-clamp-2 leading-tight">
+                            <div class="p-3">
+                                <h3 class="font-rajdhani font-bold text-foreground text-sm line-clamp-1 mb-2 group-hover:text-primary transition-colors">
                                     {{ purchase.game.title }}
                                 </h3>
                                 
                                 <div class="flex items-center justify-between gap-2">
-                                    <span class="text-xs text-muted-foreground font-rajdhani">
+                                    <span class="text-xs text-muted-foreground font-rajdhani px-2 py-1 bg-muted rounded">
                                         {{ purchase.game.category }}
                                     </span>
                                     <button onclick="confirmDelete({{ purchase.id }}, '{{ purchase.game.title|e('js') }}')" 
-                                            class="text-muted-foreground hover:text-destructive transition-colors"
+                                            class="text-muted-foreground hover:text-destructive transition-colors p-1"
                                             title="Remove from library">
                                         <i class="fas fa-trash text-xs"></i>
                                     </button>
@@ -80,60 +121,181 @@
                     {% endfor %}
                 </div>
 
-                <!-- Games List -->
-                <div id="listView" class="hidden space-y-2">
+                <!-- Games List View -->
+                <div id="listView" class="hidden space-y-3">
                     {% for purchase in purchases %}
-                        <div class="group bg-card border border-border/50 hover:border-primary/30 rounded-lg p-4 transition-all">
-                            <div class="flex items-center gap-4">
-                                <!-- Thumbnail -->
-                                <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="flex-shrink-0">
-                                    <div class="w-20 h-28 rounded-lg overflow-hidden bg-muted border border-border/30">
-                                        {% if purchase.game.coverImage %}
-                                            <img src="{{ asset(purchase.game.coverImage) }}" 
-                                                 alt="{{ purchase.game.title }}" 
-                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform">
-                                        {% else %}
-                                            <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fas fa-gamepad text-2xl text-muted-foreground/40"></i>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </a>
+                        <div class="group card-gaming p-5 flex items-center gap-6 hover:border-primary/40 transition-all">
+                            <!-- Thumbnail -->
+                            <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="flex-shrink-0">
+                                <div class="w-24 h-32 rounded-lg overflow-hidden bg-muted">
+                                    {% if purchase.game.coverImage %}
+                                        <img src="{{ asset(purchase.game.coverImage) }}" 
+                                             alt="{{ purchase.game.title }}" 
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300">
+                                    {% else %}
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-gamepad text-3xl text-muted-foreground/40"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
 
-                                <!-- Game Info -->
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-rajdhani font-bold text-foreground text-lg mb-1 truncate">
+                            <!-- Game Info -->
+                            <div class="flex-1 min-w-0">
+                                <a href="{{ path('game_show', {'id': purchase.game.id}) }}">
+                                    <h3 class="font-orbitron font-bold text-foreground text-xl mb-2 group-hover:text-primary transition-colors">
                                         {{ purchase.game.title }}
                                     </h3>
-                                    <div class="flex items-center gap-4 text-sm text-muted-foreground font-rajdhani">
-                                        <span class="flex items-center gap-1.5">
-                                            <i class="fas fa-tag text-xs"></i>
-                                            {{ purchase.game.category }}
-                                        </span>
-                                        <span class="flex items-center gap-1.5">
-                                            <i class="fas fa-calendar text-xs"></i>
-                                            {{ purchase.purchaseDate|date('M d, Y') }}
-                                        </span>
-                                        <span class="flex items-center gap-1.5">
-                                            <i class="fas fa-dollar-sign text-xs"></i>
-                                            {{ purchase.game.price|number_format(2) }}
-                                        </span>
-                                    </div>
+                                </a>
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground font-rajdhani">
+                                    <span class="flex items-center gap-2 px-3 py-1 bg-muted rounded-full">
+                                        <i class="fas fa-tag text-xs"></i>
+                                        {{ purchase.game.category }}
+                                    </span>
+                                    <span class="flex items-center gap-2">
+                                        <i class="fas fa-calendar text-xs"></i>
+                                        Added {{ purchase.purchaseDate|date('M d, Y') }}
+                                    </span>
+                                    {% if purchase.game.price > 0 %}
+                                    <span class="flex items-center gap-2">
+                                        <i class="fas fa-dollar-sign text-xs"></i>
+                                        ${{ purchase.game.price|number_format(2) }}
+                                    </span>
+                                    {% endif %}
                                 </div>
+                            </div>
 
-                                <!-- Actions -->
-                                <div class="flex items-center gap-3">
-                                    <button onclick="confirmDelete({{ purchase.id }}, '{{ purchase.game.title|e('js') }}')" 
-                                            class="px-4 py-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/30 transition-colors"
-                                            title="Remove from library">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
+                            <!-- Actions -->
+                            <div class="flex items-center gap-3">
+                                <a href="{{ path('game_show', {'id': purchase.game.id}) }}" class="btn-hero px-6 py-2 text-sm">
+                                    <i class="fas fa-play mr-2"></i>Play
+                                </a>
+                                <button onclick="confirmDelete({{ purchase.id }}, '{{ purchase.game.title|e('js') }}')" 
+                                        class="px-4 py-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/30 transition-all"
+                                        title="Remove from library">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
-            {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- Wishlist Tab Content -->
+            <div id="wishlistContent" class="hidden">
+                {% if wishlistItems is empty %}
+                    <div class="card-gaming p-16 text-center">
+                        <div class="max-w-md mx-auto">
+                            <div class="w-24 h-24 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                                <i class="fas fa-heart text-5xl text-destructive/40"></i>
+                            </div>
+                            <h2 class="font-orbitron text-2xl font-bold text-foreground mb-3">Your Wishlist is Empty</h2>
+                            <p class="text-muted-foreground font-rajdhani mb-8">Add games to your wishlist to track what you want</p>
+                            <a href="{{ path('game_index') }}" class="btn-hero inline-flex items-center gap-2">
+                                <i class="fas fa-store"></i>
+                                Browse Games
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Wishlist Grid View -->
+                    <div id="wishlistGridView" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        {% for item in wishlistItems %}
+                            <div class="group card-gaming overflow-hidden">
+                                <a href="{{ path('game_show', {'id': item.game.id}) }}" class="block relative aspect-[3/4] overflow-hidden bg-muted">
+                                    {% if item.game.coverImage %}
+                                        <img src="{{ asset(item.game.coverImage) }}" 
+                                             alt="{{ item.game.title }}" 
+                                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    {% else %}
+                                        <div class="w-full h-full bg-muted flex items-center justify-center">
+                                            <i class="fas fa-gamepad text-5xl text-muted-foreground/30"></i>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-3">
+                                        <i class="fas fa-shopping-cart text-white text-3xl transform scale-75 group-hover:scale-100 transition-transform"></i>
+                                        <span class="text-white font-orbitron font-bold text-sm">BUY NOW</span>
+                                    </div>
+
+                                    <div class="absolute top-3 right-3">
+                                        <div class="bg-primary/90 backdrop-blur-sm text-primary-foreground px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                            {% if item.game.price == 0 %}FREE{% else %}${{ item.game.price|number_format(2) }}{% endif %}
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <div class="p-4">
+                                    <h3 class="font-orbitron font-bold text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+                                        {{ item.game.title }}
+                                    </h3>
+                                    <p class="text-xs text-muted-foreground font-rajdhani mb-3 line-clamp-2">
+                                        {{ item.game.description|default('No description available') }}
+                                    </p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-muted-foreground font-rajdhani px-2 py-1 bg-muted rounded">
+                                            {{ item.game.category }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Wishlist List View -->
+                    <div id="wishlistListView" class="hidden space-y-4">
+                    {% for item in wishlistItems %}
+                        <div class="group card-gaming p-6 flex items-center gap-6 hover:border-primary/30 transition-all">
+                            <a href="{{ path('game_show', {'id': item.game.id}) }}" class="block w-32 h-44 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+                                {% if item.game.coverImage %}
+                                    <img src="{{ asset(item.game.coverImage) }}" 
+                                         alt="{{ item.game.title }}" 
+                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                {% else %}
+                                    <div class="w-full h-full bg-muted flex items-center justify-center">
+                                        <i class="fas fa-gamepad text-4xl text-muted-foreground/30"></i>
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                            <div class="flex-1 min-w-0">
+                                <a href="{{ path('game_show', {'id': item.game.id}) }}">
+                                    <h3 class="font-orbitron font-bold text-foreground text-xl mb-2 group-hover:text-primary transition-colors">
+                                        {{ item.game.title }}
+                                    </h3>
+                                </a>
+                                <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground font-rajdhani">
+                                    <span class="flex items-center gap-2 px-3 py-1 bg-muted rounded-full">
+                                        <i class="fas fa-tag text-xs"></i>
+                                        {{ item.game.category }}
+                                    </span>
+                                    <span class="flex items-center gap-2">
+                                        <i class="fas fa-calendar text-xs"></i>
+                                        Added {{ item.addedAt|date('M d, Y') }}
+                                    </span>
+                                    <span class="flex items-center gap-2">
+                                        <i class="fas fa-dollar-sign text-xs"></i>
+                                        {% if item.game.price == 0 %}FREE{% else %}${{ item.game.price|number_format(2) }}{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <a href="{{ path('game_show', {'id': item.game.id}) }}" class="btn-hero px-6 py-2 text-sm">
+                                    <i class="fas fa-shopping-cart mr-2"></i>Buy
+                                </a>
+                                <button onclick="removeFromWishlist({{ item.game.id }})" 
+                                        class="px-4 py-2 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive border border-border hover:border-destructive/30 transition-all"
+                                        title="Remove from wishlist">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
@@ -151,6 +313,7 @@
                 Cancel
             </button>
             <form id="deleteForm" method="post" class="flex-1">
+                <input type="hidden" name="_token" id="deleteToken" value="">
                 <button type="submit" class="w-full px-4 py-2 rounded-lg bg-destructive hover:bg-destructive/80 text-destructive-foreground font-rajdhani transition-colors">
                     Remove
                 </button>
@@ -160,36 +323,119 @@
 </div>
 
 <script>
-    const modal = document.getElementById('deleteModal');
+    // Tab switching
+    const libraryTab = document.getElementById('libraryTab');
+    const wishlistTab = document.getElementById('wishlistTab');
+    const libraryContent = document.getElementById('libraryContent');
+    const wishlistContent = document.getElementById('wishlistContent');
 
-    window.confirmDelete = (id, name) => {
-        document.getElementById('gameName').textContent = name;
-        document.getElementById('deleteForm').action = '{{ path('library_remove', {'id': '__ID__'}) }}'.replace('__ID__', id);
-        modal.classList.replace('hidden', 'flex');
-    };
+    function switchTab(tab, content, otherTab, otherContent) {
+        tab.classList.add('text-primary');
+        tab.classList.remove('text-muted-foreground');
+        tab.querySelector('div') ? null : tab.innerHTML += '<div class="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>';
+        
+        otherTab.classList.remove('text-primary');
+        otherTab.classList.add('text-muted-foreground');
+        const line = otherTab.querySelector('div');
+        if (line) line.remove();
+        
+        content.classList.remove('hidden');
+        otherContent.classList.add('hidden');
+    }
 
-    window.closeModal = () => modal.classList.replace('flex', 'hidden');
+    libraryTab.addEventListener('click', () => switchTab(libraryTab, libraryContent, wishlistTab, wishlistContent));
+    wishlistTab.addEventListener('click', () => switchTab(wishlistTab, wishlistContent, libraryTab, libraryContent));
 
-    modal.addEventListener('click', e => e.target.id === 'deleteModal' && closeModal());
-    document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
-
-    const [gridBtn, listBtn, gridView, listView] = ['gridViewBtn', 'listViewBtn', 'gridView', 'listView'].map(id => document.getElementById(id));
+    // View toggle
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+    const gridView = document.getElementById('gridView');
+    const listView = document.getElementById('listView');
+    const wishlistGridView = document.getElementById('wishlistGridView');
+    const wishlistListView = document.getElementById('wishlistListView');
 
     if (gridBtn && listBtn) {
         const activeClasses = ['bg-primary/10', 'text-primary', 'border-primary/20'];
         const inactiveClasses = ['hover:bg-muted', 'text-muted-foreground', 'border-border'];
         
-        const toggleView = (show, hide, activeBtn, inactiveBtn) => {
-            show.classList.remove('hidden');
-            hide.classList.add('hidden');
-            activeBtn.classList.add(...activeClasses);
-            activeBtn.classList.remove(...inactiveClasses);
-            inactiveBtn.classList.remove(...activeClasses);
-            inactiveBtn.classList.add(...inactiveClasses);
+        const toggleView = (showGrid) => {
+            const isLibraryActive = !libraryContent.classList.contains('hidden');
+            
+            if (isLibraryActive) {
+                if (gridView && listView) {
+                    if (showGrid) {
+                        gridView.classList.remove('hidden');
+                        listView.classList.add('hidden');
+                    } else {
+                        listView.classList.remove('hidden');
+                        gridView.classList.add('hidden');
+                    }
+                }
+            } else {
+                if (wishlistGridView && wishlistListView) {
+                    if (showGrid) {
+                        wishlistGridView.classList.remove('hidden');
+                        wishlistListView.classList.add('hidden');
+                    } else {
+                        wishlistListView.classList.remove('hidden');
+                        wishlistGridView.classList.add('hidden');
+                    }
+                }
+            }
+            
+            if (showGrid) {
+                gridBtn.classList.add(...activeClasses);
+                gridBtn.classList.remove(...inactiveClasses);
+                listBtn.classList.remove(...activeClasses);
+                listBtn.classList.add(...inactiveClasses);
+            } else {
+                listBtn.classList.add(...activeClasses);
+                listBtn.classList.remove(...inactiveClasses);
+                gridBtn.classList.remove(...activeClasses);
+                gridBtn.classList.add(...inactiveClasses);
+            }
         };
 
-        gridBtn.addEventListener('click', () => toggleView(gridView, listView, gridBtn, listBtn));
-        listBtn.addEventListener('click', () => toggleView(listView, gridView, listBtn, gridBtn));
+        gridBtn.addEventListener('click', () => toggleView(true));
+        listBtn.addEventListener('click', () => toggleView(false));
     }
+
+    // Delete modal
+    const modal = document.getElementById('deleteModal');
+
+    window.confirmDelete = (id, name) => {
+        document.getElementById('gameName').textContent = name;
+        document.getElementById('deleteForm').action = '{{ path('library_remove', {'id': '__ID__'}) }}'.replace('__ID__', id);
+        document.getElementById('deleteToken').value = '{{ csrf_token('library_remove') }}';
+        modal.classList.replace('hidden', 'flex');
+    };
+
+    window.closeModal = () => modal.classList.replace('flex', 'hidden');
+
+    window.removeFromWishlist = async (gameId) => {
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token('wishlist_toggle') }}');
+        
+        try {
+            const response = await fetch(`{{ path('wishlist_toggle', {id: 0}) }}`.replace('/0', `/${gameId}`), {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.action === 'removed') {
+                location.reload();
+            }
+        } catch (error) {
+            console.error('Error removing from wishlist:', error);
+        }
+    };
+
+    modal.addEventListener('click', e => e.target.id === 'deleteModal' && closeModal());
+    document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
 </script>
 {% endblock %}

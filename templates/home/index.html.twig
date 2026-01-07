@@ -5,6 +5,9 @@
 {% block body %}
 <!-- Hero Section -->
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden hero-gradient">
+    <!-- Noise Texture Overlay -->
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 /%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22 /%3E%3C/svg%3E');"></div>
+    
     <!-- Particles Background -->
     <div class="particles-bg-home">
         <div class="particle-home"></div>
@@ -42,16 +45,17 @@
     </div>
     
     <!-- Grid Pattern Overlay -->
-    <div class="absolute inset-0 grid-pattern opacity-50"></div>
+    <div class="absolute inset-0 grid-pattern opacity-50" data-parallax="0.3"></div>
     
     <!-- Animated Gradient Orbs -->
-    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-float"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/30 rounded-full blur-3xl animate-pulse-slow" data-parallax="0.5"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/30 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: -3s;" data-parallax="0.4"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: -1.5s;"></div>
     
     <!-- Floating Game Cards - Left Side -->
-    <div class="hidden lg:block absolute top-20 left-10 w-40 h-56 animate-float-cards" style="animation-delay: 0s;">
-        <a href="{{ featuredGames|length > 0 ? path('game_show', {id: featuredGames[0].id}) : '#' }}" class="group block h-full">
-            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow group-hover:scale-110 transition-transform duration-500">
+    <div class="hidden lg:block absolute top-20 left-10 w-40 h-56 animate-float-cards" style="animation-delay: 0s;" data-parallax="0.2">
+        <a href="{{ featuredGames|length > 0 ? path('game_show', {id: featuredGames[0].id}) : '#' }}" class="group block h-full" >
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-strong group-hover:scale-110 group-hover:rotate-2 transition-all duration-500" data-tilt="8">
                 {% if featuredGames|length > 0 %}
                     {% if featuredGames[0].coverImage %}
                         <img src="{{ asset(featuredGames[0].coverImage) }}" alt="{{ featuredGames[0].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
@@ -67,9 +71,9 @@
     </div>
 
     <!-- Floating Game Cards - Top Right -->
-    <div class="hidden lg:block absolute top-32 right-16 w-48 h-64 animate-float-cards" style="animation-delay: -2s;">
-        <a href="{{ featuredGames|length > 1 ? path('game_show', {id: featuredGames[1].id}) : '#' }}" class="group block h-full">
-            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple group-hover:scale-110 transition-transform duration-500">
+    <div class="hidden lg:block absolute top-32 right-16 w-48 h-64 animate-float-cards" style="animation-delay: -2s;" data-parallax="0.25">
+        <a href="{{ featuredGames|length > 1 ? path('game_show', {id: featuredGames[1].id}) : '#' }}" class="group block h-full" >
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple-strong group-hover:scale-110 group-hover:-rotate-2 transition-all duration-500" data-tilt="8">
                 {% if featuredGames|length > 1 %}
                     {% if featuredGames[1].coverImage %}
                         <img src="{{ asset(featuredGames[1].coverImage) }}" alt="{{ featuredGames[1].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
@@ -85,9 +89,9 @@
     </div>
 
     <!-- Floating Game Cards - Bottom Left -->
-    <div class="hidden lg:block absolute bottom-32 left-20 w-44 h-60 animate-float-cards" style="animation-delay: -4s;">
-        <a href="{{ featuredGames|length > 2 ? path('game_show', {id: featuredGames[2].id}) : '#' }}" class="group block h-full">
-            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow group-hover:scale-110 transition-transform duration-500">
+    <div class="hidden lg:block absolute bottom-32 left-20 w-44 h-60 animate-float-cards" style="animation-delay: -4s;" data-parallax="0.15">
+        <a href="{{ featuredGames|length > 2 ? path('game_show', {id: featuredGames[2].id}) : '#' }}" class="group block h-full" >
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-strong group-hover:scale-110 group-hover:rotate-1 transition-all duration-500" data-tilt="8">
                 {% if featuredGames|length > 2 %}
                     {% if featuredGames[2].coverImage %}
                         <img src="{{ asset(featuredGames[2].coverImage) }}" alt="{{ featuredGames[2].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
@@ -103,9 +107,9 @@
     </div>
 
     <!-- Floating Game Cards - Bottom Right -->
-    <div class="hidden lg:block absolute bottom-40 right-10 w-40 h-56 animate-float-cards" style="animation-delay: -3s;">
-        <a href="{{ featuredGames|length > 3 ? path('game_show', {id: featuredGames[3].id}) : '#' }}" class="group block h-full">
-            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple group-hover:scale-110 transition-transform duration-500">
+    <div class="hidden lg:block absolute bottom-40 right-10 w-40 h-56 animate-float-cards" style="animation-delay: -3s;" data-parallax="0.2">
+        <a href="{{ featuredGames|length > 3 ? path('game_show', {id: featuredGames[3].id}) : '#' }}" class="group block h-full" >
+            <div class="card-gaming overflow-hidden h-full rounded-xl shadow-2xl neon-glow-purple-strong group-hover:scale-110 group-hover:-rotate-1 transition-all duration-500" data-tilt="8">
                 {% if featuredGames|length > 3 %}
                     {% if featuredGames[3].coverImage %}
                         <img src="{{ asset(featuredGames[3].coverImage) }}" alt="{{ featuredGames[3].title }}" class="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
@@ -124,10 +128,10 @@
     <div class="container mx-auto px-4 pt-20 lg:pt-0 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
             <!-- Main Heading -->
-            <h1 class="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in" style="animation-delay: 0.1s;">
-                <span class="text-foreground">Your Gateway to</span>
+            <h1 class="font-orbitron text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight animate-fade-in hero-heading-glow" style="animation-delay: 0.1s;" data-reveal>
+                <span class="text-foreground drop-shadow-lg">Your Gateway to</span>
                 <br />
-                <span class="text-gradient">Epic Gaming</span>
+                <span class="text-gradient text-glow-strong">Epic Gaming</span>
             </h1>
             
             <!-- Subtitle -->
@@ -137,13 +141,13 @@
             
             <!-- CTAs -->
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style="animation-delay: 0.3s;">
-                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group">
+                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 transition-all">
                     Explore Games
                     <i class="fas fa-chevron-right w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                 </a>
                 <a href="https://youtu.be/dQw4w9WgXcQ?si=czrFcRRwpZzo-Ubw" target="_blank" rel="noopener noreferrer">
-                <button class="btn-hero-outline flex items-center gap-2">
-                    <i class="fas fa-play w-5 h-5"></i>
+                <button class="btn-hero-outline flex items-center gap-2 hover:shadow-xl hover:shadow-primary/20 hover:scale-105 transition-all group">
+                    <i class="fas fa-play w-5 h-5 group-hover:scale-110 transition-transform"></i>
                     Watch Trailer
                 </button>
                 </a>
@@ -151,17 +155,17 @@
             
             <!-- Stats Preview -->
             <div class="grid grid-cols-3 gap-8 mt-16 max-w-xl mx-auto animate-fade-in" style="animation-delay: 0.4s;">
-                <div class="text-center">
-                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">{{ totalGames }}</div>
-                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Games</div>
+                <div class="text-center group cursor-default">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient text-glow group-hover:scale-110 transition-transform">{{ totalGames }}</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider mt-1">Games</div>
                 </div>
-                <div class="text-center">
-                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">{{ totalEvents }}</div>
-                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Events</div>
+                <div class="text-center group cursor-default">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient text-glow group-hover:scale-110 transition-transform">{{ totalEvents }}</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider mt-1">Events</div>
                 </div>
-                <div class="text-center">
-                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient">∞</div>
-                    <div class="text-sm text-muted-foreground uppercase tracking-wider">Freedom</div>
+                <div class="text-center group cursor-default">
+                    <div class="font-orbitron text-2xl md:text-3xl font-bold text-gradient text-glow group-hover:scale-110 transition-transform">∞</div>
+                    <div class="text-sm text-muted-foreground uppercase tracking-wider mt-1">Freedom</div>
                 </div>
             </div>
         </div>
@@ -182,14 +186,14 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
                 <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-3">
-                    <span class="text-gradient">Featured</span>
-                    <span class="text-foreground">Games</span>
+                    <span class="text-gradient text-glow">Featured</span>
+                    <span class="text-foreground"> Games</span>
                 </h2>
                 <p class="text-muted-foreground max-w-md">
                     Handpicked titles that define the gaming experience. Updated weekly with the best releases.
                 </p>
             </div>
-            <a href="{{ path('game_index') }}" class="btn-gaming group">
+            <a href="{{ path('game_index') }}" class="btn-gaming group hover:shadow-lg hover:shadow-primary/20 hover:scale-105 transition-all">
                 View All Games
                 <i class="fas fa-chevron-right w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -198,8 +202,8 @@
         <!-- Games Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {% for game in featuredGames %}
-                <a href="{{ path('game_show', {id: game.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
-                    <div class="card-gaming overflow-hidden h-full">
+                <a href="{{ path('game_show', {id: game.id}) }}" class="group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;" >
+                    <div class="card-gaming overflow-hidden h-full hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300" data-tilt="5" data-reveal>
                         <!-- Image -->
                         <div class="relative aspect-[3/4] overflow-hidden">
                             {% if game.coverImage %}
@@ -214,8 +218,8 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent"></div>
                             
                             <!-- Price -->
-                            <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-background/80 backdrop-blur-sm">
-                                <span class="text-sm font-bold {% if game.price == 0 %}text-primary{% else %}text-foreground{% endif %}">
+                            <div class="absolute bottom-4 right-4 px-3 py-2 rounded-lg {% if game.price == 0 %}bg-primary/90 shadow-lg shadow-primary/50{% else %}bg-background/90{% endif %} backdrop-blur-sm border border-border/50">
+                                <span class="text-sm font-bold {% if game.price == 0 %}text-primary-foreground{% else %}text-foreground{% endif %}">
                                     {% if game.price == 0 %}Free{% else %}${{ game.price }}{% endif %}
                                 </span>
                             </div>
@@ -251,14 +255,14 @@
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
                 <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-3">
-                    <span class="text-foreground">Upcoming</span>
-                    <span class="text-gradient">Events</span>
+                    <span class="text-foreground">Upcoming </span>
+                    <span class="text-gradient text-glow">Events</span>
                 </h2>
                 <p class="text-muted-foreground max-w-md">
                     Compete, collaborate, and celebrate gaming with our community events.
                 </p>
             </div>
-            <a href="{{ path('event_index') }}" class="btn-gaming group">
+            <a href="{{ path('event_index') }}" class="btn-gaming group hover:shadow-lg hover:shadow-secondary/20 hover:scale-105 transition-all">
                 View All Events
                 <i class="fas fa-chevron-right w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
             </a>
@@ -267,7 +271,7 @@
         <!-- Events Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {% for event in featuredEvents %}
-                <div class="card-gaming overflow-hidden group animate-fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                <div class="card-gaming overflow-hidden group animate-fade-in hover:shadow-2xl hover:shadow-secondary/20 hover:-translate-y-2 transition-all duration-300" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
                     <!-- Image -->
                     <div class="relative h-48 overflow-hidden">
                         {% if event.game.coverImage %}
@@ -324,8 +328,8 @@
         <!-- Header -->
         <div class="text-center max-w-2xl mx-auto mb-16">
             <h2 class="font-orbitron text-3xl md:text-4xl font-bold mb-4">
-                <span class="text-foreground">Why Choose</span>
-                <span class="text-gradient">GameHub?</span>
+                <span class="text-foreground">Why Choose </span>
+                <span class="text-gradient text-glow">GameHub?</span>
             </h2>
             <p class="text-muted-foreground text-lg">
                 Built by gamers, for gamers. Experience the difference with features designed around what matters most.
@@ -334,9 +338,9 @@
         
         <!-- Features Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-shield w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-shield w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     DRM-Free Gaming
@@ -346,9 +350,9 @@
                 </p>
             </div>
             
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.1s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-users w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-users w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     Vibrant Community
@@ -358,9 +362,9 @@
                 </p>
             </div>
             
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.2s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-calendar w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0.2s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-calendar w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     Epic Events
@@ -370,9 +374,9 @@
                 </p>
             </div>
             
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.3s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-download w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0.3s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-download w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     Instant Access
@@ -382,9 +386,9 @@
                 </p>
             </div>
             
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.4s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-trophy w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0.4s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-trophy w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     Rewards & Recognition
@@ -394,9 +398,9 @@
                 </p>
             </div>
             
-            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-300 animate-fade-in" style="animation-delay: 0.5s;">
-                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                    <i class="fas fa-heart w-7 h-7 text-primary"></i>
+            <div class="group p-6 lg:p-8 rounded-2xl bg-card border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 animate-fade-in" style="animation-delay: 0.5s;">
+                <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <i class="fas fa-heart w-7 h-7 text-primary group-hover:drop-shadow-glow"></i>
                 </div>
                 <h3 class="font-orbitron text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
                     Player-First Philosophy
@@ -411,18 +415,19 @@
 
 <!-- CTA Section -->
 <section class="py-20 lg:py-32 bg-gradient-to-r from-primary/10 via-background to-secondary/10 relative overflow-hidden">
-    <div class="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-secondary/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-secondary/30 rounded-full blur-3xl animate-pulse-slow"></div>
+    <div class="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: -3s;"></div>
     
     <div class="container mx-auto px-4 relative z-10">
         <div class="text-center max-w-3xl mx-auto">
-            <h2 class="font-orbitron text-4xl md:text-5xl font-bold mb-6">
+            <h2 class="font-orbitron text-4xl md:text-5xl font-bold mb-6 text-gradient text-glow">
                 Ready to Level Up?
             </h2>
             <p class="text-lg text-muted-foreground mb-10">
                 Join thousands of gamers and start your adventure with GameHub today.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group">
+                <a href="{{ path('game_index') }}" class="btn-hero flex items-center gap-2 group hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 transition-all">
                     Browse Our Catalog
                     <i class="fas fa-arrow-right w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                 </a>
@@ -449,6 +454,24 @@
     box-shadow: 0 0 10px hsl(var(--primary));
     animation: float-home 20s infinite;
     opacity: 0.6;
+}
+
+.particle-home:nth-child(odd) {
+    background: hsl(var(--secondary));
+    box-shadow: 0 0 12px hsl(var(--secondary));
+}
+
+.particle-home:nth-child(3n) {
+    width: 3px;
+    height: 3px;
+    opacity: 0.4;
+}
+
+.particle-home:nth-child(5n) {
+    width: 5px;
+    height: 5px;
+    opacity: 0.8;
+    box-shadow: 0 0 15px currentColor;
 }
 
 .particle-home:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 15s; }
@@ -489,6 +512,54 @@
     25% { transform: translate(20px, -30px) scale(1.2); }
     50% { transform: translate(-20px, -60px) scale(0.8); }
     75% { transform: translate(30px, -40px) scale(1.1); }
+}
+
+.neon-glow-strong {
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.4),
+        0 0 40px rgba(0, 255, 255, 0.3),
+        0 0 60px rgba(0, 255, 255, 0.2),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.neon-glow-purple-strong {
+    box-shadow: 
+        0 0 20px rgba(157, 78, 221, 0.4),
+        0 0 40px rgba(157, 78, 221, 0.3),
+        0 0 60px rgba(157, 78, 221, 0.2),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.text-glow-strong {
+    text-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.6),
+        0 0 40px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(0, 255, 255, 0.2);
+}
+
+.text-glow {
+    text-shadow: 
+        0 0 10px rgba(0, 255, 255, 0.5),
+        0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.drop-shadow-glow {
+    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.6));
+}
+
+@keyframes pulse-slow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 6s ease-in-out infinite;
 }
 </style>
 {% endblock %}

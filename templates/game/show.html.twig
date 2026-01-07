@@ -115,9 +115,12 @@
                                             Buy Now
                                         {% endif %}
                                     </a>
-                                    <button class="btn-gaming px-8 py-4 flex items-center justify-center gap-2 w-full sm:w-auto">
-                                        <i class="far fa-heart text-xl"></i>
-                                        <span class="hidden sm:inline">Wishlist</span>
+                                    <button id="wishlistBtn" 
+                                            data-game-id="{{ game.id }}" 
+                                            data-in-wishlist="{{ isInWishlist ? 'true' : 'false' }}"
+                                            class="btn-gaming px-8 py-4 flex items-center justify-center gap-2 w-full sm:w-auto">
+                                        <i class="{{ isInWishlist ? 'fas' : 'far' }} fa-heart text-xl"></i>
+                                        <span class="hidden sm:inline">{{ isInWishlist ? 'In Wishlist' : 'Wishlist' }}</span>
                                     </button>
                                 </div>
                             {% endif %}
@@ -563,5 +566,57 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', async function() {
+            {% if not app.user %}
+                window.location.href = '{{ path('app_login') }}';
+                return;
+            {% endif %}
+            
+            const gameId = this.dataset.gameId;
+            const isInWishlist = this.dataset.inWishlist === 'true';
+            
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token('wishlist_toggle') }}');
+            
+            try {
+                const response = await fetch(`{{ path('wishlist_toggle', {id: 0}) }}`.replace('/0', `/${gameId}`), {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const icon = this.querySelector('i');
+                    const text = this.querySelector('span');
+                    
+                    if (data.action === 'added') {
+                        icon.classList.remove('far');
+                        icon.classList.add('fas');
+                        if (text) text.textContent = 'In Wishlist';
+                        this.dataset.inWishlist = 'true';
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                        if (text) text.textContent = 'Wishlist';
+                        this.dataset.inWishlist = 'false';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling wishlist:', error);
+            }
+        });
+    }
+});
+</script>
 
 {% endblock %}

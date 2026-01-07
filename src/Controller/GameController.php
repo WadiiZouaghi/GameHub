@@ -88,11 +88,12 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'game_show')]
-    public function show(Game $game, Request $request, EntityManagerInterface $em, PurchaseRepository $purchaseRepo): Response
+    public function show(Game $game, Request $request, EntityManagerInterface $em, PurchaseRepository $purchaseRepo, \App\Repository\WishlistRepository $wishlistRepo): Response
     {
         $user = $this->getUser();
         $hasPurchased = $user && $purchaseRepo->findOneBy(['user' => $user, 'game' => $game]);
         $userReview = $user ? $em->getRepository(Review::class)->findOneBy(['user' => $user, 'game' => $game]) : null;
+        $isInWishlist = $user && $wishlistRepo->isInWishlist($user, $game);
 
         $form = $this->createForm(ReviewType::class, new Review());
         $form->handleRequest($request);
@@ -127,6 +128,7 @@ class GameController extends AbstractController
             'reviewForm' => $form->createView(),
             'averageRating' => $averageRating,
             'relatedGames' => array_slice($relatedGames, 0, 3),
+            'isInWishlist' => $isInWishlist,
         ]);
     }
     

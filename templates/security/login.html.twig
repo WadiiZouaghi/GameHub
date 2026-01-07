@@ -63,6 +63,8 @@
                     {% endif %}
 
                     <form method="post" class="auth-form">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        
                         <div class="auth-form-group">
                             <label for="inputEmail" class="auth-label">
                                 <i class="fas fa-envelope"></i>

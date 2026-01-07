@@ -80,6 +80,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             if (response.ok && data.success) {
                 button.innerHTML = '<i class="fas fa-check"></i> Payment Successful!';
+                
+                // Trigger confetti animation
+                if (window.GameHubAnimations && typeof window.GameHubAnimations.confetti === 'function') {
+                    const rect = button.getBoundingClientRect();
+                    window.GameHubAnimations.confetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
+                }
                 button.classList.remove('btn-hero');
                 button.classList.add('bg-green-500', 'hover:bg-green-600');
                 

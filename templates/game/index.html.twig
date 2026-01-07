@@ -70,6 +70,7 @@
                  data-gallery='{{ game.gallery|json_encode }}'
                  {% endif %}>
                 <a href="{{ path('game_show', {id: game.id}) }}" class="block bg-card rounded overflow-hidden hover:shadow-lg transition-shadow">
+                    <div data-tilt="5" data-reveal>
                     <!-- Image Container -->
                     <div class="relative aspect-[16/9] overflow-hidden bg-muted">
                         {% if game.coverImage %}
@@ -97,6 +98,7 @@
                                 <span class="text-foreground font-semibold">${{ game.price|number_format(2) }}</span>
                             {% endif %}
                         </div>
+                    </div>
                     </div>
                 </a>
             </div>
