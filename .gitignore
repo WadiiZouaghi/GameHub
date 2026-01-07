@@ -19,3 +19,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> kubernetes ###
+kubernetes-secrets.yaml
+###< kubernetes ###
